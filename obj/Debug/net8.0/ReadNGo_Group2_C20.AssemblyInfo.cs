@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ReadNGo_Group2_C20")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4b7b2b7dd0b8cdf468524cd843447e574cc49662")]
 [assembly: System.Reflection.AssemblyProductAttribute("ReadNGo_Group2_C20")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ReadNGo_Group2_C20")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

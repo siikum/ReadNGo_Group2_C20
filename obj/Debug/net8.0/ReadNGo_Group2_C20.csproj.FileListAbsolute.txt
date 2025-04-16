@@ -136,3 +136,4 @@ C:\Users\sikum\Documents\ReadNGo_Group2_C20\ReadNGo_Group2_C20\obj\Debug\net8.0\
 C:\Users\sikum\Documents\ReadNGo_Group2_C20\ReadNGo_Group2_C20\obj\Debug\net8.0\ReadNGo_Group2_C20.pdb
 C:\Users\sikum\Documents\ReadNGo_Group2_C20\ReadNGo_Group2_C20\obj\Debug\net8.0\ReadNGo_Group2_C20.genruntimeconfig.cache
 C:\Users\sikum\Documents\ReadNGo_Group2_C20\ReadNGo_Group2_C20\obj\Debug\net8.0\ref\ReadNGo_Group2_C20.dll
+C:\Users\sikum\Documents\ReadNGo_Group2_C20\ReadNGo_Group2_C20\obj\Debug\net8.0\ReadNGo_Group2_C20.sourcelink.json
