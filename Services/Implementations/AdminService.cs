@@ -34,8 +34,12 @@ namespace ReadNGo.Services.Implementations
                     Language = bookDto.Language,
                     Format = bookDto.Format,
                     Publisher = bookDto.Publisher,
+<<<<<<< HEAD
                     PublicationDate = DateTime.SpecifyKind(bookDto.PublicationDate, DateTimeKind.Utc)  
 
+=======
+                    PublicationDate = DateTime.SpecifyKind(bookDto.PublicationDate, DateTimeKind.Utc)
+>>>>>>> eef51399f7daeefaeae770ecafe62681829f0f89
                 };
 
 

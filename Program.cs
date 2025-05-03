@@ -30,6 +30,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage(); // shows stack traces
     app.UseSwagger();
     app.UseSwaggerUI(); // shows the Swagger UI
 }
