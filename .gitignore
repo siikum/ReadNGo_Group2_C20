@@ -1,0 +1,63 @@
+## Build results
+bin/
+obj/
+
+## Rider
+.idea/
+*.sln.iml
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Auto-generated
+*.cache
+*.log
+*.vspscc
+*.vssscc
+*.pdb
+*.mdb
+
+## VS Code settings
+.vscode/
+
+## NuGet
+*.nupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+*.nuget.props
+*.nuget.targets
+
+## DotCover
+.idea/.dotCover
+
+## Logs
+*.log
+
+## Others
+_ReSharper*/
+*.resharper
+*.DotSettings.user
+*.DotCover
+
+## Temporary
+*.tmp
+*.temp
+*.bak
+~
+
+## Dependency Graph
+project.assets.json
+*.csproj.nuget.dgspec.json
+
+# Global JetBrains (Rider, IntelliJ)
+*.iml
+.idea/
+out/
+
+## Git
+.git
+.vs

@@ -1,0 +1,18 @@
+﻿using ReadNGo.DTO;
+using ReadNGo_Group2_C20.DTO;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ReadNGo.Services.Interfaces
+{
+    public interface IAdminService
+    {
+        bool AddBook(BookDTO book);
+        bool EditBook(int bookId, BookDTO updated);
+        bool DeleteBook(int bookId);
+        bool SetDiscount(int bookId, AdminSetDiscountDTO discountDto);
+        bool CreateAnnouncement(AnnouncementDTO announcement);
+    }
+}
