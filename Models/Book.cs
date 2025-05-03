@@ -17,6 +17,9 @@ namespace ReadNGo_Group2_C20.Models
         public decimal Price { get; set; }
         public bool IsOnSale { get; set; } = false;
         public decimal? DiscountPercentage { get; set; }
+        public DateTime? DiscountStartDate { get; set; }
+        public DateTime? DiscountEndDate { get; set; }
+
 
         public ICollection<Review> Reviews { get; set; }
         public ICollection<CartItem> CartItems { get; set; }

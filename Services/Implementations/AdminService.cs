@@ -34,8 +34,10 @@ namespace ReadNGo.Services.Implementations
                     Language = bookDto.Language,
                     Format = bookDto.Format,
                     Publisher = bookDto.Publisher,
-                    PublicationDate = bookDto.PublicationDate
+                    PublicationDate = DateTime.SpecifyKind(bookDto.PublicationDate, DateTimeKind.Utc)  
+
                 };
+
 
                 _context.Books.Add(newBook);
                 _context.SaveChanges();
@@ -128,14 +130,14 @@ namespace ReadNGo.Services.Implementations
                     return false;
                 }
 
+                // Apply discount values
                 book.DiscountPercentage = discountDto.Percentage;
                 book.IsOnSale = discountDto.IsOnSale;
-
-                // You can add logic to store or handle startDate and endDate if needed
-                // e.g., saving to a separate Discount table or fields in Book if they exist
+                book.DiscountStartDate = discountDto.StartDate;
+                book.DiscountEndDate = discountDto.EndDate;
 
                 _context.SaveChanges();
-                Console.WriteLine($"Discount of {discountDto.Percentage}% applied to Book ID {bookId}.");
+                Console.WriteLine($"Discount of {discountDto.Percentage}% applied to Book ID {bookId} from {discountDto.StartDate} to {discountDto.EndDate}.");
                 return true;
             }
             catch (Exception ex)
@@ -144,6 +146,7 @@ namespace ReadNGo.Services.Implementations
                 return false;
             }
         }
+
 
 
 
