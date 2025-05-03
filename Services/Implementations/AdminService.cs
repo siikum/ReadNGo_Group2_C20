@@ -34,7 +34,7 @@ namespace ReadNGo.Services.Implementations
                     Language = bookDto.Language,
                     Format = bookDto.Format,
                     Publisher = bookDto.Publisher,
-                    PublicationDate = bookDto.PublicationDate
+                    PublicationDate = DateTime.SpecifyKind(bookDto.PublicationDate, DateTimeKind.Utc)
                 };
 
                 _context.Books.Add(newBook);
