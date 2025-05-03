@@ -18,10 +18,16 @@ namespace ReadNGo_Group2_C20.Models
     public class OrderItem
     {
         public int Id { get; set; }
+
         public int BookId { get; set; }
         public Book Book { get; set; }
+
+        public int OrderId { get; set; }      // ✅ Add this line (foreign key)
+        public Order Order { get; set; }      // ✅ Add this line (navigation)
 
         public int Quantity { get; set; }
         public decimal Price { get; set; }
     }
+
+
 }

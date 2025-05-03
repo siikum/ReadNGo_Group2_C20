@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace ReadNGo.DTO
+namespace ReadNGo_Group2_C20.DTO
 {
-    public class DiscountDTO
+    public class OrderCreateDTO
     {
         public int UserId { get; set; }
         public List<int> BookIds { get; set; }
-        public int CurrentOrderCount { get; set; }
-        public decimal Percentage { get; set; }
-
-
+        public decimal TotalAmount { get; set; }
     }
-
-
 }

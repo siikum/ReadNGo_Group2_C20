@@ -11,10 +11,13 @@ namespace ReadNGo.DBContext
         {
         }
 
-        // 👇 Add your DbSet models here
+        //  Add your DbSet models here
+        //public DbSet<Admin> Admin { get; set; }
+
         public DbSet<User> Users { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<WishlistItem> WishlistItems { get; set; }

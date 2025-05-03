@@ -57,3 +57,7 @@ project.assets.json
 *.iml
 .idea/
 out/
+
+## Git
+.git
+.vs
