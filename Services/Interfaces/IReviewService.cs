@@ -10,6 +10,7 @@ namespace ReadNGo.Services.Interfaces
     public interface IReviewService
     {
         bool AddReview(ReviewDTO review);
-        List<ReviewDTO> GetReviewsForBook(int bookId);
+        List<object> GetReviewsForBook(int bookId); 
     }
+
 }
