@@ -1,16 +1,13 @@
-﻿using ReadNGo.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
+﻿using System.Collections.Generic;
+using ReadNGo.DTO;
+using ReadNGo_Group2_C20.Models;
 
 namespace ReadNGo.Services.Interfaces
 {
     public interface ICartService
     {
         bool AddToCart(CartItemDTO item);
-        List<CartItemDTO> GetCartByUser(int userId);
-        bool RemoveFromCart(int bookId);
+        List<CartItem> GetCartItems(int userId);
+        bool RemoveFromCart(int userId, int bookId);
     }
 }

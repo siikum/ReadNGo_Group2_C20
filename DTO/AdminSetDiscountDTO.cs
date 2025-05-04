@@ -9,7 +9,7 @@ namespace ReadNGo_Group2_C20.DTO
     {
         public decimal Percentage { get; set; }
         public bool IsOnSale { get; set; }
-        public DateTime? StartDate { get; set; }  // optional
-        public DateTime? EndDate { get; set; }    // optional
+        public DateTime? StartDate { get; set; }  
+        public DateTime? EndDate { get; set; }    
     } 
 }
