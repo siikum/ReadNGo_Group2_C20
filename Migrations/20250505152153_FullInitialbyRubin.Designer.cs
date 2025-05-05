@@ -12,10 +12,6 @@ using ReadNGo.DBContext;
 namespace ReadNGo_Group2_C20.Migrations
 {
     [DbContext(typeof(ReadNGoContext))]
-<<<<<<<< HEAD:Migrations/20250505132706_FullInitial.Designer.cs
-    [Migration("20250505132706_FullInitial")]
-    partial class FullInitial
-========
 <<<<<<<< HEAD:Migrations/20250505152153_FullInitialbyRubin.Designer.cs
     [Migration("20250505152153_FullInitialbyRubin")]
     partial class FullInitialbyRubin
@@ -23,7 +19,6 @@ namespace ReadNGo_Group2_C20.Migrations
     [Migration("20250505141624_FullInitialbySatyam")]
     partial class FullInitialbySatyam
 >>>>>>>> 2f2914ef83e9909592c8fd6e5d975c66d9367909:Migrations/20250505141624_FullInitialbySatyam.Designer.cs
->>>>>>>> e17c75486a0f2fcaf60fd721a4b07ef1efe73979:Migrations/20250505141624_FullInitialbySatyam.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
