@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using ReadNGo.DTO;
-
+using ReadNGo.Services.Interfaces;
 
 namespace ReadNGo_Group2_C20.Controllers
 {
@@ -9,34 +9,70 @@ namespace ReadNGo_Group2_C20.Controllers
     [Route("api/[controller]")]
     public class BookController : ControllerBase
     {
+        private readonly IBookService _bookService;
+
+        public BookController(IBookService bookService)
+        {
+            _bookService = bookService;
+        }
+
+        // GET: api/Book/all
         [HttpGet("all")]
-        public IActionResult GetAllBooks()
+        public ActionResult<IEnumerable<BookDTO>> GetAllBooks()
         {
-            return Ok("Getting all books..."); // temporary response
+            var books = _bookService.GetAllBooks();
+            return Ok(books);
         }
 
+        // GET: api/Book/5
+        [HttpGet("{id}")]
+        public ActionResult<BookDTO> GetBookById(int id)
+        {
+            var book = _bookService.GetBookById(id);
+
+            if (book == null)
+            {
+                return NotFound($"Book with ID {id} not found");
+            }
+
+            return Ok(book);
+        }
+
+        // GET: api/Book/filter
         [HttpGet("filter")]
-        public IActionResult FilterBooks([FromQuery] string genre, string author, string format, string language, string publisher)
+        public ActionResult<IEnumerable<BookDTO>> FilterBooks(
+            [FromQuery] string genre = null,
+            [FromQuery] string author = null,
+            [FromQuery] string format = null,
+            [FromQuery] string language = null,
+            [FromQuery] string publisher = null)
         {
-            return Ok("Filtering books...");
+            var books = _bookService.FilterBooks(genre, author, format, language, publisher);
+            return Ok(books);
         }
 
+        // GET: api/Book/search
         [HttpGet("search")]
-        public IActionResult SearchBooks([FromQuery] string query)
+        public ActionResult<IEnumerable<BookDTO>> SearchBooks([FromQuery] string query)
         {
-            return Ok("Searching books...");
+            var books = _bookService.SearchBooks(query);
+            return Ok(books);
         }
 
+        // GET: api/Book/sort
         [HttpGet("sort")]
-        public IActionResult SortBooks([FromQuery] string by)
+        public ActionResult<IEnumerable<BookDTO>> SortBooks([FromQuery] string by = "title")
         {
-            return Ok("Sorting books...");
+            var books = _bookService.SortBooks(by);
+            return Ok(books);
         }
 
+        // GET: api/Book/categories/{type}
         [HttpGet("categories/{type}")]
-        public IActionResult GetBooksByCategory(string type)
+        public ActionResult<IEnumerable<BookDTO>> GetBooksByCategory(string type)
         {
-            return Ok($"Books from category: {type}");
+            var books = _bookService.GetBooksByCategory(type);
+            return Ok(books);
         }
     }
 }

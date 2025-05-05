@@ -34,9 +34,15 @@ namespace ReadNGo.Services.Implementations
                     Language = bookDto.Language,
                     Format = bookDto.Format,
                     Publisher = bookDto.Publisher,
-                    PublicationDate = DateTime.SpecifyKind(bookDto.PublicationDate, DateTimeKind.Utc),  
+                    PublicationDate = DateTime.SpecifyKind(bookDto.PublicationDate, DateTimeKind.Utc),
+                    IsOnSale = bookDto.IsOnSale,
+                    DiscountPercentage = bookDto.DiscountPercentage,
+                    DiscountStartDate = DateTime.SpecifyKind((DateTime)bookDto.DiscountStartDate, DateTimeKind.Utc),
+                    DiscountEndDate = DateTime.SpecifyKind((DateTime)bookDto.DiscountEndDate, DateTimeKind.Utc),
+                    Description = bookDto.Description,
+                    ISBN = bookDto.ISBN,
+                    StockQuantity = bookDto.StockQuantity
                 };
-
 
                 _context.Books.Add(newBook);
                 _context.SaveChanges();
@@ -50,6 +56,7 @@ namespace ReadNGo.Services.Implementations
                 return false;
             }
         }
+
 
         // Edit existing book
         public bool EditBook(int bookId, BookDTO updatedBook)

@@ -12,8 +12,8 @@ using ReadNGo.DBContext;
 namespace ReadNGo_Group2_C20.Migrations
 {
     [DbContext(typeof(ReadNGoContext))]
-    [Migration("20250504051227_CreateAnnouncementsTableOnly")]
-    partial class CreateAnnouncementsTableOnly
+    [Migration("20250505132706_FullInitial")]
+    partial class FullInitial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
