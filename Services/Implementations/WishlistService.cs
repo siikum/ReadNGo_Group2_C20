@@ -1,18 +1,63 @@
 ﻿using ReadNGo.DTO;
 using ReadNGo.Services.Interfaces;
-using System;
+using ReadNGo_Group2_C20.Models;
+using ReadNGo.DBContext;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace ReadNGo.Services.Implementations
 {
     public class WishlistService : IWishlistService
     {
-        public bool AddToWishlist(WishlistDTO item) => true;
+        private readonly ReadNGoContext _context;
 
-        public List<WishlistDTO> GetWishlistByUser(int userId) => new();
+        public WishlistService(ReadNGoContext context)
+        {
+            _context = context;
+        }
 
-        public bool RemoveFromWishlist(int bookId) => true;
+        public bool AddToWishlist(WishlistDTO item)
+        {
+            // Prevent duplicate entry
+            var exists = _context.WishlistItems
+                .Any(w => w.UserId == item.UserId && w.BookId == item.BookId);
+
+            if (exists)
+                return false;
+
+            var wishlistItem = new WishlistItem
+            {
+                UserId = item.UserId,
+                BookId = item.BookId
+            };
+
+            _context.WishlistItems.Add(wishlistItem);
+            _context.SaveChanges();
+
+            return true;
+        }
+
+        public List<WishlistDTO> GetWishlistByUser(int userId)
+        {
+            return _context.WishlistItems
+                .Where(w => w.UserId == userId)
+                .Select(w => new WishlistDTO
+                {
+                    UserId = w.UserId,
+                    BookId = w.BookId
+                }).ToList();
+        }
+
+        public bool RemoveFromWishlist(int bookId)
+        {
+            var item = _context.WishlistItems.FirstOrDefault(w => w.BookId == bookId);
+            if (item == null)
+                return false;
+
+            _context.WishlistItems.Remove(item);
+            _context.SaveChanges();
+
+            return true;
+        }
     }
 }

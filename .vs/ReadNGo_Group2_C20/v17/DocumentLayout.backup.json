@@ -1,7 +1,36 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\sikum\\Documents\\ReadNGo_Group2_C20\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Users\\satya\\Desktop\\DOTNET\\ReadNGo_Group2_C20\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\satya\\desktop\\dotnet\\readngo_group2_c20\\services\\implementations\\wishlistservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:services\\implementations\\wishlistservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\satya\\desktop\\dotnet\\readngo_group2_c20\\services\\interfaces\\iwishlistservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:services\\interfaces\\iwishlistservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\satya\\desktop\\dotnet\\readngo_group2_c20\\controllers\\wishlistcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:controllers\\wishlistcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\satya\\desktop\\dotnet\\readngo_group2_c20\\dto\\wishlistdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:dto\\wishlistdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\satya\\desktop\\dotnet\\readngo_group2_c20\\models\\wishlist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:models\\wishlist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\satya\\desktop\\dotnet\\readngo_group2_c20\\migrations\\20250505141624_fullinitialbysatyam.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:migrations\\20250505141624_fullinitialbysatyam.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\satya\\desktop\\dotnet\\readngo_group2_c20\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,37 +38,101 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 5,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
-            }
-          ]
-        },
-        {
-          "DockedWidth": 234,
-          "SelectedChildIndex": -1,
-          "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "IWishlistService.cs",
+              "DocumentMoniker": "C:\\Users\\satya\\Desktop\\DOTNET\\ReadNGo_Group2_C20\\Services\\Interfaces\\IWishlistService.cs",
+              "RelativeDocumentMoniker": "Services\\Interfaces\\IWishlistService.cs",
+              "ToolTip": "C:\\Users\\satya\\Desktop\\DOTNET\\ReadNGo_Group2_C20\\Services\\Interfaces\\IWishlistService.cs",
+              "RelativeToolTip": "Services\\Interfaces\\IWishlistService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-05T14:53:10.836Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "WishlistController.cs",
+              "DocumentMoniker": "C:\\Users\\satya\\Desktop\\DOTNET\\ReadNGo_Group2_C20\\Controllers\\WishlistController.cs",
+              "RelativeDocumentMoniker": "Controllers\\WishlistController.cs",
+              "ToolTip": "C:\\Users\\satya\\Desktop\\DOTNET\\ReadNGo_Group2_C20\\Controllers\\WishlistController.cs",
+              "RelativeToolTip": "Controllers\\WishlistController.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAAwDIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-05T14:52:47.875Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "WishlistDTO.cs",
+              "DocumentMoniker": "C:\\Users\\satya\\Desktop\\DOTNET\\ReadNGo_Group2_C20\\DTO\\WishlistDTO.cs",
+              "RelativeDocumentMoniker": "DTO\\WishlistDTO.cs",
+              "ToolTip": "C:\\Users\\satya\\Desktop\\DOTNET\\ReadNGo_Group2_C20\\DTO\\WishlistDTO.cs",
+              "RelativeToolTip": "DTO\\WishlistDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-05T14:52:20.464Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Wishlist.cs",
+              "DocumentMoniker": "C:\\Users\\satya\\Desktop\\DOTNET\\ReadNGo_Group2_C20\\Models\\Wishlist.cs",
+              "RelativeDocumentMoniker": "Models\\Wishlist.cs",
+              "ToolTip": "C:\\Users\\satya\\Desktop\\DOTNET\\ReadNGo_Group2_C20\\Models\\Wishlist.cs",
+              "RelativeToolTip": "Models\\Wishlist.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-05T14:52:02.176Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "WishlistService.cs",
+              "DocumentMoniker": "C:\\Users\\satya\\Desktop\\DOTNET\\ReadNGo_Group2_C20\\Services\\Implementations\\WishlistService.cs",
+              "RelativeDocumentMoniker": "Services\\Implementations\\WishlistService.cs",
+              "ToolTip": "C:\\Users\\satya\\Desktop\\DOTNET\\ReadNGo_Group2_C20\\Services\\Implementations\\WishlistService.cs",
+              "RelativeToolTip": "Services\\Implementations\\WishlistService.cs",
+              "ViewState": "AgIAACkAAAAAAAAAAAAgwD8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-05T14:51:37.074Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "20250505141624_FullInitialbySatyam.cs",
+              "DocumentMoniker": "C:\\Users\\satya\\Desktop\\DOTNET\\ReadNGo_Group2_C20\\Migrations\\20250505141624_FullInitialbySatyam.cs",
+              "RelativeDocumentMoniker": "Migrations\\20250505141624_FullInitialbySatyam.cs",
+              "ToolTip": "C:\\Users\\satya\\Desktop\\DOTNET\\ReadNGo_Group2_C20\\Migrations\\20250505141624_FullInitialbySatyam.cs",
+              "RelativeToolTip": "Migrations\\20250505141624_FullInitialbySatyam.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-05T14:16:24.37Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\satya\\Desktop\\DOTNET\\ReadNGo_Group2_C20\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\satya\\Desktop\\DOTNET\\ReadNGo_Group2_C20\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-05-05T14:12:27.234Z"
             }
           ]
         }
