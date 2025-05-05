@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ReadNGo_Group2_C20.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateAnnouncementsTableOnly : Migration
+    public partial class FullInitialbyRubin : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -28,12 +28,6 @@ namespace ReadNGo_Group2_C20.Migrations
                     table.PrimaryKey("PK_Announcements", x => x.Id);
                 });
 
-
-            
-
-            
-
-            
         }
 
         /// <inheritdoc />
@@ -41,6 +35,7 @@ namespace ReadNGo_Group2_C20.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Announcements");
+
 
         }
     }
