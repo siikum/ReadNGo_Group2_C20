@@ -12,7 +12,7 @@ using ReadNGo.DBContext;
 namespace ReadNGo_Group2_C20.Migrations
 {
     [DbContext(typeof(ReadNGoContext))]
-    [Migration("20250506015710_FullInitialbyRubin")]
+    [Migration("20250506044943_FullInitialbyRubin")]
     partial class FullInitialbyRubin
     {
         /// <inheritdoc />

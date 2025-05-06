@@ -47,28 +47,22 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddDbContext<ReadNGoContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Configure CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend",
-        policy => policy
-            .WithOrigins("http://localhost:3000")
+    options.AddPolicy("AllowReactApp",
+        builder => builder
+            .WithOrigins("http://localhost:3000") // Update with your React app URL
+            .AllowAnyMethod()
             .AllowAnyHeader()
-            .AllowAnyMethod());
+            .AllowCredentials());
 });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configure CORS
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend",
-        policy => policy
-            .WithOrigins("http://localhost:5173")
-            .AllowAnyHeader()
-            .AllowAnyMethod());
-});
+
+
+
 
 var app = builder.Build();
 
@@ -82,11 +76,12 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Enable CORS here
-app.UseCors("AllowFrontend");
 
-app.UseCors("AllowFrontend");
-app.UseAuthorization();
+
+//app.UseCors("AllowFrontend");
+app.UseCors("AllowReactApp");
 app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
