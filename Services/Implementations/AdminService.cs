@@ -34,8 +34,9 @@ namespace ReadNGo.Services.Implementations
                     Language = bookDto.Language,
                     Format = bookDto.Format,
                     Publisher = bookDto.Publisher,
-                    PublicationDate = bookDto.PublicationDate
+                    PublicationDate = DateTime.SpecifyKind(bookDto.PublicationDate, DateTimeKind.Utc),  
                 };
+
 
                 _context.Books.Add(newBook);
                 _context.SaveChanges();
@@ -128,14 +129,27 @@ namespace ReadNGo.Services.Implementations
                     return false;
                 }
 
+                // Validation
+                if (discountDto.StartDate >= discountDto.EndDate)
+                {
+                    Console.WriteLine("Invalid discount period: StartDate must be earlier than EndDate.");
+                    return false;
+                }
+
+                if (discountDto.EndDate < DateTime.Now)
+                {
+                    Console.WriteLine("Invalid discount: EndDate must be in the future.");
+                    return false;
+                }
+
+                // Apply discount
                 book.DiscountPercentage = discountDto.Percentage;
                 book.IsOnSale = discountDto.IsOnSale;
-
-                // You can add logic to store or handle startDate and endDate if needed
-                // e.g., saving to a separate Discount table or fields in Book if they exist
+                book.DiscountStartDate = discountDto.StartDate;
+                book.DiscountEndDate = discountDto.EndDate;
 
                 _context.SaveChanges();
-                Console.WriteLine($"Discount of {discountDto.Percentage}% applied to Book ID {bookId}.");
+                Console.WriteLine($"Discount of {discountDto.Percentage}% applied to Book ID {bookId} from {discountDto.StartDate} to {discountDto.EndDate}.");
                 return true;
             }
             catch (Exception ex)
@@ -145,13 +159,55 @@ namespace ReadNGo.Services.Implementations
             }
         }
 
-
-
-        // Placeholder for creating an announcement
-        public bool CreateAnnouncement(AnnouncementDTO announcement)
+        public int ClearExpiredDiscounts()
         {
-            // TODO: Implement announcement creation logic
-            return true;
+            var expiredBooks = _context.Books
+                .Where(b => b.DiscountEndDate != null && b.DiscountEndDate < DateTime.Now)
+                .ToList();
+
+            foreach (var book in expiredBooks)
+            {
+                book.DiscountPercentage = null;
+                book.IsOnSale = false;
+                book.DiscountStartDate = null;
+                book.DiscountEndDate = null;
+            }
+
+            _context.SaveChanges();
+            Console.WriteLine($"Cleared discounts on {expiredBooks.Count} book(s).");
+
+            return expiredBooks.Count;
         }
+
+
+
+
+
+        // Creating an announcement
+        public bool CreateAnnouncement(AnnouncementDTO announcementDto)
+        {
+            try
+            {
+                if (announcementDto.StartTime >= announcementDto.EndTime)
+                    return false;
+
+                var announcement = new Announcement
+                {
+                    Message = announcementDto.Message,
+                    StartTime = announcementDto.StartTime,
+                    EndTime = announcementDto.EndTime,
+                    IsActive = true
+                };
+
+                _context.Announcements.Add(announcement);
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
     }
 }

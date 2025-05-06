@@ -12,8 +12,13 @@ using ReadNGo.DBContext;
 namespace ReadNGo_Group2_C20.Migrations
 {
     [DbContext(typeof(ReadNGoContext))]
-    [Migration("20250502160203_AddOrderItemRelation")]
-    partial class AddOrderItemRelation
+<<<<<<<< HEAD:Migrations/20250505152153_FullInitialbyRubin.Designer.cs
+    [Migration("20250505152153_FullInitialbyRubin")]
+    partial class FullInitialbyRubin
+========
+    [Migration("20250505141624_FullInitialbySatyam")]
+    partial class FullInitialbySatyam
+>>>>>>>> 2f2914ef83e9909592c8fd6e5d975c66d9367909:Migrations/20250505141624_FullInitialbySatyam.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,16 +38,18 @@ namespace ReadNGo_Group2_C20.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("PostedOn")
+                    b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -61,8 +68,14 @@ namespace ReadNGo_Group2_C20.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("DiscountEndDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<decimal?>("DiscountPercentage")
                         .HasColumnType("numeric");
+
+                    b.Property<DateTime?>("DiscountStartDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Format")
                         .IsRequired()

@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ReadNGo.DTO;
 using ReadNGo.Services.Implementations;
 using ReadNGo.Services.Interfaces;
 using ReadNGo_Group2_C20.DTO;
+using ReadNGo_Group2_C20.Models;
 
 namespace ReadNGo.Controllers
 {
@@ -76,12 +78,27 @@ namespace ReadNGo.Controllers
                 return NotFound(new { message = $"Book with ID {bookId} not found." });
         }
 
-
-
-        [HttpPost("announcement")]
-        public IActionResult CreateAnnouncement(AnnouncementDTO announcement)
+        // POST: api/Admin/clear-expired-discounts
+        [HttpPost("clear-expired-discounts")]
+        public IActionResult ClearExpiredDiscounts()
         {
-            return Ok("Published Announcement...");
+            var clearedCount = _adminService.ClearExpiredDiscounts();
+            return Ok(new { message = $"{clearedCount} expired discounts cleared." });
         }
+
+
+        // POST: api/Admin/create-announcement
+        [HttpPost("announcement")]
+        public IActionResult CreateAnnouncement([FromBody] AnnouncementDTO announcement)
+        {
+            var success = _adminService.CreateAnnouncement(announcement);
+
+            if (!success)
+                return BadRequest("Invalid announcement or failed to save.");
+
+            return Ok(new { message = "Announcement published successfully." });
+        }
+
+
     }
 }
