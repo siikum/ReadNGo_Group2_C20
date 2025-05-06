@@ -2,6 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axiosInstance from "@/api/AxiosInstance";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -28,7 +29,7 @@ export default function Register() {
     );
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     const newErrors = {
       email: "",
       password: "",
@@ -50,13 +51,32 @@ export default function Register() {
 
     setErrors(newErrors);
 
-    // Check if there are any errors before proceeding
     const hasErrors = Object.values(newErrors).some((err) => err !== "");
     if (hasErrors) return;
 
-    // Clear errors and register
-    console.log("Registering:", { name, email, password });
-    alert("Registered successfully (simulation)!");
+    try {
+      const response = await axiosInstance.post("/User/register", {
+        fullName: name,
+        email,
+        password,
+      });
+
+      console.log("Registration success:", response.data);
+      alert("Registered successfully!");
+      // Optionally reset form
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      setErrors({ email: "", password: "", confirmPassword: "" });
+
+    } catch (error: any) {
+      console.error("Registration failed:", error);
+      alert(
+        "Registration failed: " +
+          (error.response?.data?.message || "Server error")
+      );
+    }
   };
 
   return (
@@ -108,10 +128,10 @@ export default function Register() {
         <Button className="w-full" onClick={handleRegister}>
           Register
         </Button>
-        
-        {/* Temporaty code for nav*/}
+
+        {/* Temporary code for navigation */}
         <Link to="/">
-            <Button className="w-full">Return Home</Button>
+          <Button className="w-full">Return Home</Button>
         </Link>
       </div>
     </div>
