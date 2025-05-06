@@ -22,6 +22,8 @@ namespace ReadNGo.DBContext
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<WishlistItem> WishlistItems { get; set; }
         public DbSet<Announcement> Announcements { get; set; }
+        public DbSet<Staff> Staffs { get; set; }
+
 
         // optional: customize table names etc.
         protected override void OnModelCreating(ModelBuilder modelBuilder)

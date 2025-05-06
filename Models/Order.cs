@@ -12,8 +12,15 @@ namespace ReadNGo_Group2_C20.Models
         public List<OrderItem> OrderItems { get; set; }
         public decimal TotalAmount { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.Now;
+
         public bool IsCancelled { get; set; } = false;
+
+        // NEW FIELDS
+        public string ClaimCode { get; set; }  // UUID string
+        public bool IsConfirmed { get; set; } = false;
+        public DateTime? ConfirmedAt { get; set; }
     }
+
 
     public class OrderItem
     {
@@ -22,8 +29,8 @@ namespace ReadNGo_Group2_C20.Models
         public int BookId { get; set; }
         public Book Book { get; set; }
 
-        public int OrderId { get; set; }      // ✅ Add this line (foreign key)
-        public Order Order { get; set; }      // ✅ Add this line (navigation)
+        public int OrderId { get; set; }      
+        public Order Order { get; set; }      
 
         public int Quantity { get; set; }
         public decimal Price { get; set; }
