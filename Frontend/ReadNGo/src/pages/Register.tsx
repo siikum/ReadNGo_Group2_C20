@@ -1,139 +1,104 @@
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import axiosInstance from "@/api/AxiosInstance";
+import React, { useState } from 'react';
+import { registerUser } from '@/api/apiConfig'; // Update with correct path
 
-export default function Register() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+const Register: React.FC = () => {
+    const [formData, setFormData] = useState({
+        fullName: '',
+        email: '',
+        password: ''
+    });
+    const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(false);
 
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  const validateEmail = (email: string) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  };
-
-  const validatePassword = (password: string) => {
-    return (
-      password.length >= 6 &&
-      /[A-Z]/.test(password) &&
-      /[a-z]/.test(password)
-    );
-  };
-
-  const handleRegister = async () => {
-    const newErrors = {
-      email: "",
-      password: "",
-      confirmPassword: "",
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
     };
 
-    if (!validateEmail(email)) {
-      newErrors.email = "Invalid email format";
-    }
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setMessage('');
 
-    if (!validatePassword(password)) {
-      newErrors.password =
-        "Password must be at least 6 characters with upper and lower case letters";
-    }
+        try {
+            const result = await registerUser(formData);
 
-    if (password !== confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
-    }
+            if (result.success) {
+                setMessage('Registration successful!');
+                // Optionally redirect to login page or clear the form
+                setFormData({
+                    fullName: '',
+                    email: '',
+                    password: ''
+                });
+            } else {
+                setMessage(`Registration failed: ${result.error}`);
+            }
+        } catch (error) {
+            setMessage('An unexpected error occurred');
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    setErrors(newErrors);
+    return (
+        <div className="register-container">
+            <h2>Create an Account</h2>
 
-    const hasErrors = Object.values(newErrors).some((err) => err !== "");
-    if (hasErrors) return;
+            {message && (
+                <div className={message.includes('successful') ? 'success-message' : 'error-message'}>
+                    {message}
+                </div>
+            )}
 
-    try {
-      const response = await axiosInstance.post("/User/register", {
-        fullName: name,
-        email,
-        password,
-      });
+            <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label htmlFor="fullName">Full Name</label>
+                    <input
+                        type="text"
+                        id="fullName"
+                        name="fullName"
+                        value={formData.fullName}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
 
-      console.log("Registration success:", response.data);
-      alert("Registered successfully!");
-      // Optionally reset form
-      setName("");
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
-      setErrors({ email: "", password: "", confirmPassword: "" });
+                <div className="form-group">
+                    <label htmlFor="email">Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
 
-    } catch (error: any) {
-      console.error("Registration failed:", error);
-      alert(
-        "Registration failed: " +
-          (error.response?.data?.message || "Server error")
-      );
-    }
-  };
+                <div className="form-group">
+                    <label htmlFor="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                        minLength={8}
+                    />
+                </div>
 
-  return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="w-[300px] space-y-4">
-        <h1 className="text-xl font-semibold text-center">Register</h1>
-
-        <Input
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-
-        <div className="space-y-1">
-          <Input
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm">{errors.email}</p>
-          )}
+                <button type="submit" disabled={loading}>
+                    {loading ? 'Registering...' : 'Register'}
+                </button>
+            </form>
         </div>
+    );
+};
 
-        <div className="space-y-1">
-          <Input
-            placeholder="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {errors.password && (
-            <p className="text-red-500 text-sm">{errors.password}</p>
-          )}
-        </div>
-
-        <div className="space-y-1">
-          <Input
-            placeholder="Confirm Password"
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-          {errors.confirmPassword && (
-            <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
-          )}
-        </div>
-
-        <Button className="w-full" onClick={handleRegister}>
-          Register
-        </Button>
-
-        {/* Temporary code for navigation */}
-        <Link to="/">
-          <Button className="w-full">Return Home</Button>
-        </Link>
-      </div>
-    </div>
-  );
-}
+export default Register;
