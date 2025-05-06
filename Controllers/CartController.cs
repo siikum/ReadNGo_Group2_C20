@@ -4,7 +4,6 @@ using ReadNGo.DBContext;
 using ReadNGo.DTO;
 using ReadNGo.Services.Interfaces;
 using ReadNGo_Group2_C20.Models;
-using System.Linq;
 
 namespace ReadNGo.Controllers
 {
@@ -13,12 +12,14 @@ namespace ReadNGo.Controllers
     public class CartController : ControllerBase
     {
         private readonly ICartService _cartService;
+        private readonly ReadNGoContext _context;
 
-        public CartController(ICartService cartService)
+        public CartController(ICartService cartService, ReadNGoContext context)
         {
             _cartService = cartService;
+            _context = context; // <-- initialize here
         }
-        
+
         //POST 
         [HttpPost("add")]
         public IActionResult AddToCart([FromBody] CartItemDTO item)
@@ -28,27 +29,40 @@ namespace ReadNGo.Controllers
             return Ok(new { message = "Book added to cart successfully." });
         }
 
-        // GET
         [HttpGet("{userId}")]
         public IActionResult ViewCart(int userId)
         {
             var cartItems = _cartService.GetCartItems(userId);
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+                return NotFound(new { message = "User not found." });
 
             if (cartItems == null || !cartItems.Any())
                 return NotFound(new { message = "No items in cart for this user." });
 
-            var result = cartItems.Select(item => new
+            var result = new
             {
-                BookId = item.BookId,
-                Title = item.Book.Title,
-                Author = item.Book.Author,
-                Price = item.Book.Price,
-                Quantity = item.Quantity,
-                TotalPrice = item.Quantity * item.Book.Price
-            });
+                User = new
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    Email = user.Email
+                },
+                CartItems = cartItems.Select(item => new
+                {
+                    BookId = item.BookId,
+                    Title = item.Book.Title,
+                    Author = item.Book.Author,
+                    Price = item.Book.Price,
+                    Quantity = item.Quantity,
+                    TotalPrice = item.Quantity * item.Book.Price
+                })
+            };
 
             return Ok(result);
         }
+
 
         // DELETE 
         [HttpDelete("remove")]
