@@ -159,3 +159,38 @@ export const getBooks = async (): Promise<ApiResponse<any[]>> => {
         };
     }
 };
+
+
+export const booksFilter = async (queryParams: string = ""): Promise<ApiResponse<any[]>> => {
+    try {
+        // Build the URL with query parameters
+        const url = `/api/Book/filter${queryParams ? `?${queryParams}` : ''}`;
+        const response = await api.get(url);
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to fetch filtered books'
+        };
+    }
+};
+
+export const booksSearchByTitle = async (query: string): Promise<ApiResponse<any[]>> => {
+    try {
+        // Use the correct endpoint for search with query parameter
+        const url = `/api/Book/search?query=${encodeURIComponent(query)}`;
+        const response = await api.get(url);
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to search books'
+        };
+    }
+};
