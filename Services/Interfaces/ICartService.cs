@@ -9,5 +9,9 @@ namespace ReadNGo.Services.Interfaces
         bool AddToCart(CartItemDTO item);
         List<CartItem> GetCartItems(int userId);
         bool RemoveFromCart(int userId, int bookId);
+        bool UpdateQuantity(CartItemDTO item);
+        bool ClearCart(int userId);
+
+
     }
 }

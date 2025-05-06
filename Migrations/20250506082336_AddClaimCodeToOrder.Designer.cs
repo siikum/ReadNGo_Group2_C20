@@ -12,13 +12,8 @@ using ReadNGo.DBContext;
 namespace ReadNGo_Group2_C20.Migrations
 {
     [DbContext(typeof(ReadNGoContext))]
-<<<<<<<< HEAD:Migrations/20250505152153_FullInitialbyRubin.Designer.cs
-    [Migration("20250505152153_FullInitialbyRubin")]
-    partial class FullInitialbyRubin
-========
-    [Migration("20250505141624_FullInitialbySatyam")]
-    partial class FullInitialbySatyam
->>>>>>>> 2f2914ef83e9909592c8fd6e5d975c66d9367909:Migrations/20250505141624_FullInitialbySatyam.Designer.cs
+    [Migration("20250506082336_AddClaimCodeToOrder")]
+    partial class AddClaimCodeToOrder
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,6 +63,10 @@ namespace ReadNGo_Group2_C20.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime?>("DiscountEndDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -82,6 +81,10 @@ namespace ReadNGo_Group2_C20.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Genre")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ISBN")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -101,6 +104,9 @@ namespace ReadNGo_Group2_C20.Migrations
                     b.Property<string>("Publisher")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("StockQuantity")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -145,7 +151,17 @@ namespace ReadNGo_Group2_C20.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ClaimCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ConfirmedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<bool>("IsCancelled")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsConfirmed")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime>("OrderDate")
@@ -224,6 +240,32 @@ namespace ReadNGo_Group2_C20.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Reviews");
+                });
+
+            modelBuilder.Entity("ReadNGo_Group2_C20.Models.Staff", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Staffs");
                 });
 
             modelBuilder.Entity("ReadNGo_Group2_C20.Models.User", b =>
@@ -310,7 +352,7 @@ namespace ReadNGo_Group2_C20.Migrations
             modelBuilder.Entity("ReadNGo_Group2_C20.Models.OrderItem", b =>
                 {
                     b.HasOne("ReadNGo_Group2_C20.Models.Book", "Book")
-                        .WithMany()
+                        .WithMany("OrderItems")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -367,6 +409,8 @@ namespace ReadNGo_Group2_C20.Migrations
             modelBuilder.Entity("ReadNGo_Group2_C20.Models.Book", b =>
                 {
                     b.Navigation("CartItems");
+
+                    b.Navigation("OrderItems");
 
                     b.Navigation("Reviews");
 

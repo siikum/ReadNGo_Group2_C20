@@ -23,21 +23,15 @@ namespace ReadNGo.Services.Implementations
         {
             try
             {
-                var order = new Order
-                {
-                    UserId = orderDto.UserId,
-                    TotalAmount = orderDto.TotalAmount,
-                    OrderDate = DateTime.UtcNow,
-                    IsCancelled = false,
-                    OrderItems = new List<OrderItem>()
-                };
+                // Step 1: Build order items
+                var orderItems = new List<OrderItem>();
 
                 foreach (var bookId in orderDto.BookIds)
                 {
                     var book = _context.Books.FirstOrDefault(b => b.Id == bookId);
                     if (book != null)
                     {
-                        order.OrderItems.Add(new OrderItem
+                        orderItems.Add(new OrderItem
                         {
                             BookId = book.Id,
                             Quantity = 1,
@@ -46,16 +40,29 @@ namespace ReadNGo.Services.Implementations
                     }
                 }
 
-                if (order.OrderItems.Count == 0)
+                // Step 2: Reject empty orders
+                if (orderItems.Count == 0)
                 {
                     Console.WriteLine("No valid books found for this order.");
                     return false;
                 }
 
+                // Step 3: Create order
+                var order = new Order
+                {
+                    UserId = orderDto.UserId,
+                    OrderItems = orderItems,
+                    TotalAmount = orderItems.Sum(item => item.Price * item.Quantity),
+                    OrderDate = DateTime.UtcNow,
+                    IsCancelled = false,
+                    ClaimCode = Guid.NewGuid().ToString().ToUpper(),
+                    IsConfirmed = false
+                };
+
                 _context.Orders.Add(order);
                 _context.SaveChanges();
 
-                Console.WriteLine($"Order placed for user {orderDto.UserId} with {order.OrderItems.Count} items.");
+                Console.WriteLine($"Order placed for user {orderDto.UserId} with {order.OrderItems.Count} items. ClaimCode: {order.ClaimCode}");
                 return true;
             }
             catch (Exception ex)
@@ -64,6 +71,8 @@ namespace ReadNGo.Services.Implementations
                 return false;
             }
         }
+
+
 
 
         public bool CancelOrder(int orderId)

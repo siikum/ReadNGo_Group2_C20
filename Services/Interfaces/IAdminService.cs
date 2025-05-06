@@ -15,6 +15,10 @@ namespace ReadNGo.Services.Interfaces
         bool SetDiscount(int bookId, AdminSetDiscountDTO discountDto);
         bool CreateAnnouncement(AnnouncementDTO announcement);
         int ClearExpiredDiscounts();
+        bool CreateStaff(StaffDTO staffDto);
+
+        bool CheckStaffEmailExists(string email);
+
 
     }
 }

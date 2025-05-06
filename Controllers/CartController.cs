@@ -61,5 +61,25 @@ namespace ReadNGo.Controllers
                 return NotFound(new { message = "Cart item not found." });
         }
 
+        [HttpPatch("update-quantity")]
+        public IActionResult UpdateQuantity([FromBody] CartItemDTO item)
+        {
+            var success = _cartService.UpdateQuantity(item);
+            if (success)
+                return Ok(new { message = "Cart quantity updated." });
+            else
+                return NotFound(new { message = "Cart item not found." });
+        }
+
+        [HttpDelete("clear/{userId}")]
+        public IActionResult ClearCart(int userId)
+        {
+            var success = _cartService.ClearCart(userId);
+            if (success)
+                return Ok(new { message = "Cart cleared." });
+            else
+                return NotFound(new { message = "Cart already empty or user not found." });
+        }
+
     }
 }

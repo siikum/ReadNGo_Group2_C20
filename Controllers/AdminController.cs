@@ -99,6 +99,40 @@ namespace ReadNGo.Controllers
             return Ok(new { message = "Announcement published successfully." });
         }
 
+        // POST: api/Admin/create-staff
+        [HttpPost("create-staff")]
+        public IActionResult CreateStaff([FromBody] StaffDTO staffDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // Email validation
+            if (string.IsNullOrEmpty(staffDto.Email) || !staffDto.Email.EndsWith("@gmail.com"))
+                return BadRequest(new { message = "Email must be a valid @gmail.com address." });
+
+            // Password validation
+            if (string.IsNullOrEmpty(staffDto.Password) ||
+                staffDto.Password.Length < 8 ||
+                !staffDto.Password.Any(char.IsDigit) ||
+                !staffDto.Password.Any(ch => !char.IsLetterOrDigit(ch)))
+            {
+                return BadRequest(new { message = "Password must be at least 8 characters long and include at least one number and one special character." });
+            }
+
+            // Check for duplicate
+            var exists = _adminService.CheckStaffEmailExists(staffDto.Email);
+            if (exists)
+                return Conflict(new { message = "Staff with this email already exists." });
+
+            var success = _adminService.CreateStaff(staffDto);
+
+            if (success)
+                return Ok(new { message = "Staff created successfully." });
+
+            return StatusCode(500, new { message = "Unknown error creating staff." });
+        }
+
+
 
     }
 }

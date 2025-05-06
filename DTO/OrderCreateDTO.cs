@@ -10,6 +10,5 @@ namespace ReadNGo_Group2_C20.DTO
     {
         public int UserId { get; set; }
         public List<int> BookIds { get; set; }
-        public decimal TotalAmount { get; set; }
     }
 }

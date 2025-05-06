@@ -62,5 +62,27 @@ namespace ReadNGo.Services.Implementations
             _context.SaveChanges();
             return true;
         }
+        public bool UpdateQuantity(CartItemDTO item)
+        {
+            var existingItem = _context.CartItems
+                .FirstOrDefault(ci => ci.UserId == item.UserId && ci.BookId == item.BookId);
+
+            if (existingItem == null) return false;
+
+            existingItem.Quantity = item.Quantity;
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool ClearCart(int userId)
+        {
+            var items = _context.CartItems.Where(c => c.UserId == userId).ToList();
+            if (!items.Any()) return false;
+
+            _context.CartItems.RemoveRange(items);
+            _context.SaveChanges();
+            return true;
+        }
+
     }
 }

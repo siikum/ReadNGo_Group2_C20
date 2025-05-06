@@ -34,9 +34,15 @@ namespace ReadNGo.Services.Implementations
                     Language = bookDto.Language,
                     Format = bookDto.Format,
                     Publisher = bookDto.Publisher,
-                    PublicationDate = DateTime.SpecifyKind(bookDto.PublicationDate, DateTimeKind.Utc),  
+                    PublicationDate = DateTime.SpecifyKind(bookDto.PublicationDate, DateTimeKind.Utc),
+                    IsOnSale = bookDto.IsOnSale,
+                    DiscountPercentage = bookDto.DiscountPercentage,
+                    DiscountStartDate = DateTime.SpecifyKind((DateTime)bookDto.DiscountStartDate, DateTimeKind.Utc),
+                    DiscountEndDate = DateTime.SpecifyKind((DateTime)bookDto.DiscountEndDate, DateTimeKind.Utc),
+                    Description = bookDto.Description,
+                    ISBN = bookDto.ISBN,
+                    StockQuantity = bookDto.StockQuantity
                 };
-
 
                 _context.Books.Add(newBook);
                 _context.SaveChanges();
@@ -50,6 +56,7 @@ namespace ReadNGo.Services.Implementations
                 return false;
             }
         }
+
 
         // Edit existing book
         public bool EditBook(int bookId, BookDTO updatedBook)
@@ -208,6 +215,45 @@ namespace ReadNGo.Services.Implementations
                 return false;
             }
         }
+
+        public bool CreateStaff(StaffDTO staffDto)
+        {
+            // Email must end with @gmail.com
+            if (string.IsNullOrEmpty(staffDto.Email) || !staffDto.Email.EndsWith("@gmail.com"))
+                return false;
+
+            // Password must be at least 8 characters, contain at least one digit and one special character
+            if (string.IsNullOrEmpty(staffDto.Password) ||
+                staffDto.Password.Length < 8 ||
+                !staffDto.Password.Any(char.IsDigit) ||
+                !staffDto.Password.Any(ch => !char.IsLetterOrDigit(ch)))
+            {
+                return false;
+            }
+
+            // Email uniqueness check
+            if (_context.Staffs.Any(s => s.Email == staffDto.Email))
+                return false;
+
+            var staff = new Staff
+            {
+                FullName = staffDto.FullName,
+                Email = staffDto.Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(staffDto.Password),
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.Staffs.Add(staff);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool CheckStaffEmailExists(string email)
+        {
+            return _context.Staffs.Any(s => s.Email == email);
+        }
+
+
 
     }
 }
