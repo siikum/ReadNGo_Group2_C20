@@ -21,27 +21,46 @@ namespace ReadNGo.Services.Implementations
         }
 
         // Add a new book to the catalog
-        public bool AddBook(BookDTO bookDto)
+        public async Task<bool> AddBook(AddBookDto bookDTO)
         {
+            string? imagePath = null;
+
+            if (bookDTO.Image != null && bookDTO.Image.Length > 0)
+            {
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "books");
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(bookDTO.Image.FileName);
+                var fullPath = Path.Combine(folderPath, fileName);
+
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    await bookDTO.Image.CopyToAsync(stream);
+                }
+
+                imagePath = $"/images/books/{fileName}";
+            }
             try
             {
                 var newBook = new Book
                 {
-                    Title = bookDto.Title,
-                    Author = bookDto.Author,
-                    Genre = bookDto.Genre,
-                    Price = bookDto.Price,
-                    Language = bookDto.Language,
-                    Format = bookDto.Format,
-                    Publisher = bookDto.Publisher,
-                    PublicationDate = DateTime.SpecifyKind(bookDto.PublicationDate, DateTimeKind.Utc),
-                    IsOnSale = bookDto.IsOnSale,
-                    DiscountPercentage = bookDto.DiscountPercentage,
-                    DiscountStartDate = DateTime.SpecifyKind((DateTime)bookDto.DiscountStartDate, DateTimeKind.Utc),
-                    DiscountEndDate = DateTime.SpecifyKind((DateTime)bookDto.DiscountEndDate, DateTimeKind.Utc),
-                    Description = bookDto.Description,
-                    ISBN = bookDto.ISBN,
-                    StockQuantity = bookDto.StockQuantity
+                    Title = bookDTO.Title,
+                    Author = bookDTO.Author,
+                    Genre = bookDTO.Genre,
+                    Price = bookDTO.Price,
+                    Language = bookDTO.Language,
+                    Format = bookDTO.Format,
+                    Publisher = bookDTO.Publisher,
+                    PublicationDate = DateTime.SpecifyKind(bookDTO.PublicationDate, DateTimeKind.Utc),
+                    IsOnSale = bookDTO.IsOnSale,
+                    DiscountPercentage = bookDTO.DiscountPercentage,
+                    DiscountStartDate = DateTime.SpecifyKind((DateTime)bookDTO.DiscountStartDate, DateTimeKind.Utc),
+                    DiscountEndDate = DateTime.SpecifyKind((DateTime)bookDTO.DiscountEndDate, DateTimeKind.Utc),
+                    Description = bookDTO.Description,
+                    ISBN = bookDTO.ISBN,
+                    StockQuantity = bookDTO.StockQuantity,
+                    ImagePath = imagePath
                 };
 
                 _context.Books.Add(newBook);

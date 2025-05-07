@@ -23,17 +23,39 @@ namespace ReadNGo.Controllers
 
         // POST: api/Admin/add-book
         [HttpPost("add-book")]
-        public IActionResult AddBook([FromBody] BookDTO book)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddBook([FromForm] AddBookDto book)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+          
 
-            var success = _adminService.AddBook(book);
+            // ✅ Fully mapped BookDTO with default values for required props
+            var bookModel = new AddBookDto
+            {
+                Title = book.Title,
+                Author = book.Author,
+                Genre = book.Genre,
+                Language = book.Language,
+                Format = book.Format,
+                Publisher = book.Publisher,
+                PublicationDate = book.PublicationDate,
+                Price = book.Price,
+                IsOnSale = book.IsOnSale,
+                DiscountPercentage = book.DiscountPercentage,
+                DiscountStartDate = book.DiscountStartDate,
+                DiscountEndDate = book.DiscountEndDate,
+                Description = book.Description,
+                ISBN = book.ISBN,
+                StockQuantity = book.StockQuantity,
+                //AverageRating = 0,
+                //ReviewCount = 0,
+                //ImagePath = imagePath
+            };
 
-            if (success)
-                return Ok(new { message = "Book added successfully." });
-            else
-                return StatusCode(500, "Failed to add book.");
+            var success = _adminService.AddBook(bookModel);
+
+            return success
+                ? Ok(new { message = "Book added successfully." })
+                : StatusCode(500, "Failed to add book.");
         }
 
         // PATCH: api/Admin/edit-book

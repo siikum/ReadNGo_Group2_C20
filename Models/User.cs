@@ -12,6 +12,8 @@ namespace ReadNGo_Group2_C20.Models
         public string Password { get; set; }
         //public string ConfirmPassword { get; set; }
 
+
+
         public ICollection<Order> Orders { get; set; }
         public ICollection<Review> Reviews { get; set; }
         public ICollection<CartItem> CartItems { get; set; }
