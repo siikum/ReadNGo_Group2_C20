@@ -7,6 +7,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminAddBooks from "./pages/AdminAddBooks";
 import CreateOrderPage from "./pages/Order";
 import UserGetBooks from "./pages/UserGetBooks";
+import EditBookPage from "./pages/EditBookPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
@@ -18,7 +19,8 @@ export default function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/books" element={<Books />} />
                 <Route path="/create-order" element={<CreateOrderPage />} />
-                <Route path="/User-Get-Books" element={<UserGetBooks />} />
+                <Route path="/User-Get-Books" element={<UserGetBooks />} />\
+                <Route path="/edit-book/:id" element={<EditBookPage />} />
 
                 {/* ✅ Protected admin routes */}
                 <Route

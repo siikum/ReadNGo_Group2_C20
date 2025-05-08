@@ -1,18 +1,7 @@
 ﻿import { useEffect, useState } from "react";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import { booksFilter, booksSearchByTitle } from "@/api/apiConfig";
-import { deleteBook } from "@/api/apiConfig";
-import { editBook } from "@/api/apiConfig";
+import { booksFilter, booksSearchByTitle, deleteBook } from "@/api/apiConfig";
+import { useNavigate } from "react-router-dom";
 
-
-// Define interface for book data
 interface Book {
     id: number;
     title: string;
@@ -32,537 +21,110 @@ interface Book {
     stockQuantity: number;
     averageRating: number;
     reviewCount: number;
-    actualPrice?: number; // Added from API response
+    actualPrice?: number;
+    imagePath?: string;
 }
 
-// Define interface for filter options
-interface FilterOptions {
-    genre: string;
-    author: string;
-    format: string;
-    language: string;
-    publisher: string;
-}
-
-export default function FilteredBooksTable() {
+export default function DataTable() {
     const [books, setBooks] = useState<Book[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState<string>("");
-    const [isSearching, setIsSearching] = useState<boolean>(false);
-    const [editingBookId, setEditingBookId] = useState<number | null>(null);
-    const [editedBookData, setEditedBookData] = useState<Partial<Book>>({});
+    const [filters, setFilters] = useState({ genre: "", author: "", format: "", language: "", publisher: "" });
 
+    const navigate = useNavigate();
 
-    // Filter states
-    const [filters, setFilters] = useState<FilterOptions>({
-        genre: "",
-        author: "",
-        format: "",
-        language: "",
-        publisher: ""
-    });
+    useEffect(() => {
+        fetchBooks();
+    }, [filters]);
 
-    // Available filter options (populated from API data)
-    const [availableFilters, setAvailableFilters] = useState<{
-        genres: string[];
-        authors: string[];
-        formats: string[];
-        languages: string[];
-        publishers: string[];
-    }>({
-        genres: [],
-        authors: [],
-        formats: [],
-        languages: [],
-        publishers: []
-    });
+    const fetchBooks = async () => {
+        const queryParams = Object.entries(filters)
+            .filter(([_, val]) => val)
+            .map(([key, val]) => `${key}=${encodeURIComponent(val)}`)
+            .join("&");
 
-    // Handle filter change
-    const handleFilterChange = (filterName: keyof FilterOptions, value: string) => {
-        setFilters(prev => ({
-            ...prev,
-            [filterName]: value
-        }));
+        const response = await booksFilter(queryParams);
+        if (response.success && response.data) setBooks(response.data);
     };
 
-    // Reset all filters
-    const resetFilters = () => {
-        setFilters({
-            genre: "",
-            author: "",
-            format: "",
-            language: "",
-            publisher: ""
-        });
-        setSearchQuery("");
-        setIsSearching(false);
-    };
-
-    // Handle search input change
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
-    };
-
-    const startEditing = (book: Book) => {
-        setEditingBookId(book.id);
-        setEditedBookData({ ...book });
-    };
-
-    const cancelEditing = () => {
-        setEditingBookId(null);
-        setEditedBookData({});
-    };
-
-    // Handle search form submission
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!searchQuery.trim()) return;
-
-        try {
-            setLoading(true);
-            setIsSearching(true);
-
-            const response = await booksSearchByTitle(searchQuery.trim());
-
-            if (response.success && response.data) {
-                setBooks(response.data);
-                setError(null);
-            } else {
-                setError(response.error || "Failed to search books");
-            }
-        } catch (err) {
-            setError("An unexpected error occurred during search");
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
+        const response = await booksSearchByTitle(searchQuery.trim());
+        if (response.success && response.data) setBooks(response.data);
     };
-
-    const handleEdit = async (bookId: number) => {
-       
-
-        const updatedTitle = window.prompt("Enter new title for the book:");
-
-        if (!updatedTitle || updatedTitle.trim() === "") {
-            alert("Edit cancelled or invalid title.");
-            return;
-        }
-
-        const bookToUpdate = books.find(book => book.id === bookId);
-        if (!bookToUpdate) {
-            alert("Book not found.");
-            return;
-        }
-
-        const updatedBookData = {
-            ...bookToUpdate,
-            title: updatedTitle.trim()
-            // you can add more fields here to update if you want
-        };
-
-        try {
-            const response = await editBook(bookId, updatedBookData);
-            if (response.success) {
-                alert("Book updated successfully!");
-
-                // Update the local book state
-                setBooks(prevBooks =>
-                    prevBooks.map(book =>
-                        book.id === bookId ? { ...book, title: updatedTitle.trim() } : book
-                    )
-                );
-            } else {
-                alert(response.error || "Failed to update the book.");
-            }
-        } catch (err) {
-            console.error(err);
-            alert("An unexpected error occurred while updating the book.");
-        }
-    };
-
-    const handleFieldChange = (field: keyof Book, value: any) => {
-        setEditedBookData(prev => ({
-            ...prev,
-            [field]: value
-        }));
-    };
-
-    const handleSave = async (bookId: number) => {
-        try {
-            const response = await editBook(bookId, editedBookData);
-            if (response.success) {
-                alert("Book updated successfully!");
-                setBooks(prevBooks =>
-                    prevBooks.map(book =>
-                        book.id === bookId ? { ...editedBookData, id: bookId } as Book : book
-                    )
-                );
-                setEditingBookId(null);
-                setEditedBookData({});
-            } else {
-                alert(response.error || "Failed to update the book.");
-            }
-        } catch (err) {
-            console.error(err);
-            alert("An unexpected error occurred while updating the book.");
-        }
-    };
-
 
     const handleDelete = async (bookId: number) => {
-        if (!window.confirm("Are you sure you want to delete this book?")) {
-            return;
-        }
-
-        try {
-            const response = await deleteBook(bookId);
-
-            if (response.success) {
-                setBooks(prevBooks => prevBooks.filter(book => book.id !== bookId));
-                alert("Book deleted successfully!");
-            } else {
-                alert(response.error || "Failed to delete the book.");
-            }
-        } catch (err) {
-            console.error(err);
-            alert("An unexpected error occurred while deleting the book.");
-        }
+        const response = await deleteBook(bookId);
+        if (response.success) setBooks(prev => prev.filter(b => b.id !== bookId));
     };
 
-
-    // Extract unique values for filter dropdowns
-    const extractFilterOptions = (booksData: Book[]) => {
-        const genres = [...new Set(booksData.map(book => book.genre))];
-        const authors = [...new Set(booksData.map(book => book.author))];
-        const formats = [...new Set(booksData.map(book => book.format))];
-        const languages = [...new Set(booksData.map(book => book.language))];
-        const publishers = [...new Set(booksData.map(book => book.publisher))];
-
-        setAvailableFilters({
-            genres,
-            authors,
-            formats,
-            languages,
-            publishers
-        });
+    const resetFiltersAndSearch = () => {
+        setSearchQuery("");
+        setFilters({ genre: "", author: "", format: "", language: "", publisher: "" });
     };
-
-    useEffect(() => {
-        const fetchBooks = async () => {
-            // Skip filter-based fetch if we're in search mode
-            if (isSearching) return;
-
-            try {
-                setLoading(true);
-
-                // Build query parameters from non-empty filters
-                const queryParams = Object.entries(filters)
-                    .filter(([_, value]) => value !== "")
-                    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-                    .join("&");
-
-                const response = await booksFilter(queryParams);
-
-                if (response.success && response.data) {
-                    setBooks(response.data);
-                    // Only extract filter options on initial load or reset
-                    if (Object.values(filters).every(val => val === "")) {
-                        extractFilterOptions(response.data);
-                    }
-                } else {
-                    setError(response.error || "Failed to fetch books");
-                }
-            } catch (err) {
-                setError("An unexpected error occurred");
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchBooks();
-    }, [filters, isSearching]);
-
-    if (loading) {
-        return <div className="text-center py-8">Loading books...</div>;
-    }
-
-    if (error) {
-        return (
-            <div className="text-center py-8 text-red-500">
-                Error: {error}
-            </div>
-        );
-    }
-
-    // Create filter dropdown component
-    const FilterDropdown = ({
-        label,
-        options,
-        value,
-        onChange
-    }: {
-        label: string;
-        options: string[];
-        value: string;
-        onChange: (value: string) => void
-    }) => (
-        <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium">{label}</label>
-            <select
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                className="p-2 border rounded text-sm"
-            >
-                <option value="">All {label}s</option>
-                {options.map((option) => (
-                    <option key={option} value={option}>{option}</option>
-                ))}
-            </select>
-        </div>
-    );
 
     return (
-        <div>
-            <div className="mb-4 flex justify-between items-center">
-                <h2 className="text-xl font-semibold">Books Catalog</h2>
-                <div className="text-sm text-gray-500">{books.length} books found</div>
-            </div>
+        <div className="p-4">
+            <form onSubmit={handleSearch} className="mb-6 flex gap-4 flex-wrap">
+                <input
+                    type="text"
+                    placeholder="Search books by title..."
+                    className="p-2 border rounded flex-1"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Search</button>
+                <button type="button" onClick={resetFiltersAndSearch} className="bg-gray-400 text-white px-4 py-2 rounded">Reset</button>
+            </form>
 
-            {/* Search bar */}
-            <div className="mb-4 p-4 border rounded-md bg-gray-50">
-                <form onSubmit={handleSearch} className="flex gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                {Object.entries(filters).map(([key, value]) => (
                     <input
+                        key={key}
                         type="text"
-                        value={searchQuery}
-                        onChange={handleSearchChange}
-                        placeholder="Search books by title..."
-                        className="flex-1 p-2 border rounded"
+                        placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
+                        className="p-2 border rounded"
+                        value={value}
+                        onChange={(e) => setFilters(prev => ({ ...prev, [key]: e.target.value }))}
                     />
-                    <button
-                        type="submit"
-                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                        Search
-                    </button>
-                    {isSearching && (
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setSearchQuery("");
-                                setIsSearching(false);
-                            }}
-                            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                        >
-                            Clear Search
-                        </button>
-                    )}
-                </form>
+                ))}
             </div>
 
-            {/* Filters section */}
-            <div className="mb-6 p-4 border rounded-md bg-gray-50">
-                <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-medium">Filter Books</h3>
-                    <button
-                        onClick={resetFilters}
-                        className="text-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded"
-                    >
-                        Reset All
-                    </button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                    <FilterDropdown
-                        label="Genre"
-                        options={availableFilters.genres}
-                        value={filters.genre}
-                        onChange={(value) => handleFilterChange("genre", value)}
-                    />
-                    <FilterDropdown
-                        label="Author"
-                        options={availableFilters.authors}
-                        value={filters.author}
-                        onChange={(value) => handleFilterChange("author", value)}
-                    />
-                    <FilterDropdown
-                        label="Format"
-                        options={availableFilters.formats}
-                        value={filters.format}
-                        onChange={(value) => handleFilterChange("format", value)}
-                    />
-                    <FilterDropdown
-                        label="Language"
-                        options={availableFilters.languages}
-                        value={filters.language}
-                        onChange={(value) => handleFilterChange("language", value)}
-                    />
-                    <FilterDropdown
-                        label="Publisher"
-                        options={availableFilters.publishers}
-                        value={filters.publisher}
-                        onChange={(value) => handleFilterChange("publisher", value)}
-                    />
-                </div>
-            </div>
-
-            <div className="border rounded-md overflow-hidden">
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>ID</TableHead>
-                            <TableHead>Title</TableHead>
-                            <TableHead>Author</TableHead>
-                            <TableHead>Genre</TableHead>
-                            <TableHead>Format</TableHead>
-                            <TableHead>Price</TableHead>
-                            <TableHead>Stock</TableHead>
-                            <TableHead>Rating</TableHead>
-                            <TableHead>Action</TableHead> {/* 🔥 Add this */}
-                        </TableRow>
-                    </TableHeader>
-
-                    <TableBody>
-                        {books.length === 0 ? (
-                            <TableRow>
-                                <TableCell colSpan={9} className="text-center py-4">
-                                    {isSearching
-                                        ? `No books found matching "${searchQuery}"`
-                                        : "No books found with the selected filters"}
-                                </TableCell>
-                            </TableRow>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {books.map(book => (
+                    <div key={book.id} className="border rounded-lg shadow p-4 relative bg-white">
+                        {book.imagePath ? (
+                            <img src={`https://localhost:7149${book.imagePath}`} alt={book.title} className="w-full h-60 object-cover rounded mb-4" />
                         ) : (
-                            books.map((book) => (
-                                <TableRow key={book.id}>
-                                    <TableCell>{book.id}</TableCell>
-
-                                    {editingBookId === book.id ? (
-                                        <>
-                                            <TableCell>
-                                                <input
-                                                    className="p-1 border rounded w-full"
-                                                    value={editedBookData.title}
-                                                    onChange={(e) => handleFieldChange("title", e.target.value)}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <input
-                                                    className="p-1 border rounded w-full"
-                                                    value={editedBookData.author}
-                                                    onChange={(e) => handleFieldChange("author", e.target.value)}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <input
-                                                    className="p-1 border rounded w-full"
-                                                    value={editedBookData.genre}
-                                                    onChange={(e) => handleFieldChange("genre", e.target.value)}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <input
-                                                    className="p-1 border rounded w-full"
-                                                    value={editedBookData.format}
-                                                    onChange={(e) => handleFieldChange("format", e.target.value)}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <input
-                                                    type="number"
-                                                    className="p-1 border rounded w-full"
-                                                    value={editedBookData.price}
-                                                    onChange={(e) => handleFieldChange("price", parseFloat(e.target.value))}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <input
-                                                    type="number"
-                                                    className="p-1 border rounded w-full"
-                                                    value={editedBookData.stockQuantity}
-                                                    onChange={(e) => handleFieldChange("stockQuantity", parseInt(e.target.value))}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <input
-                                                    type="number"
-                                                    className="p-1 border rounded w-full"
-                                                    value={editedBookData.averageRating}
-                                                    onChange={(e) => handleFieldChange("averageRating", parseFloat(e.target.value))}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex gap-2">
-                                                    <button
-                                                        onClick={() => handleSave(book.id)}
-                                                        className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm"
-                                                    >
-                                                        Save
-                                                    </button>
-                                                    <button
-                                                        onClick={cancelEditing}
-                                                        className="px-2 py-1 bg-gray-300 rounded hover:bg-gray-400 text-sm"
-                                                    >
-                                                        Cancel
-                                                    </button>
-                                                </div>
-                                            </TableCell>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <TableCell className="font-medium">{book.title}</TableCell>
-                                            <TableCell>{book.author}</TableCell>
-                                            <TableCell>{book.genre}</TableCell>
-                                            <TableCell>{book.format}</TableCell>
-                                            <TableCell>
-                                                {book.isOnSale ? (
-                                                    <div>
-                                                        <span className="line-through text-gray-400">${book.price.toFixed(2)}</span>
-                                                        <span className="ml-2 text-green-600">
-                                                            ${book.actualPrice ? book.actualPrice.toFixed(2) :
-                                                                (book.price * (1 - book.discountPercentage / 100)).toFixed(2)}
-                                                        </span>
-                                                    </div>
-                                                ) : (
-                                                    <span>${book.price.toFixed(2)}</span>
-                                                )}
-                                            </TableCell>
-                                            <TableCell>
-                                                {book.stockQuantity > 0 ? book.stockQuantity : (
-                                                    <span className="text-red-500">Out of stock</span>
-                                                )}
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center">
-                                                    <span className="text-yellow-500 mr-1">★</span>
-                                                    <span>{book.averageRating.toFixed(1)}</span>
-                                                    <span className="text-gray-400 ml-1">({book.reviewCount})</span>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex gap-2">
-                                                    <button
-                                                        onClick={() => startEditing(book)}
-                                                        className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm"
-                                                    >
-                                                        Edit
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDelete(book.id)}
-                                                        className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            </TableCell>
-                                        </>
-                                    )}
-                                </TableRow>
-                            ))
+                            <div className="w-full h-60 bg-gray-200 flex items-center justify-center rounded mb-4">No Image</div>
                         )}
-                    </TableBody>
 
-                </Table>
+                        <h3 className="text-lg font-semibold">{book.title}</h3>
+                        <p className="text-sm text-gray-600 mb-1">by {book.author}</p>
+                        <p className="text-sm text-gray-600 mb-2">{book.genre} | {book.format}</p>
+                        <p className="text-sm">{book.isOnSale ? (
+                            <>
+                                <span className="line-through text-gray-400 mr-2">${book.price.toFixed(2)}</span>
+                                <span className="text-green-600">${(book.price * (1 - book.discountPercentage / 100)).toFixed(2)}</span>
+                            </>
+                        ) : `$${book.price.toFixed(2)}`}</p>
+
+                        <div className="mt-4 flex gap-2">
+                            <button
+                                onClick={() => navigate(`/edit-book/${book.id}`)}
+                                className="bg-yellow-500 text-white px-3 py-1 rounded"
+                            >
+                                Edit
+                            </button>
+                            <button
+                                onClick={() => handleDelete(book.id)}
+                                className="bg-red-500 text-white px-3 py-1 rounded"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );
