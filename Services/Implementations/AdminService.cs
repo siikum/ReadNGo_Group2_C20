@@ -37,12 +37,14 @@ namespace ReadNGo.Services.Implementations
                     PublicationDate = DateTime.SpecifyKind(bookDto.PublicationDate, DateTimeKind.Utc),
                     IsOnSale = bookDto.IsOnSale,
                     DiscountPercentage = bookDto.DiscountPercentage,
-                    DiscountStartDate = DateTime.SpecifyKind((DateTime)bookDto.DiscountStartDate, DateTimeKind.Utc),
-                    DiscountEndDate = DateTime.SpecifyKind((DateTime)bookDto.DiscountEndDate, DateTimeKind.Utc),
+                    DiscountStartDate = bookDto.DiscountStartDate.HasValue ? DateTime.SpecifyKind(bookDto.DiscountStartDate.Value, DateTimeKind.Utc) : null,
+                    DiscountEndDate = bookDto.DiscountEndDate.HasValue ? DateTime.SpecifyKind(bookDto.DiscountEndDate.Value, DateTimeKind.Utc) : null,
                     Description = bookDto.Description,
                     ISBN = bookDto.ISBN,
-                    StockQuantity = bookDto.StockQuantity
+                    StockQuantity = bookDto.StockQuantity,
+                    ImagePath = bookDto.ImagePath 
                 };
+
 
                 _context.Books.Add(newBook);
                 _context.SaveChanges();
@@ -136,24 +138,20 @@ namespace ReadNGo.Services.Implementations
                     return false;
                 }
 
-                // Validation
                 if (discountDto.StartDate >= discountDto.EndDate)
                 {
                     Console.WriteLine("Invalid discount period: StartDate must be earlier than EndDate.");
                     return false;
                 }
 
-                if (discountDto.EndDate < DateTime.Now)
-                {
-                    Console.WriteLine("Invalid discount: EndDate must be in the future.");
-                    return false;
-                }
-
-                // Apply discount
+                // Apply discount fields
                 book.DiscountPercentage = discountDto.Percentage;
-                book.IsOnSale = discountDto.IsOnSale;
                 book.DiscountStartDate = discountDto.StartDate;
                 book.DiscountEndDate = discountDto.EndDate;
+
+                // Auto-set IsOnSale based on today's date
+                var now = DateTime.UtcNow;
+                book.IsOnSale = now >= discountDto.StartDate && now <= discountDto.EndDate;
 
                 _context.SaveChanges();
                 Console.WriteLine($"Discount of {discountDto.Percentage}% applied to Book ID {bookId} from {discountDto.StartDate} to {discountDto.EndDate}.");
@@ -166,10 +164,13 @@ namespace ReadNGo.Services.Implementations
             }
         }
 
+
         public int ClearExpiredDiscounts()
         {
+            var now = DateTime.UtcNow;
+
             var expiredBooks = _context.Books
-                .Where(b => b.DiscountEndDate != null && b.DiscountEndDate < DateTime.Now)
+                .Where(b => b.IsOnSale && b.DiscountEndDate.HasValue && b.DiscountEndDate < now)
                 .ToList();
 
             foreach (var book in expiredBooks)
@@ -185,6 +186,7 @@ namespace ReadNGo.Services.Implementations
 
             return expiredBooks.Count;
         }
+
 
 
 
