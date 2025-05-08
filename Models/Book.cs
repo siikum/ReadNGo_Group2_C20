@@ -24,7 +24,7 @@ namespace ReadNGo_Group2_C20.Models
         public DateTime? DiscountEndDate { get; set; }
         public string? ImagePath { get; set; }
 
-        public string? ImagePath { get; set; }
+        //public string? ImagePath { get; set; }
 
 
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
