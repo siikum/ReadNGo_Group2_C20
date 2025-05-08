@@ -26,31 +26,10 @@ namespace ReadNGo.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost("add-book-with-image")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> AddBookWithImage([FromForm] BookWithImageDTO bookWithImage)
+        public IActionResult AddBookWithImage([FromForm] BookWithImageDTO bookWithImage)
         {
-
-
-            // ✅ Fully mapped BookDTO with default values for required props
-            var bookModel = new AddBookDto
-            {
-                Title = bookWithImage.Title,
-                Author = bookWithImage.Author,
-                Genre = bookWithImage.Genre,
-                Language = bookWithImage.Language,
-                Format = bookWithImage.Format,
-                Publisher = bookWithImage.Publisher,
-                PublicationDate = bookWithImage.PublicationDate,
-                Price = bookWithImage.Price,
-                IsOnSale = bookWithImage.IsOnSale,
-                DiscountPercentage = bookWithImage.DiscountPercentage,
-                DiscountStartDate = bookWithImage.DiscountStartDate,
-                DiscountEndDate = bookWithImage.DiscountEndDate,
-                Description = bookWithImage.Description,
-                ISBN = bookWithImage.ISBN,
-                StockQuantity = bookWithImage.StockQuantity,
-                Image = bookWithImage.Image // ✅ add this
-            };
-
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             // Generate unique file name
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(bookWithImage.Image.FileName);
@@ -86,9 +65,8 @@ namespace ReadNGo.Controllers
                     ImagePath = dbPath
                 };
 
-                var success = await _adminService.AddBook(bookModel);
+                var success = _adminService.AddBook(bookDto);
                 return success ? Ok("Book added successfully with image.") : StatusCode(500, "Failed to add book.");
-
             }
             catch (Exception ex)
             {
