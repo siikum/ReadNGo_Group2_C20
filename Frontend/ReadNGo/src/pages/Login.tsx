@@ -1,8 +1,15 @@
-import { Input } from "@/components/ui/input";
+﻿import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { loginUser } from "@/api/apiConfig"; // Import your API call
+import { loginUser } from "@/api/apiConfig";
+import { jwtDecode } from "jwt-decode"; // ✅ import jwtDecode
+
+interface JwtPayload {
+    email: string;
+    role: string;
+    exp: number;
+}
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -16,10 +23,27 @@ export default function Login() {
         setMessage("");
         try {
             const result = await loginUser({ email, password });
-            if (result.success) {
+
+            if (result.success && result.data?.token) {
+                const token = result.data.token;
+                localStorage.setItem("token", token);
+
+                // ✅ Decode the token to get the role
+                const decoded = jwtDecode<JwtPayload>(token);
+                const userRole = decoded.role;
+
                 setMessage("Login successful!");
-                // Optionally navigate to a protected route, e.g., dashboard
-                 navigate("/Register");
+
+                // ✅ Navigate based on role
+                if (userRole === "Admin") {
+                    navigate("/dashboard");
+                } else if (userRole === "Member" || userRole === "Staff") {
+                    navigate("/User-Get-Books");
+                } else {
+                    navigate("/");
+                }
+
+                // Optionally reset fields
                 setEmail("");
                 setPassword("");
             } else {

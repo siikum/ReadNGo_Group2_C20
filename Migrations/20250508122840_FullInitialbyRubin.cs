@@ -48,7 +48,8 @@ namespace ReadNGo_Group2_C20.Migrations
                     IsOnSale = table.Column<bool>(type: "boolean", nullable: false),
                     DiscountPercentage = table.Column<decimal>(type: "numeric", nullable: true),
                     DiscountStartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    DiscountEndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    DiscountEndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ImagePath = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -78,7 +79,8 @@ namespace ReadNGo_Group2_C20.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     FullName = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false)
+                    Password = table.Column<string>(type: "text", nullable: false),
+                    Role = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {

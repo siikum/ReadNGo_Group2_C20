@@ -17,7 +17,7 @@
         public string Description { get; set; }
         public string ISBN { get; set; }
         public int StockQuantity { get; set; }
-
+        public string? ImagePath { get; set; }
         public IFormFile? Image { get; set; }
 
 

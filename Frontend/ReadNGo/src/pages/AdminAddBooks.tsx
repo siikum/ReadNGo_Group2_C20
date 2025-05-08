@@ -26,6 +26,8 @@ export default function AdminAddBooks() {
         reviewCount: 0,
     });
 
+    const [image, setImage] = useState<File | null>(null);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target as HTMLInputElement; // Type assertion to access 'type'
 
@@ -55,24 +57,26 @@ export default function AdminAddBooks() {
         }));
     };
 
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setImage(file);
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        try {
-            // Create a copy to ensure proper formatting
-            const bookToSubmit = {
-                ...book,
-                // Ensure dates are in ISO format
-                publicationDate: book.publicationDate,
-                discountStartDate: book.discountStartDate,
-                discountEndDate: book.discountEndDate
-            };
 
-            console.log("Submitting data:", bookToSubmit);
-            const response = await addBooks(bookToSubmit);
+        if (!image) {
+            alert("Please upload an image.");
+            return;
+        }
+
+        try {
+            const response = await addBooks(book, image);
 
             if (response.success) {
                 alert("Book added successfully!");
-                // Reset form
                 setBook({
                     id: 0,
                     title: "",
@@ -93,6 +97,7 @@ export default function AdminAddBooks() {
                     averageRating: 0,
                     reviewCount: 0,
                 });
+                setImage(null);
             } else {
                 alert(`Failed to add book: ${response.error}`);
             }
@@ -102,7 +107,7 @@ export default function AdminAddBooks() {
         }
     };
 
-    // Function to format ISO date string to YYYY-MM-DD for date inputs
+    
     const formatDateForInput = (dateString: string) => {
         try {
             const date = new Date(dateString);
@@ -221,6 +226,11 @@ export default function AdminAddBooks() {
                         <label className="block text-sm font-medium mb-1">Review Count</label>
                         <Input name="reviewCount" type="number" placeholder="Review Count" value={book.reviewCount} onChange={handleChange} min="0" />
                     </div>
+                </div>
+                <div>
+                    <label className="block text-sm font-medium mb-1">Book Image</label>
+                    <Input type="file" accept="image/*" onChange={handleImageChange} required />
+                    {image && <p className="text-sm mt-1 text-gray-500">Selected: {image.name}</p>}
                 </div>
                 <div>
                     <label className="block text-sm font-medium mb-1">Description</label>

@@ -12,8 +12,8 @@ using ReadNGo.DBContext;
 namespace ReadNGo_Group2_C20.Migrations
 {
     [DbContext(typeof(ReadNGoContext))]
-    [Migration("20250508051859_AddImagePathToNullable")]
-    partial class AddImagePathToNullable
+    [Migration("20250508122840_FullInitialbyRubin")]
+    partial class FullInitialbyRubin
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -288,6 +288,10 @@ namespace ReadNGo_Group2_C20.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
 

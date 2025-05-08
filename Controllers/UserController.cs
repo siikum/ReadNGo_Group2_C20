@@ -31,19 +31,7 @@ namespace ReadNGo.Controllers
             
         }
 
-        //[HttpPost("login")]
-        //public IActionResult Login(UserLoginDTO credentials) {
-        //    return Ok("user logged in...");
-        //}
-        //[HttpPost("login")]
-        //public IActionResult Login(UserLoginDTO identity)
-        //{
-        //    var result = _userService.Login(identity);
-        //    if (result)
-        //        return Ok("User Logged In Successfully");
-        //    else
-        //        return BadRequest("Invalid email or password");
-        //}
+       
         [HttpPost("login")]
         public IActionResult Login(UserLoginDTO credentials)
         {

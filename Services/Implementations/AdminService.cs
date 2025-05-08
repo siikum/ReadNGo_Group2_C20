@@ -45,23 +45,24 @@ namespace ReadNGo.Services.Implementations
             {
                 var newBook = new Book
                 {
-                    Title = bookDto.Title,
-                    Author = bookDto.Author,
-                    Genre = bookDto.Genre,
-                    Price = bookDto.Price,
-                    Language = bookDto.Language,
-                    Format = bookDto.Format,
-                    Publisher = bookDto.Publisher,
-                    PublicationDate = DateTime.SpecifyKind(bookDto.PublicationDate, DateTimeKind.Utc),
-                    IsOnSale = bookDto.IsOnSale,
-                    DiscountPercentage = bookDto.DiscountPercentage,
-                    DiscountStartDate = bookDto.DiscountStartDate.HasValue ? DateTime.SpecifyKind(bookDto.DiscountStartDate.Value, DateTimeKind.Utc) : null,
-                    DiscountEndDate = bookDto.DiscountEndDate.HasValue ? DateTime.SpecifyKind(bookDto.DiscountEndDate.Value, DateTimeKind.Utc) : null,
-                    Description = bookDto.Description,
-                    ISBN = bookDto.ISBN,
-                    StockQuantity = bookDto.StockQuantity,
-                    ImagePath = bookDto.ImagePath 
+                    Title = bookDTO.Title,
+                    Author = bookDTO.Author,
+                    Genre = bookDTO.Genre,
+                    Price = bookDTO.Price,
+                    Language = bookDTO.Language,
+                    Format = bookDTO.Format,
+                    Publisher = bookDTO.Publisher,
+                    PublicationDate = DateTime.SpecifyKind(bookDTO.PublicationDate, DateTimeKind.Utc),
+                    IsOnSale = bookDTO.IsOnSale,
+                    DiscountPercentage = bookDTO.DiscountPercentage,
+                    DiscountStartDate = bookDTO.DiscountStartDate.HasValue ? DateTime.SpecifyKind(bookDTO.DiscountStartDate.Value, DateTimeKind.Utc) : null,
+                    DiscountEndDate = bookDTO.DiscountEndDate.HasValue ? DateTime.SpecifyKind(bookDTO.DiscountEndDate.Value, DateTimeKind.Utc) : null,
+                    Description = bookDTO.Description,
+                    ISBN = bookDTO.ISBN,
+                    StockQuantity = bookDTO.StockQuantity,
+                    ImagePath = bookDTO.ImagePath
                 };
+
 
 
                 _context.Books.Add(newBook);

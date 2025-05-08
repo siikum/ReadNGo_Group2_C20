@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using ReadNGo.DTO;
 using Microsoft.AspNetCore.Mvc;
-using ReadNGo.DTO;
 using ReadNGo.Services.Interfaces;
 
 namespace ReadNGo.Controllers

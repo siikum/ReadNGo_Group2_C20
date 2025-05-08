@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReadNGo.DTO;
@@ -22,34 +23,34 @@ namespace ReadNGo.Controllers
         }
 
         // POST: api/Admin/add-book
+        [Authorize(Roles = "Admin")]
         [HttpPost("add-book-with-image")]
         [Consumes("multipart/form-data")]
-        public IActionResult AddBookWithImage([FromForm] BookWithImageDTO bookWithImage)
+        public async Task<IActionResult> AddBookWithImage([FromForm] BookWithImageDTO bookWithImage)
         {
-          
+
 
             // ✅ Fully mapped BookDTO with default values for required props
             var bookModel = new AddBookDto
             {
-                Title = book.Title,
-                Author = book.Author,
-                Genre = book.Genre,
-                Language = book.Language,
-                Format = book.Format,
-                Publisher = book.Publisher,
-                PublicationDate = book.PublicationDate,
-                Price = book.Price,
-                IsOnSale = book.IsOnSale,
-                DiscountPercentage = book.DiscountPercentage,
-                DiscountStartDate = book.DiscountStartDate,
-                DiscountEndDate = book.DiscountEndDate,
-                Description = book.Description,
-                ISBN = book.ISBN,
-                StockQuantity = book.StockQuantity,
-                //AverageRating = 0,
-                //ReviewCount = 0,
-                //ImagePath = imagePath
+                Title = bookWithImage.Title,
+                Author = bookWithImage.Author,
+                Genre = bookWithImage.Genre,
+                Language = bookWithImage.Language,
+                Format = bookWithImage.Format,
+                Publisher = bookWithImage.Publisher,
+                PublicationDate = bookWithImage.PublicationDate,
+                Price = bookWithImage.Price,
+                IsOnSale = bookWithImage.IsOnSale,
+                DiscountPercentage = bookWithImage.DiscountPercentage,
+                DiscountStartDate = bookWithImage.DiscountStartDate,
+                DiscountEndDate = bookWithImage.DiscountEndDate,
+                Description = bookWithImage.Description,
+                ISBN = bookWithImage.ISBN,
+                StockQuantity = bookWithImage.StockQuantity,
+                Image = bookWithImage.Image // ✅ add this
             };
+
 
             // Generate unique file name
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(bookWithImage.Image.FileName);
@@ -85,8 +86,9 @@ namespace ReadNGo.Controllers
                     ImagePath = dbPath
                 };
 
-                var success = _adminService.AddBook(bookDto);
+                var success = await _adminService.AddBook(bookModel);
                 return success ? Ok("Book added successfully with image.") : StatusCode(500, "Failed to add book.");
+
             }
             catch (Exception ex)
             {

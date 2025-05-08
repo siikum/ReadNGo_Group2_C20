@@ -129,14 +129,59 @@ export const createOrder = async (orderData: CreateOrderData): Promise<ApiRespon
     }
 };
 
-export const addBooks = async (bookData: AddBook): Promise<ApiResponse<any>> => {
+//export const addBooks = async (bookData: AddBook): Promise<ApiResponse<any>> => {
+//    try {
+//        const response = await api.post('/api/Admin/add-book-with-image', bookData);
+//        return {
+//            success: true,
+//            data: response.data
+//        };
+//    } catch (error) {
+//        return {
+//            success: false,
+//            error: error.response?.data || 'Book creation failed'
+//        };
+//    }
+//};
+export const addBooks = async (bookData: AddBook, imageFile: File): Promise<ApiResponse<any>> => {
     try {
-        const response = await api.post('/api/Admin/add-book', bookData);
+        const formData = new FormData();
+
+        // Append text fields
+        formData.append("Title", bookData.title);
+        formData.append("Author", bookData.author);
+        formData.append("Genre", bookData.genre);
+        formData.append("Language", bookData.language);
+        formData.append("Format", bookData.format);
+        formData.append("Publisher", bookData.publisher);
+        formData.append("PublicationDate", bookData.publicationDate);
+        formData.append("Price", bookData.price.toString());
+        formData.append("IsOnSale", bookData.isOnSale.toString());
+        formData.append("DiscountPercentage", bookData.discountPercentage.toString());
+        formData.append("DiscountStartDate", bookData.discountStartDate);
+        formData.append("DiscountEndDate", bookData.discountEndDate);
+        formData.append("Description", bookData.description);
+        formData.append("ISBN", bookData.isbn);
+        formData.append("StockQuantity", bookData.stockQuantity.toString());
+
+        // Optional (if backend accepts or calculates these):
+        formData.append("AverageRating", bookData.averageRating.toString());
+        formData.append("ReviewCount", bookData.reviewCount.toString());
+
+        // Append image file
+        formData.append("Image", imageFile);
+
+        const response = await api.post('/api/Admin/add-book-with-image', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
         return {
             success: true,
             data: response.data
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             error: error.response?.data || 'Book creation failed'
