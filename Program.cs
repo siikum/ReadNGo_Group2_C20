@@ -5,6 +5,8 @@ using ReadNGo.DBContext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ReadNGo_Group2_C20.Services.Implementations;
+using ReadNGo_Group2_C20.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,9 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IWishlistService, WishlistService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddSignalR();
+
 
 // Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -77,6 +82,8 @@ app.UseCors("AllowFrontend");
 app.UseAuthorization();
 app.UseAuthentication();
 app.MapControllers();
+
+app.MapHub<ReadNGo_Group2_C20.Hubs.OrderNotificationHub>("/orderHub");
 
 app.Run();
 

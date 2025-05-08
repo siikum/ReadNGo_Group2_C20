@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using ReadNGo.DTO;
 using ReadNGo.Services.Interfaces;
 using ReadNGo_Group2_C20.DTO;
+using System.IO;
+
 
 namespace ReadNGo.Controllers
 {
@@ -18,9 +20,9 @@ namespace ReadNGo.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult CreateOrder([FromBody] OrderCreateDTO order)
+        public async Task<IActionResult> CreateOrder([FromBody] OrderCreateDTO order)
             {
-            var result = _orderService.CreateOrder(order);
+            var result = await _orderService.CreateOrder(order);
             if (result)
             {
                 return Ok("Order created successfully.");
@@ -67,6 +69,13 @@ namespace ReadNGo.Controllers
             var result = _orderService.ApplyDiscount(discount);
             return Ok(result);
         }
+
+        [HttpGet("test-signalr")]
+        public IActionResult TestSignalR()
+        {
+            return PhysicalFile(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "signalr-test.html"), "text/html");
+        }
+
 
 
     }

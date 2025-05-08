@@ -37,12 +37,14 @@ namespace ReadNGo.Services.Implementations
                     PublicationDate = DateTime.SpecifyKind(bookDto.PublicationDate, DateTimeKind.Utc),
                     IsOnSale = bookDto.IsOnSale,
                     DiscountPercentage = bookDto.DiscountPercentage,
-                    DiscountStartDate = DateTime.SpecifyKind((DateTime)bookDto.DiscountStartDate, DateTimeKind.Utc),
-                    DiscountEndDate = DateTime.SpecifyKind((DateTime)bookDto.DiscountEndDate, DateTimeKind.Utc),
+                    DiscountStartDate = bookDto.DiscountStartDate.HasValue ? DateTime.SpecifyKind(bookDto.DiscountStartDate.Value, DateTimeKind.Utc) : null,
+                    DiscountEndDate = bookDto.DiscountEndDate.HasValue ? DateTime.SpecifyKind(bookDto.DiscountEndDate.Value, DateTimeKind.Utc) : null,
                     Description = bookDto.Description,
                     ISBN = bookDto.ISBN,
-                    StockQuantity = bookDto.StockQuantity
+                    StockQuantity = bookDto.StockQuantity,
+                    ImagePath = bookDto.ImagePath 
                 };
+
 
                 _context.Books.Add(newBook);
                 _context.SaveChanges();
