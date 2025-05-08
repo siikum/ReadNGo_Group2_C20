@@ -144,6 +144,38 @@ export const addBooks = async (bookData: AddBook): Promise<ApiResponse<any>> => 
     }
 };
 
+export const editBook = async (bookId: number, bookData: AddBook): Promise<ApiResponse<any>> => {
+    try {
+        const response = await api.put(`/api/Admin/edit-book/${bookId}`, bookData);
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.response?.data || 'Book update failed'
+        };
+    }
+};
+
+
+export const deleteBook = async (bookId: number): Promise<ApiResponse<any>> => {
+    try {
+        const response = await api.delete(`/api/Admin/delete-book/${bookId}`);
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.response?.data || 'Book deletion failed'
+        };
+    }
+};
+
+
 // Update the getBooks function to use GET method without parameters
 export const getBooks = async (): Promise<ApiResponse<any[]>> => {
     try {

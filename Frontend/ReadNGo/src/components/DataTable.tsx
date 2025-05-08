@@ -8,6 +8,9 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { booksFilter, booksSearchByTitle } from "@/api/apiConfig";
+import { deleteBook } from "@/api/apiConfig";
+import { editBook } from "@/api/apiConfig";
+
 
 // Define interface for book data
 interface Book {
@@ -47,6 +50,9 @@ export default function FilteredBooksTable() {
     const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [isSearching, setIsSearching] = useState<boolean>(false);
+    const [editingBookId, setEditingBookId] = useState<number | null>(null);
+    const [editedBookData, setEditedBookData] = useState<Partial<Book>>({});
+
 
     // Filter states
     const [filters, setFilters] = useState<FilterOptions>({
@@ -98,6 +104,16 @@ export default function FilteredBooksTable() {
         setSearchQuery(e.target.value);
     };
 
+    const startEditing = (book: Book) => {
+        setEditingBookId(book.id);
+        setEditedBookData({ ...book });
+    };
+
+    const cancelEditing = () => {
+        setEditingBookId(null);
+        setEditedBookData({});
+    };
+
     // Handle search form submission
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -122,6 +138,98 @@ export default function FilteredBooksTable() {
             setLoading(false);
         }
     };
+
+    const handleEdit = async (bookId: number) => {
+       
+
+        const updatedTitle = window.prompt("Enter new title for the book:");
+
+        if (!updatedTitle || updatedTitle.trim() === "") {
+            alert("Edit cancelled or invalid title.");
+            return;
+        }
+
+        const bookToUpdate = books.find(book => book.id === bookId);
+        if (!bookToUpdate) {
+            alert("Book not found.");
+            return;
+        }
+
+        const updatedBookData = {
+            ...bookToUpdate,
+            title: updatedTitle.trim()
+            // you can add more fields here to update if you want
+        };
+
+        try {
+            const response = await editBook(bookId, updatedBookData);
+            if (response.success) {
+                alert("Book updated successfully!");
+
+                // Update the local book state
+                setBooks(prevBooks =>
+                    prevBooks.map(book =>
+                        book.id === bookId ? { ...book, title: updatedTitle.trim() } : book
+                    )
+                );
+            } else {
+                alert(response.error || "Failed to update the book.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("An unexpected error occurred while updating the book.");
+        }
+    };
+
+    const handleFieldChange = (field: keyof Book, value: any) => {
+        setEditedBookData(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
+
+    const handleSave = async (bookId: number) => {
+        try {
+            const response = await editBook(bookId, editedBookData);
+            if (response.success) {
+                alert("Book updated successfully!");
+                setBooks(prevBooks =>
+                    prevBooks.map(book =>
+                        book.id === bookId ? { ...editedBookData, id: bookId } as Book : book
+                    )
+                );
+                setEditingBookId(null);
+                setEditedBookData({});
+            } else {
+                alert(response.error || "Failed to update the book.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("An unexpected error occurred while updating the book.");
+        }
+    };
+
+
+    const handleDelete = async (bookId: number) => {
+        if (!window.confirm("Are you sure you want to delete this book?")) {
+            return;
+        }
+
+        try {
+            const response = await deleteBook(bookId);
+
+            if (response.success) {
+                setBooks(prevBooks => prevBooks.filter(book => book.id !== bookId));
+                alert("Book deleted successfully!");
+            } else {
+                alert(response.error || "Failed to delete the book.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("An unexpected error occurred while deleting the book.");
+        }
+    };
+
 
     // Extract unique values for filter dropdowns
     const extractFilterOptions = (booksData: Book[]) => {
@@ -311,12 +419,14 @@ export default function FilteredBooksTable() {
                             <TableHead>Price</TableHead>
                             <TableHead>Stock</TableHead>
                             <TableHead>Rating</TableHead>
+                            <TableHead>Action</TableHead> {/* 🔥 Add this */}
                         </TableRow>
                     </TableHeader>
+
                     <TableBody>
                         {books.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={8} className="text-center py-4">
+                                <TableCell colSpan={9} className="text-center py-4">
                                     {isSearching
                                         ? `No books found matching "${searchQuery}"`
                                         : "No books found with the selected filters"}
@@ -326,39 +436,132 @@ export default function FilteredBooksTable() {
                             books.map((book) => (
                                 <TableRow key={book.id}>
                                     <TableCell>{book.id}</TableCell>
-                                    <TableCell className="font-medium">{book.title}</TableCell>
-                                    <TableCell>{book.author}</TableCell>
-                                    <TableCell>{book.genre}</TableCell>
-                                    <TableCell>{book.format}</TableCell>
-                                    <TableCell>
-                                        {book.isOnSale ? (
-                                            <div>
-                                                <span className="line-through text-gray-400">${book.price.toFixed(2)}</span>
-                                                <span className="ml-2 text-green-600">
-                                                    ${book.actualPrice ? book.actualPrice.toFixed(2) :
-                                                        (book.price * (1 - book.discountPercentage / 100)).toFixed(2)}
-                                                </span>
-                                            </div>
-                                        ) : (
-                                            <span>${book.price.toFixed(2)}</span>
-                                        )}
-                                    </TableCell>
-                                    <TableCell>
-                                        {book.stockQuantity > 0 ? book.stockQuantity : (
-                                            <span className="text-red-500">Out of stock</span>
-                                        )}
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center">
-                                            <span className="text-yellow-500 mr-1">★</span>
-                                            <span>{book.averageRating.toFixed(1)}</span>
-                                            <span className="text-gray-400 ml-1">({book.reviewCount})</span>
-                                        </div>
-                                    </TableCell>
+
+                                    {editingBookId === book.id ? (
+                                        <>
+                                            <TableCell>
+                                                <input
+                                                    className="p-1 border rounded w-full"
+                                                    value={editedBookData.title}
+                                                    onChange={(e) => handleFieldChange("title", e.target.value)}
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <input
+                                                    className="p-1 border rounded w-full"
+                                                    value={editedBookData.author}
+                                                    onChange={(e) => handleFieldChange("author", e.target.value)}
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <input
+                                                    className="p-1 border rounded w-full"
+                                                    value={editedBookData.genre}
+                                                    onChange={(e) => handleFieldChange("genre", e.target.value)}
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <input
+                                                    className="p-1 border rounded w-full"
+                                                    value={editedBookData.format}
+                                                    onChange={(e) => handleFieldChange("format", e.target.value)}
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <input
+                                                    type="number"
+                                                    className="p-1 border rounded w-full"
+                                                    value={editedBookData.price}
+                                                    onChange={(e) => handleFieldChange("price", parseFloat(e.target.value))}
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <input
+                                                    type="number"
+                                                    className="p-1 border rounded w-full"
+                                                    value={editedBookData.stockQuantity}
+                                                    onChange={(e) => handleFieldChange("stockQuantity", parseInt(e.target.value))}
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <input
+                                                    type="number"
+                                                    className="p-1 border rounded w-full"
+                                                    value={editedBookData.averageRating}
+                                                    onChange={(e) => handleFieldChange("averageRating", parseFloat(e.target.value))}
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex gap-2">
+                                                    <button
+                                                        onClick={() => handleSave(book.id)}
+                                                        className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm"
+                                                    >
+                                                        Save
+                                                    </button>
+                                                    <button
+                                                        onClick={cancelEditing}
+                                                        className="px-2 py-1 bg-gray-300 rounded hover:bg-gray-400 text-sm"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </div>
+                                            </TableCell>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <TableCell className="font-medium">{book.title}</TableCell>
+                                            <TableCell>{book.author}</TableCell>
+                                            <TableCell>{book.genre}</TableCell>
+                                            <TableCell>{book.format}</TableCell>
+                                            <TableCell>
+                                                {book.isOnSale ? (
+                                                    <div>
+                                                        <span className="line-through text-gray-400">${book.price.toFixed(2)}</span>
+                                                        <span className="ml-2 text-green-600">
+                                                            ${book.actualPrice ? book.actualPrice.toFixed(2) :
+                                                                (book.price * (1 - book.discountPercentage / 100)).toFixed(2)}
+                                                        </span>
+                                                    </div>
+                                                ) : (
+                                                    <span>${book.price.toFixed(2)}</span>
+                                                )}
+                                            </TableCell>
+                                            <TableCell>
+                                                {book.stockQuantity > 0 ? book.stockQuantity : (
+                                                    <span className="text-red-500">Out of stock</span>
+                                                )}
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center">
+                                                    <span className="text-yellow-500 mr-1">★</span>
+                                                    <span>{book.averageRating.toFixed(1)}</span>
+                                                    <span className="text-gray-400 ml-1">({book.reviewCount})</span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex gap-2">
+                                                    <button
+                                                        onClick={() => startEditing(book)}
+                                                        className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm"
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(book.id)}
+                                                        className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            </TableCell>
+                                        </>
+                                    )}
                                 </TableRow>
                             ))
                         )}
                     </TableBody>
+
                 </Table>
             </div>
         </div>
