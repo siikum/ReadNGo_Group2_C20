@@ -10,7 +10,7 @@ namespace ReadNGo.Services.Interfaces
 {
     public interface IOrderService
     {
-        bool CreateOrder(OrderCreateDTO order);
+        Task<bool> CreateOrder(OrderCreateDTO order);
         bool CancelOrder(int orderId);
         List<OrderDTO> GetOrdersByUser(int userId);
         ApplyDiscountResultDTO ApplyDiscount(ApplyDiscountDTO discount);

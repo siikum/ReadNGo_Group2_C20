@@ -22,9 +22,9 @@ namespace ReadNGo.Controllers
         }
 
         // POST: api/Admin/add-book
-        [HttpPost("add-book")]
+        [HttpPost("add-book-with-image")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> AddBook([FromForm] AddBookDto book)
+        public IActionResult AddBookWithImage([FromForm] BookWithImageDTO bookWithImage)
         {
           
 
@@ -51,12 +51,49 @@ namespace ReadNGo.Controllers
                 //ImagePath = imagePath
             };
 
-            var success = _adminService.AddBook(bookModel);
+            // Generate unique file name
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(bookWithImage.Image.FileName);
+            var imagePath = Path.Combine("wwwroot", "images", fileName);
+            var dbPath = $"/images/{fileName}";
 
-            return success
-                ? Ok(new { message = "Book added successfully." })
-                : StatusCode(500, "Failed to add book.");
+            try
+            {
+                // Save file
+                using (var stream = new FileStream(imagePath, FileMode.Create))
+                {
+                    bookWithImage.Image.CopyTo(stream);
+                }
+
+                // Convert to BookDTO and inject the path
+                var bookDto = new BookDTO
+                {
+                    Title = bookWithImage.Title,
+                    Author = bookWithImage.Author,
+                    Genre = bookWithImage.Genre,
+                    Language = bookWithImage.Language,
+                    Format = bookWithImage.Format,
+                    Publisher = bookWithImage.Publisher,
+                    PublicationDate = DateTime.SpecifyKind(bookWithImage.PublicationDate, DateTimeKind.Utc),
+                    Price = bookWithImage.Price,
+                    IsOnSale = bookWithImage.IsOnSale,
+                    DiscountPercentage = bookWithImage.DiscountPercentage,
+                    DiscountStartDate = bookWithImage.DiscountStartDate,
+                    DiscountEndDate = bookWithImage.DiscountEndDate,
+                    Description = bookWithImage.Description,
+                    ISBN = bookWithImage.ISBN,
+                    StockQuantity = bookWithImage.StockQuantity,
+                    ImagePath = dbPath
+                };
+
+                var success = _adminService.AddBook(bookDto);
+                return success ? Ok("Book added successfully with image.") : StatusCode(500, "Failed to add book.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Image upload failed: " + ex.Message);
+            }
         }
+
 
         // PATCH: api/Admin/edit-book
 

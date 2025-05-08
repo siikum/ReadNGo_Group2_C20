@@ -6,6 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ReadNGo_Group2_C20.DTO;
+using ReadNGo_Group2_C20.Services.Interfaces;
+using ReadNGo_Group2_C20.Services.Implementations;
+using Microsoft.AspNetCore.SignalR;
+using ReadNGo_Group2_C20.Hubs;
 
 
 namespace ReadNGo.Services.Implementations
@@ -13,17 +17,25 @@ namespace ReadNGo.Services.Implementations
     public class OrderService : IOrderService
     {
         private readonly ReadNGoContext _context;
+        private readonly IEmailService _emailService;
+        private readonly IHubContext<OrderNotificationHub> _hub;
 
-        public OrderService(ReadNGoContext context)
+
+
+        public OrderService(ReadNGoContext context, IEmailService emailService, IHubContext<OrderNotificationHub> hub)
         {
             _context = context;
+            _emailService = emailService;
+            _hub = hub;
         }
 
-        public bool CreateOrder(OrderCreateDTO orderDto)
+
+
+        public async Task<bool> CreateOrder(OrderCreateDTO orderDto)
         {
             try
             {
-                // Step 1: Build order items
+                // Build order items
                 var orderItems = new List<OrderItem>();
 
                 foreach (var bookId in orderDto.BookIds)
@@ -40,14 +52,14 @@ namespace ReadNGo.Services.Implementations
                     }
                 }
 
-                // Step 2: Reject empty orders
+                // Reject empty orders
                 if (orderItems.Count == 0)
                 {
                     Console.WriteLine("No valid books found for this order.");
                     return false;
                 }
 
-                // Step 3: Create order
+                //  Create order
                 var order = new Order
                 {
                     UserId = orderDto.UserId,
@@ -62,6 +74,47 @@ namespace ReadNGo.Services.Implementations
                 _context.Orders.Add(order);
                 _context.SaveChanges();
 
+                // Email + Notification
+                var user = _context.Users.FirstOrDefault(u => u.Id == orderDto.UserId);
+                if (user != null)
+                {
+                    var discountCheck = CheckDiscount(orderDto.UserId);
+
+                    _emailService.SendOrderConfirmation(
+                        toEmail: user.Email,
+                        userName: user.FullName,
+                        userId: user.Id,
+                        bookTitles: orderItems.Select(i => _context.Books.FirstOrDefault(b => b.Id == i.BookId)?.Title ?? "Unknown").ToList(),
+                        claimCode: order.ClaimCode,
+                        totalBeforeDiscount: order.TotalAmount,
+                        discountPercent: discountCheck.Discount,
+                        totalAfterDiscount: Math.Round(order.TotalAmount * (1 - discountCheck.Discount / 100m), 2)
+                    );
+
+                    await _hub.Clients.All.SendAsync("ReceiveOrder", new
+                    {
+                        User = user.FullName,
+                        ClaimCode = order.ClaimCode,
+                        BookCount = orderItems.Count,
+                        Total = order.TotalAmount,
+                        Discount = discountCheck.Discount,
+                        FinalAmount = Math.Round(order.TotalAmount * (1 - discountCheck.Discount / 100m), 2),
+                        Timestamp = DateTime.UtcNow
+                    })
+.ContinueWith(task =>
+{
+    if (task.IsFaulted)
+    {
+        Console.WriteLine("❌ SignalR failed: " + task.Exception?.GetBaseException().Message);
+    }
+    else
+    {
+        Console.WriteLine("✅ SignalR message sent successfully");
+    }
+});
+
+                }
+
                 Console.WriteLine($"Order placed for user {orderDto.UserId} with {order.OrderItems.Count} items. ClaimCode: {order.ClaimCode}");
                 return true;
             }
@@ -71,6 +124,7 @@ namespace ReadNGo.Services.Implementations
                 return false;
             }
         }
+
 
 
 
