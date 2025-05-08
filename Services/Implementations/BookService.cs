@@ -167,6 +167,14 @@ namespace ReadNGo.Services.Implementations
         // Helper method to map Book entity to BookDTO
         private static BookDTO MapToDTO(Book book)
         {
+            var now = DateTime.UtcNow;
+
+            bool isCurrentlyOnSale = book.IsOnSale &&
+                                      book.DiscountStartDate.HasValue &&
+                                      book.DiscountEndDate.HasValue &&
+                                      book.DiscountStartDate <= now &&
+                                      book.DiscountEndDate >= now;
+
             return new BookDTO
             {
                 Id = book.Id,
@@ -178,20 +186,21 @@ namespace ReadNGo.Services.Implementations
                 Publisher = book.Publisher,
                 PublicationDate = book.PublicationDate,
                 Price = book.Price,
-                IsOnSale = book.IsOnSale,
+                IsOnSale = isCurrentlyOnSale, // ✅ Override stale value
                 DiscountPercentage = book.DiscountPercentage,
                 DiscountStartDate = book.DiscountStartDate,
                 DiscountEndDate = book.DiscountEndDate,
 
-                // Calculate these values from related entities or set them to default values
                 Description = book.Description ?? $"Description for {book.Title}",
                 ISBN = book.ISBN ?? "N/A",
                 StockQuantity = book.StockQuantity,
                 AverageRating = book.Reviews != null && book.Reviews.Any()
                     ? Math.Round(book.Reviews.Average(r => r.Rating), 1)
                     : 0,
-                ReviewCount = book.Reviews?.Count ?? 0
+                ReviewCount = book.Reviews?.Count ?? 0,
+                ImagePath = book.ImagePath
             };
         }
+
     }
 }
