@@ -3,6 +3,13 @@
   "WorkspaceRootPath": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\",
   "Documents": [
     {
+<<<<<<< HEAD
+=======
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\dotnettt\\readngo_group2_c20\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+>>>>>>> backend
       "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\dotnettt\\readngo_group2_c20\\models\\book.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:models\\book.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -23,12 +30,32 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+<<<<<<< HEAD
+=======
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-05-08T09:54:15.43Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+>>>>>>> backend
               "Title": "Book.cs",
               "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Models\\Book.cs",
               "RelativeDocumentMoniker": "Models\\Book.cs",
               "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Models\\Book.cs",
               "RelativeToolTip": "Models\\Book.cs",
+<<<<<<< HEAD
               "ViewState": "AgIAABEAAAAAAAAAAAAUwBoAAAAwAAAAAAAAAA==",
+=======
+              "ViewState": "AgIAABEAAAAAAAAAAAAUwBkAAAAAAAAAAAAAAA==",
+>>>>>>> backend
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-08T09:49:39.217Z",
               "EditorCaption": ""
