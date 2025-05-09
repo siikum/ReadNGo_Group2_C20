@@ -1,7 +1,7 @@
 ﻿import Sidebar from "@/components/sidebar";
 import BooksTable from "@/components/DataTable"; // Updated import path if needed
 
-export default function UserGetBooks() {
+export default function AdminGetBooks() {
     return (
         <div className="flex">
             <Sidebar />
