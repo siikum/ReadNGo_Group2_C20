@@ -10,6 +10,7 @@ import AdminGetBooks from "./pages/AdminGetBooks";
 import EditBookPage from "./pages/EditBookPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminCreateStaff from "./pages/AdminCreateStaff";
+import AdminCreateAnnouncement from "./pages/AdminCreateAnnouncement";
 
 
 export default function App() {
@@ -57,6 +58,15 @@ export default function App() {
                     element={
                         <ProtectedRoute allowedRoles={["Admin"]}>
                             <AdminCreateStaff />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/Admin-Create-Announcement"
+                    element={
+                        <ProtectedRoute allowedRoles={["Admin"]}>
+                            <AdminCreateAnnouncement />
                         </ProtectedRoute>
                     }
                 />

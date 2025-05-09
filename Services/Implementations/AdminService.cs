@@ -203,11 +203,13 @@ namespace ReadNGo.Services.Implementations
 
                 var announcement = new Announcement
                 {
+                    Title = announcementDto.Title, // Set title
                     Message = announcementDto.Message,
                     StartTime = announcementDto.StartTime,
                     EndTime = announcementDto.EndTime,
                     IsActive = true
                 };
+
 
                 _context.Announcements.Add(announcement);
                 _context.SaveChanges();

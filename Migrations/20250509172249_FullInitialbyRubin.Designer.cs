@@ -12,7 +12,7 @@ using ReadNGo.DBContext;
 namespace ReadNGo_Group2_C20.Migrations
 {
     [DbContext(typeof(ReadNGoContext))]
-    [Migration("20250508122840_FullInitialbyRubin")]
+    [Migration("20250509172249_FullInitialbyRubin")]
     partial class FullInitialbyRubin
     {
         /// <inheritdoc />
@@ -45,6 +45,10 @@ namespace ReadNGo_Group2_C20.Migrations
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

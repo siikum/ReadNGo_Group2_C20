@@ -51,6 +51,14 @@ export interface CreateStaffData {
     password: string;
 }
 
+export interface CreateAnnouncementData {
+    title: string;
+    message: string;
+    startTime: string; // ISO format
+    endTime: string;
+}
+
+
 export interface ApiResponse<T> {
     success: boolean;
     data?: T;
@@ -354,6 +362,23 @@ export const createStaff = async (staffData: CreateStaffData): Promise<ApiRespon
         return {
             success: false,
             error: error.response?.data || 'Failed to create staff'
+        };
+    }
+};
+
+export const adminCreateAnnouncement = async (
+    announcementData: CreateAnnouncementData
+): Promise<ApiResponse<any>> => {
+    try {
+        const response = await api.post('/api/Admin/announcement', announcementData);
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to create announcement'
         };
     }
 };

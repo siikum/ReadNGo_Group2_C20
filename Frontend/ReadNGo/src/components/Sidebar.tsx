@@ -25,12 +25,12 @@ export default function Sidebar() {
             Create Staff
           </Button>
         </Link>
-        {/*<Link to="/register">*/}
-        {/*  <Button variant="ghost" className="justify-start w-full">*/}
-        {/*    <UserPlus className="mr-2 h-5 w-5" />*/}
-        {/*    Register*/}
-        {/*  </Button>*/}
-        {/*</Link>*/}
+        <Link to="/admin-create-announcement">
+          <Button variant="ghost" className="justify-start w-full">
+            <UserPlus className="mr-2 h-5 w-5" />
+            Create Announcement
+          </Button>
+        </Link>
         {/*<Link to="/">*/}
         {/*  <Button variant="ghost" className="justify-start w-full">*/}
         {/*    <List className="mr-2 h-5 w-5" />*/}
