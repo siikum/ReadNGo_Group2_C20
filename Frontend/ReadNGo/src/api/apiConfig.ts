@@ -38,6 +38,19 @@ export interface AddBook {
 }
 
 
+interface DiscountPayload {
+    percentage: number;
+    isOnSale: boolean;
+    startDate: string; // ISO string (e.g., "2025-05-09T11:08:36.443Z")
+    endDate: string;
+}
+
+export interface CreateStaffData {
+    fullName: string;
+    email: string;
+    password: string;
+}
+
 export interface ApiResponse<T> {
     success: boolean;
     data?: T;
@@ -189,20 +202,59 @@ export const addBooks = async (bookData: AddBook, imageFile: File): Promise<ApiR
     }
 };
 
-export const editBook = async (bookId: number, bookData: AddBook): Promise<ApiResponse<any>> => {
+export const editBook = async (
+    bookId: number,
+    bookData: AddBook,
+    imageFile?: File
+): Promise<ApiResponse<any>> => {
     try {
-        const response = await api.put(`/api/Admin/edit-book/${bookId}`, bookData);
+        const formData = new FormData();
+
+        // Append book data
+        formData.append("Title", bookData.title);
+        formData.append("Author", bookData.author);
+        formData.append("Genre", bookData.genre);
+        formData.append("Language", bookData.language);
+        formData.append("Format", bookData.format);
+        formData.append("Publisher", bookData.publisher);
+        formData.append("PublicationDate", bookData.publicationDate);
+        formData.append("Price", bookData.price.toString());
+        formData.append("IsOnSale", bookData.isOnSale.toString());
+        formData.append("DiscountPercentage", bookData.discountPercentage.toString());
+        formData.append("DiscountStartDate", bookData.discountStartDate);
+        formData.append("DiscountEndDate", bookData.discountEndDate);
+        formData.append("Description", bookData.description);
+        formData.append("ISBN", bookData.isbn);
+        formData.append("StockQuantity", bookData.stockQuantity.toString());
+        formData.append("AverageRating", bookData.averageRating.toString());
+        formData.append("ReviewCount", bookData.reviewCount.toString());
+
+        if (imageFile) {
+            formData.append("Image", imageFile);
+        }
+
+        const response = await api.put(
+            `/api/Admin/edit-book-with-image/${bookId}`,
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            }
+        );
+
         return {
             success: true,
-            data: response.data
+            data: response.data,
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
-            error: error.response?.data || 'Book update failed'
+            error: error.response?.data || "Book update failed",
         };
     }
 };
+
 
 
 export const deleteBook = async (bookId: number): Promise<ApiResponse<any>> => {
@@ -268,6 +320,40 @@ export const booksSearchByTitle = async (query: string): Promise<ApiResponse<any
         return {
             success: false,
             error: error.response?.data || 'Failed to search books'
+        };
+    }
+};
+
+export const setDiscount = async (
+    bookId: number,
+    discountData: DiscountPayload
+): Promise<ApiResponse<any>> => {
+    try {
+        const response = await api.put(`/api/Admin/set-discount/${bookId}`, discountData);
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to set discount'
+        };
+    }
+};
+
+
+export const createStaff = async (staffData: CreateStaffData): Promise<ApiResponse<any>> => {
+    try {
+        const response = await api.post('/api/Admin/create-staff', staffData);
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to create staff'
         };
     }
 };

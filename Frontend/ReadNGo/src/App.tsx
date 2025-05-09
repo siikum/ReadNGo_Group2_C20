@@ -9,6 +9,7 @@ import CreateOrderPage from "./pages/Order";
 import AdminGetBooks from "./pages/AdminGetBooks";
 import EditBookPage from "./pages/EditBookPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminCreateStaff from "./pages/AdminCreateStaff";
 
 
 export default function App() {
@@ -20,8 +21,9 @@ export default function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/books" element={<Books />} />
                 <Route path="/create-order" element={<CreateOrderPage />} />
-                <Route path="/User-Get-Books" element={<AdminGetBooks />} />\
+                {/*<Route path="/User-Get-Books" element={<AdminGetBooks />} />\*/}
                 <Route path="/edit-book/:id" element={<EditBookPage />} />
+                {/*<Route path="admin-create-staff" element={<AdminCreateStaff />} />*/}
 
                 {/* ✅ Protected admin routes */}
                 <Route
@@ -49,7 +51,18 @@ export default function App() {
                         </ProtectedRoute>
                     }
                 />
+
+                <Route
+                    path="/Admin-Create-Staff"
+                    element={
+                        <ProtectedRoute allowedRoles={["Admin"]}>
+                            <AdminCreateStaff />
+                        </ProtectedRoute>
+                    }
+                />
             </Routes>
+        
+     
         </Router>
     );
 }

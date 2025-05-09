@@ -1,4 +1,5 @@
 ﻿import { useState } from "react";
+import Sidebar from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { addBooks } from "@/api/apiConfig";
@@ -18,7 +19,7 @@ export default function AdminAddBooks() {
         isOnSale: false,
         discountPercentage: 0,
         discountStartDate: new Date().toISOString(),
-        discountEndDate: new Date().toISOString(), // Added missing field
+        discountEndDate: new Date().toISOString(),
         description: "",
         isbn: "",
         stockQuantity: 0,
@@ -29,221 +30,174 @@ export default function AdminAddBooks() {
     const [image, setImage] = useState<File | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value, type } = e.target as HTMLInputElement; // Type assertion to access 'type'
-
-        if (name === "isOnSale") {
-            setBook(prev => ({
-                ...prev,
-                [name]: (e.target as HTMLInputElement).checked
-            }));
-            return;
-        }
+        const { name, value, type } = e.target;
 
         setBook(prev => ({
             ...prev,
-            [name]: type === "number" || name === "price" || name === "discountPercentage" ||
-                name === "stockQuantity" || name === "averageRating" || name === "reviewCount"
-                ? Number(value)
-                : name.includes("Date") ? value // Keep date as string when it comes from input
-                    : value,
-        }));
-    };
-
-    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setBook(prev => ({
-            ...prev,
-            [name]: value ? new Date(value).toISOString() : new Date().toISOString()
+            [name]:
+                type === "number" || ["price", "discountPercentage", "stockQuantity", "averageRating", "reviewCount"].includes(name)
+                    ? Number(value)
+                    : name.includes("Date")
+                        ? value
+                        : name === "isOnSale"
+                            ? (e.target as HTMLInputElement).checked
+                            : value,
         }));
     };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) {
-            setImage(file);
+        if (file) setImage(file);
+    };
+
+    const formatDateForInput = (dateString: string) => {
+        try {
+            return new Date(dateString).toISOString().split("T")[0];
+        } catch {
+            return "";
         }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
         if (!image) {
             alert("Please upload an image.");
             return;
         }
 
-        try {
-            const response = await addBooks(book, image);
+        const response = await addBooks(book, image);
 
-            if (response.success) {
-                alert("Book added successfully!");
-                setBook({
-                    id: 0,
-                    title: "",
-                    author: "",
-                    genre: "",
-                    language: "",
-                    format: "",
-                    publisher: "",
-                    publicationDate: new Date().toISOString(),
-                    price: 0,
-                    isOnSale: false,
-                    discountPercentage: 0,
-                    discountStartDate: new Date().toISOString(),
-                    discountEndDate: new Date().toISOString(),
-                    description: "",
-                    isbn: "",
-                    stockQuantity: 0,
-                    averageRating: 0,
-                    reviewCount: 0,
-                });
-                setImage(null);
-            } else {
-                alert(`Failed to add book: ${response.error}`);
-            }
-        } catch (error) {
-            console.error("Error submitting form:", error);
-            alert("An unexpected error occurred.");
-        }
-    };
-
-    
-    const formatDateForInput = (dateString: string) => {
-        try {
-            const date = new Date(dateString);
-            return date.toISOString().split('T')[0];
-        } catch (error) {
-            return "";
+        if (response.success) {
+            alert("Book added successfully!");
+            setBook({
+                id: 0,
+                title: "",
+                author: "",
+                genre: "",
+                language: "",
+                format: "",
+                publisher: "",
+                publicationDate: new Date().toISOString(),
+                price: 0,
+                isOnSale: false,
+                discountPercentage: 0,
+                discountStartDate: new Date().toISOString(),
+                discountEndDate: new Date().toISOString(),
+                description: "",
+                isbn: "",
+                stockQuantity: 0,
+                averageRating: 0,
+                reviewCount: 0,
+            });
+            setImage(null);
+        } else {
+            alert(`Failed to add book: ${response.error}`);
         }
     };
 
     return (
-        <div className="flex flex-col p-6">
-            <h1 className="text-2xl font-bold mb-4">Add New Book</h1>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Title</label>
-                        <Input name="title" placeholder="Title" value={book.title} onChange={handleChange} required />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Author</label>
-                        <Input name="author" placeholder="Author" value={book.author} onChange={handleChange} required />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Genre</label>
-                        <Input name="genre" placeholder="Genre" value={book.genre} onChange={handleChange} required />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Language</label>
-                        <Input name="language" placeholder="Language" value={book.language} onChange={handleChange} required />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Format</label>
-                        <Input name="format" placeholder="Format" value={book.format} onChange={handleChange} required />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Publisher</label>
-                        <Input name="publisher" placeholder="Publisher" value={book.publisher} onChange={handleChange} required />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Publication Date</label>
-                        <Input
-                            name="publicationDate"
-                            type="date"
-                            value={formatDateForInput(book.publicationDate)}
-                            onChange={handleDateChange}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Price</label>
-                        <Input name="price" type="number" placeholder="Price" value={book.price} onChange={handleChange} required step="0.01" />
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <label className="text-sm font-medium">On Sale</label>
+        <div className="flex">
+            <Sidebar />
+            <main className="flex-1 p-6">
+                <h1 className="text-2xl font-bold mb-4">Add New Book</h1>
+                <p className="text-gray-600 mb-6">
+                    Fill out the form below to add a new book to your store.
+                </p>
+
+                <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Basic Info */}
+                    <InputField label="Title" name="title" value={book.title} onChange={handleChange} required />
+                    <InputField label="Author" name="author" value={book.author} onChange={handleChange} required />
+                    <InputField label="Genre" name="genre" value={book.genre} onChange={handleChange} required />
+                    <InputField label="Language" name="language" value={book.language} onChange={handleChange} required />
+                    <InputField label="Format" name="format" value={book.format} onChange={handleChange} required />
+                    <InputField label="Publisher" name="publisher" value={book.publisher} onChange={handleChange} required />
+
+                    {/* Pricing and Sale */}
+                    <InputField label="Price ($)" name="price" value={book.price} onChange={handleChange} type="number" required />
+                    <div className="flex items-center space-x-2 mt-2">
                         <input
                             name="isOnSale"
                             type="checkbox"
                             checked={book.isOnSale}
-                            onChange={(e) => setBook(prev => ({ ...prev, isOnSale: e.target.checked }))}
+                            onChange={handleChange}
                             className="h-4 w-4"
                         />
+                        <label className="text-sm">On Sale</label>
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Discount Percentage</label>
-                        <Input
-                            name="discountPercentage"
-                            type="number"
-                            placeholder="Discount Percentage"
-                            value={book.discountPercentage}
-                            onChange={handleChange}
-                            min="0"
-                            max="100"
-                            step="0.01"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Discount Start Date</label>
-                        <Input
-                            name="discountStartDate"
-                            type="date"
-                            value={formatDateForInput(book.discountStartDate)}
-                            onChange={handleDateChange}
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Discount End Date</label>
-                        <Input
-                            name="discountEndDate"
-                            type="date"
-                            value={formatDateForInput(book.discountEndDate)}
-                            onChange={handleDateChange}
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">ISBN</label>
-                        <Input name="isbn" placeholder="ISBN" value={book.isbn} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Stock Quantity</label>
-                        <Input name="stockQuantity" type="number" placeholder="Stock Quantity" value={book.stockQuantity} onChange={handleChange} min="0" />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Average Rating</label>
-                        <Input
-                            name="averageRating"
-                            type="number"
-                            placeholder="Average Rating"
-                            value={book.averageRating}
-                            onChange={handleChange}
-                            min="0"
-                            max="5"
-                            step="0.1"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Review Count</label>
-                        <Input name="reviewCount" type="number" placeholder="Review Count" value={book.reviewCount} onChange={handleChange} min="0" />
-                    </div>
-                </div>
-                <div>
-                    <label className="block text-sm font-medium mb-1">Book Image</label>
-                    <Input type="file" accept="image/*" onChange={handleImageChange} required />
-                    {image && <p className="text-sm mt-1 text-gray-500">Selected: {image.name}</p>}
-                </div>
-                <div>
-                    <label className="block text-sm font-medium mb-1">Description</label>
-                    <textarea
-                        name="description"
-                        placeholder="Description"
-                        value={book.description}
+                    <InputField
+                        label="Discount %"
+                        name="discountPercentage"
+                        value={book.discountPercentage}
                         onChange={handleChange}
-                        className="p-2 border rounded w-full h-32"
+                        type="number"
                     />
-                </div>
-                <Button type="submit" className="w-full">Add Book</Button>
-            </form>
+                    <InputField
+                        label="Discount Start"
+                        name="discountStartDate"
+                        value={formatDateForInput(book.discountStartDate)}
+                        onChange={handleChange}
+                        type="date"
+                    />
+                    <InputField
+                        label="Discount End"
+                        name="discountEndDate"
+                        value={formatDateForInput(book.discountEndDate)}
+                        onChange={handleChange}
+                        type="date"
+                    />
+
+                    {/* Stock & Rating */}
+                    <InputField label="Stock Quantity" name="stockQuantity" value={book.stockQuantity} onChange={handleChange} type="number" />
+                    <InputField label="Average Rating" name="averageRating" value={book.averageRating} onChange={handleChange} type="number" />
+                    <InputField label="Review Count" name="reviewCount" value={book.reviewCount} onChange={handleChange} type="number" />
+                    <InputField label="ISBN" name="isbn" value={book.isbn} onChange={handleChange} />
+
+                    {/* Dates */}
+                    <InputField
+                        label="Publication Date"
+                        name="publicationDate"
+                        value={formatDateForInput(book.publicationDate)}
+                        onChange={handleChange}
+                        type="date"
+                    />
+
+                    {/* Image Upload */}
+                    <div className="md:col-span-2">
+                        <label className="block text-sm font-medium mb-1">Book Cover Image</label>
+                        <Input type="file" accept="image/*" onChange={handleImageChange} required />
+                        {image && <p className="text-sm mt-1 text-gray-500">Selected: {image.name}</p>}
+                    </div>
+
+                    {/* Description */}
+                    <div className="md:col-span-2">
+                        <label className="block text-sm font-medium mb-1">Description</label>
+                        <textarea
+                            name="description"
+                            className="w-full border rounded p-2"
+                            rows={5}
+                            value={book.description}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="md:col-span-2">
+                        <Button type="submit" className="w-full">
+                            Add Book
+                        </Button>
+                    </div>
+                </form>
+            </main>
+        </div>
+    );
+}
+
+// Reusable field input component
+function InputField({ label, name, value, onChange, type = "text", required = false }: any) {
+    return (
+        <div>
+            <label className="block text-sm font-medium mb-1">{label}</label>
+            <Input name={name} value={value} onChange={onChange} type={type} required={required} />
         </div>
     );
 }

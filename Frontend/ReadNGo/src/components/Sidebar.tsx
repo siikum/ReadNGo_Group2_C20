@@ -7,36 +7,36 @@ export default function Sidebar() {
     <div className="w-64 h-screen bg-gray-100 p-6 border-r">
       <h2 className="text-xl font-bold mb-6">Admin Panel</h2>
       <nav className="flex flex-col space-y-3">
-        <Link to="/dashboard">
+        <Link to="/admin-add-books">
           <Button variant="ghost" className="justify-start w-full">
             <Home className="mr-2 h-5 w-5" />
-            Dashboard
+            Add Books
           </Button>
         </Link>
-        <Link to="/books">
+        <Link to="/admin-get-books">
         <Button variant="ghost" className="justify-start w-full">
             <Book className="mr-2 h-5 w-5" />
             Books
         </Button>
         </Link>
-        <Link to="/login">
+        <Link to="/admin-create-staff">
           <Button variant="ghost" className="justify-start w-full">
             <User className="mr-2 h-5 w-5" />
-            Login
+            Create Staff
           </Button>
         </Link>
-        <Link to="/register">
-          <Button variant="ghost" className="justify-start w-full">
-            <UserPlus className="mr-2 h-5 w-5" />
-            Register
-          </Button>
-        </Link>
-        <Link to="/">
-          <Button variant="ghost" className="justify-start w-full">
-            <List className="mr-2 h-5 w-5" />
-            Start Page
-          </Button>
-        </Link>
+        {/*<Link to="/register">*/}
+        {/*  <Button variant="ghost" className="justify-start w-full">*/}
+        {/*    <UserPlus className="mr-2 h-5 w-5" />*/}
+        {/*    Register*/}
+        {/*  </Button>*/}
+        {/*</Link>*/}
+        {/*<Link to="/">*/}
+        {/*  <Button variant="ghost" className="justify-start w-full">*/}
+        {/*    <List className="mr-2 h-5 w-5" />*/}
+        {/*    Start Page*/}
+        {/*  </Button>*/}
+        {/*</Link>*/}
       </nav>
     </div>
   );
