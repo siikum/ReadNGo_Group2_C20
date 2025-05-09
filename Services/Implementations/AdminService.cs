@@ -59,42 +59,43 @@ namespace ReadNGo.Services.Implementations
             }
         }
 
-
-        // Edit existing book
-        public bool EditBook(int bookId, BookDTO updatedBook)
+        public bool EditBookWithImage(int bookId, EditBookWithImageDTO updated, string? imagePath)
         {
             try
             {
                 var book = _context.Books.FirstOrDefault(b => b.Id == bookId);
+                if (book == null) return false;
 
-                if (book == null)
+                book.Title = updated.Title;
+                book.Author = updated.Author;
+                book.Genre = updated.Genre;
+                book.Language = updated.Language;
+                book.Format = updated.Format;
+                book.Publisher = updated.Publisher;
+                book.PublicationDate = DateTime.SpecifyKind(updated.PublicationDate, DateTimeKind.Utc);
+                book.Price = updated.Price;
+                book.IsOnSale = updated.IsOnSale;
+                book.DiscountPercentage = updated.DiscountPercentage;
+                book.DiscountStartDate = updated.DiscountStartDate;
+                book.DiscountEndDate = updated.DiscountEndDate;
+                book.Description = updated.Description;
+                book.ISBN = updated.ISBN;
+                book.StockQuantity = updated.StockQuantity;
+
+                if (!string.IsNullOrEmpty(imagePath))
                 {
-                    Console.WriteLine($"Book with ID {bookId} not found.");
-                    return false;
+                    book.ImagePath = imagePath;
                 }
 
-                book.Title = updatedBook.Title;
-                book.Author = updatedBook.Author;
-                book.Genre = updatedBook.Genre;
-                book.Price = updatedBook.Price;
-                book.Language = updatedBook.Language;
-                book.Format = updatedBook.Format;
-                book.Publisher = updatedBook.Publisher;
-
-                //  Force UTC to fix PostgreSQL error
-                book.PublicationDate = DateTime.SpecifyKind(updatedBook.PublicationDate, DateTimeKind.Utc);
-
                 _context.SaveChanges();
-                Console.WriteLine($"Book ID {bookId} updated successfully.");
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("EDIT BOOK ERROR: " + ex.Message);
+                Console.WriteLine("EDIT BOOK WITH IMAGE ERROR: " + ex.Message);
                 return false;
             }
         }
-
 
 
 

@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Register your services for Dependency Injection
+// Dependency Injection
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICartService, CartService>();
@@ -26,8 +26,7 @@ builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddSignalR();
 
-
-// Configure JWT Authentication
+// JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["Secret"];
 var issuer = jwtSettings["Issuer"];
@@ -49,6 +48,7 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = issuer,
         ValidAudience = audience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+        ClockSkew = TimeSpan.Zero
         ClockSkew = TimeSpan.Zero
     };
 });
@@ -109,11 +109,17 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+// Swagger & CORS setup based on environment
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage(); // shows stack traces
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI(); // shows the Swagger UI
+    app.UseSwaggerUI();
+    app.UseCors("AllowAll"); // Swagger needs full access
+}
+else
+{
+    app.UseCors("AllowFrontend"); // React frontend only
 }
 
 app.UseHttpsRedirection();
@@ -126,8 +132,6 @@ app.UseCors("AllowReactApp");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
 app.MapHub<ReadNGo_Group2_C20.Hubs.OrderNotificationHub>("/orderHub");
 app.UseStaticFiles();
 app.Run();
-
