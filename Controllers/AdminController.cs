@@ -73,21 +73,33 @@ namespace ReadNGo.Controllers
         }
 
 
-        // PATCH: api/Admin/edit-book
 
-        [HttpPut("edit-book/{bookId}")]
-        public IActionResult EditBook(int bookId, [FromBody] BookDTO updated)
+        // PUT: api/Admin/edit-book-with-image/{bookId}
+        [HttpPut("edit-book-with-image/{bookId}")]
+        [Consumes("multipart/form-data")]
+        public IActionResult EditBookWithImage(int bookId, [FromForm] EditBookWithImageDTO updated)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            string? imagePath = null;
 
-            var success = _adminService.EditBook(bookId, updated);
+            if (updated.Image != null)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(updated.Image.FileName);
+                var fullPath = Path.Combine("wwwroot", "images", fileName);
+                imagePath = $"/images/{fileName}";
 
-            if (success)
-                return Ok(new { message = $"Book ID {bookId} updated successfully." });
-            else
-                return NotFound(new { message = $"Book with ID {bookId} not found." });
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    updated.Image.CopyTo(stream);
+                }
+            }
+
+            var success = _adminService.EditBookWithImage(bookId, updated, imagePath);
+            return success
+                ? Ok(new { message = $"Book ID {bookId} updated successfully." })
+                : NotFound(new { message = $"Book with ID {bookId} not found." });
         }
+
+
 
 
         // DELETE: api/Admin/delete-book
