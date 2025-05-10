@@ -9,6 +9,7 @@ namespace ReadNGo.Services.Interfaces
 {
     public interface IAdminService
     {
+       
         bool AddBook(BookDTO book);
         bool DeleteBook(int bookId);
         bool SetDiscount(int bookId, AdminSetDiscountDTO discountDto);

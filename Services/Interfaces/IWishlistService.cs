@@ -10,6 +10,6 @@ namespace ReadNGo.Services.Interfaces
     {
         bool AddToWishlist(WishlistDTO item);
         List<WishlistDTO> GetWishlistByUser(int userId);
-        bool RemoveFromWishlist(int bookId);
+        bool RemoveFromWishlist(int userId, int bookId);  
     }
 }
