@@ -11,7 +11,7 @@ import EditBookPage from "./pages/EditBookPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminCreateStaff from "./pages/AdminCreateStaff";
 import AdminCreateAnnouncement from "./pages/AdminCreateAnnouncement";
-
+import StaffDashboard from "./pages/StaffDashboard"; // Add this import
 
 export default function App() {
     return (
@@ -22,11 +22,35 @@ export default function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/books" element={<Books />} />
                 <Route path="/create-order" element={<CreateOrderPage />} />
-                {/*<Route path="/User-Get-Books" element={<AdminGetBooks />} />\*/}
-                <Route path="/edit-book/:id" element={<EditBookPage />} />
-                {/*<Route path="admin-create-staff" element={<AdminCreateStaff />} />*/}
+                <Route path="/User-Get-Books" element={<AdminGetBooks />} />
 
-                {/* ✅ Protected admin routes */}
+                {/* Protected routes for both Admin and Staff */}
+                <Route
+                    path="/Admin-Get-Books"
+                    element={
+                        <ProtectedRoute allowedRoles={["Admin", "Staff"]}>
+                            <AdminGetBooks />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/Admin-Add-Books"
+                    element={
+                        <ProtectedRoute allowedRoles={["Admin", "Staff"]}>
+                            <AdminAddBooks />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/edit-book/:id"
+                    element={
+                        <ProtectedRoute allowedRoles={["Admin", "Staff"]}>
+                            <EditBookPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                {/* Protected admin-only routes */}
                 <Route
                     path="/dashboard"
                     element={
@@ -36,24 +60,6 @@ export default function App() {
                     }
                 />
                 <Route
-                    path="/Admin-Get-Books"
-                    element={
-                        <ProtectedRoute allowedRoles={["Admin"]}>
-                            <AdminGetBooks />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route
-                    path="/Admin-Add-Books"
-                    element={
-                        <ProtectedRoute allowedRoles={["Admin"]}>
-                            <AdminAddBooks />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route
                     path="/Admin-Create-Staff"
                     element={
                         <ProtectedRoute allowedRoles={["Admin"]}>
@@ -61,7 +67,6 @@ export default function App() {
                         </ProtectedRoute>
                     }
                 />
-
                 <Route
                     path="/Admin-Create-Announcement"
                     element={
@@ -70,9 +75,17 @@ export default function App() {
                         </ProtectedRoute>
                     }
                 />
+
+                {/* Protected staff routes */}
+                <Route
+                    path="/staff-dashboard"
+                    element={
+                        <ProtectedRoute allowedRoles={["Staff"]}>
+                            <StaffDashboard />
+                        </ProtectedRoute>
+                    }
+                />
             </Routes>
-        
-     
         </Router>
     );
 }

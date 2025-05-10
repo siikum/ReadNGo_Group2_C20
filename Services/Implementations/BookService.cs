@@ -68,15 +68,35 @@ namespace ReadNGo.Services.Implementations
         }
 
         // Search books by query (title, author, ISBN or description)
+        //public List<BookDTO> SearchBooks(string query)
+        //{
+        //    if (string.IsNullOrEmpty(query))
+        //        return GetAllBooks();
+
+        //    return _context.Books
+        //        .Where(b =>
+        //            b.Title.Contains(query) ||
+        //            b.Author.Contains(query))
+        //        .AsNoTracking()
+        //        .Include(b => b.Reviews)
+        //        .Select(MapToDTO)
+        //        .ToList();
+        //}
         public List<BookDTO> SearchBooks(string query)
         {
             if (string.IsNullOrEmpty(query))
                 return GetAllBooks();
 
+            string lowerQuery = query.ToLower();
+
             return _context.Books
                 .Where(b =>
-                    b.Title.Contains(query) ||
-                    b.Author.Contains(query))
+                    b.Title.ToLower().Contains(lowerQuery) ||
+        
+                    b.Author.ToLower().Contains(lowerQuery)||
+        
+                    b.ISBN.ToLower().Contains(lowerQuery) ||
+                    b.Description.ToLower().Contains(lowerQuery))
                 .AsNoTracking()
                 .Include(b => b.Reviews)
                 .Select(MapToDTO)

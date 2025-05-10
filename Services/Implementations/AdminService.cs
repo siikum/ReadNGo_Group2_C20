@@ -7,17 +7,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ReadNGo_Group2_C20.DTO;
+using ReadNGo_Group2_C20.Services.Interfaces;
 
 namespace ReadNGo.Services.Implementations
 {
     public class AdminService : IAdminService
     {
         private readonly ReadNGoContext _context;
+        //private readonly IJwtService _jwtService;
 
         // Constructor injection of the database context
         public AdminService(ReadNGoContext context)
         {
             _context = context;
+            
         }
 
         // Add a new book to the catalog
