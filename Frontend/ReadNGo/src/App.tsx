@@ -1,7 +1,7 @@
 ﻿import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Start from "./pages/start";
-import Login from "./pages/login";
-import Register from "./pages/register";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Books from "./pages/Books";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminAddBooks from "./pages/AdminAddBooks";
@@ -11,6 +11,7 @@ import EditBookPage from "./pages/EditBookPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminCreateStaff from "./pages/AdminCreateStaff";
 import AdminCreateAnnouncement from "./pages/AdminCreateAnnouncement";
+import HomePage from "./pages/Homepage";
 
 
 export default function App() {
@@ -25,6 +26,8 @@ export default function App() {
                 {/*<Route path="/User-Get-Books" element={<AdminGetBooks />} />\*/}
                 <Route path="/edit-book/:id" element={<EditBookPage />} />
                 {/*<Route path="admin-create-staff" element={<AdminCreateStaff />} />*/}
+
+                <Route path="/homepage" element={<HomePage />} />
 
                 {/* ✅ Protected admin routes */}
                 <Route
