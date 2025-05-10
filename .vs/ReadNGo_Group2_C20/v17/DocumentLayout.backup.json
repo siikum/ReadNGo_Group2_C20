@@ -1,38 +1,34 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\",
+  "WorkspaceRootPath": "C:\\Users\\Legion\\Desktop\\net\\ReadNGo_Group2_C20\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Migrations\\20250509172249_FullInitialbyRubin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Migrations\\20250509172249_FullInitialbyRubin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\legion\\desktop\\net\\readngo_group2_c20\\models\\wishlist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:models\\wishlist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\dotnettt\\readngo_group2_c20\\frontend\\readngo\\src\\pages\\admincreateannouncement.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:frontend\\readngo\\src\\pages\\admincreateannouncement.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\legion\\desktop\\net\\readngo_group2_c20\\services\\interfaces\\iwishlistservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:services\\interfaces\\iwishlistservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\dotnettt\\readngo_group2_c20\\frontend\\readngo\\src\\pages\\admincreatestaff.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:frontend\\readngo\\src\\pages\\admincreatestaff.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\legion\\desktop\\net\\readngo_group2_c20\\services\\interfaces\\ibookservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:services\\interfaces\\ibookservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\dotnettt\\readngo_group2_c20\\services\\implementations\\adminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:services\\implementations\\adminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\legion\\desktop\\net\\readngo_group2_c20\\services\\implementations\\wishlistservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:services\\implementations\\wishlistservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\dotnettt\\readngo_group2_c20\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\legion\\desktop\\net\\readngo_group2_c20\\models\\book.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:models\\book.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\dotnettt\\readngo_group2_c20\\models\\announcement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:models\\announcement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\legion\\desktop\\net\\readngo_group2_c20\\services\\implementations\\bookservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:services\\implementations\\bookservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\dotnettt\\readngo_group2_c20\\dto\\announcementdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:dto\\announcementdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\dotnettt\\readngo_group2_c20\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\legion\\desktop\\net\\readngo_group2_c20\\dto\\bookdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:dto\\bookdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -42,114 +38,101 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "20250509172249_FullInitialbyRubin.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Migrations\\20250509172249_FullInitialbyRubin.cs",
-              "RelativeDocumentMoniker": "Migrations\\20250509172249_FullInitialbyRubin.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Migrations\\20250509172249_FullInitialbyRubin.cs",
-              "RelativeToolTip": "Migrations\\20250509172249_FullInitialbyRubin.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-09T17:22:49.872Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AdminCreateStaff.tsx",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\pages\\AdminCreateStaff.tsx",
-              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\pages\\AdminCreateStaff.tsx",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\pages\\AdminCreateStaff.tsx",
-              "RelativeToolTip": "Frontend\\ReadNGo\\src\\pages\\AdminCreateStaff.tsx",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-05-09T17:21:52.575Z",
-              "EditorCaption": ""
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "AdminCreateAnnouncement.tsx",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\pages\\AdminCreateAnnouncement.tsx",
-              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\pages\\AdminCreateAnnouncement.tsx",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\pages\\AdminCreateAnnouncement.tsx",
-              "RelativeToolTip": "Frontend\\ReadNGo\\src\\pages\\AdminCreateAnnouncement.tsx",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAAwBgAAAA4AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-05-09T17:21:43.406Z",
+              "Title": "IWishlistService.cs",
+              "DocumentMoniker": "C:\\Users\\Legion\\Desktop\\net\\ReadNGo_Group2_C20\\Services\\Interfaces\\IWishlistService.cs",
+              "RelativeDocumentMoniker": "Services\\Interfaces\\IWishlistService.cs",
+              "ToolTip": "C:\\Users\\Legion\\Desktop\\net\\ReadNGo_Group2_C20\\Services\\Interfaces\\IWishlistService.cs*",
+              "RelativeToolTip": "Services\\Interfaces\\IWishlistService.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-10T08:14:08.644Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\appsettings.json",
-              "RelativeDocumentMoniker": "appsettings.json",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\appsettings.json",
-              "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-09T17:18:19.697Z",
+              "Title": "Book.cs",
+              "DocumentMoniker": "C:\\Users\\Legion\\Desktop\\net\\ReadNGo_Group2_C20\\Models\\Book.cs",
+              "RelativeDocumentMoniker": "Models\\Book.cs",
+              "ToolTip": "C:\\Users\\Legion\\Desktop\\net\\ReadNGo_Group2_C20\\Models\\Book.cs",
+              "RelativeToolTip": "Models\\Book.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAywBUAAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-10T08:05:36.685Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "AnnouncementDTO.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\DTO\\AnnouncementDTO.cs",
-              "RelativeDocumentMoniker": "DTO\\AnnouncementDTO.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\DTO\\AnnouncementDTO.cs",
-              "RelativeToolTip": "DTO\\AnnouncementDTO.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAArAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "Wishlist.cs",
+              "DocumentMoniker": "C:\\Users\\Legion\\Desktop\\net\\ReadNGo_Group2_C20\\Models\\Wishlist.cs",
+              "RelativeDocumentMoniker": "Models\\Wishlist.cs",
+              "ToolTip": "C:\\Users\\Legion\\Desktop\\net\\ReadNGo_Group2_C20\\Models\\Wishlist.cs*",
+              "RelativeToolTip": "Models\\Wishlist.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAcAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-09T17:08:44.759Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Announcement.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Models\\Announcement.cs",
-              "RelativeDocumentMoniker": "Models\\Announcement.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Models\\Announcement.cs",
-              "RelativeToolTip": "Models\\Announcement.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-09T17:10:21.743Z",
+              "WhenOpened": "2025-05-10T08:05:06.536Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "AdminService.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Services\\Implementations\\AdminService.cs",
-              "RelativeDocumentMoniker": "Services\\Implementations\\AdminService.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Services\\Implementations\\AdminService.cs",
-              "RelativeToolTip": "Services\\Implementations\\AdminService.cs",
-              "ViewState": "AgIAAPIAAAAAAAAAAAAuwNMAAAAAAAAAAAAAAA==",
+              "Title": "WishlistService.cs",
+              "DocumentMoniker": "C:\\Users\\Legion\\Desktop\\net\\ReadNGo_Group2_C20\\Services\\Implementations\\WishlistService.cs",
+              "RelativeDocumentMoniker": "Services\\Implementations\\WishlistService.cs",
+              "ToolTip": "C:\\Users\\Legion\\Desktop\\net\\ReadNGo_Group2_C20\\Services\\Implementations\\WishlistService.cs*",
+              "RelativeToolTip": "Services\\Implementations\\WishlistService.cs*",
+              "ViewState": "AgIAACQAAAAAAAAAAAAYwDQAAABJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-09T17:09:05.875Z",
+              "WhenOpened": "2025-05-10T08:02:06.567Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "AdminController.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Controllers\\AdminController.cs",
-              "RelativeDocumentMoniker": "Controllers\\AdminController.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Controllers\\AdminController.cs",
-              "RelativeToolTip": "Controllers\\AdminController.cs",
-              "ViewState": "AgIAAIEAAAAAAAAAAAAjwI4AAABKAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "IBookService.cs",
+              "DocumentMoniker": "C:\\Users\\Legion\\Desktop\\net\\ReadNGo_Group2_C20\\Services\\Interfaces\\IBookService.cs",
+              "RelativeDocumentMoniker": "Services\\Interfaces\\IBookService.cs",
+              "ToolTip": "C:\\Users\\Legion\\Desktop\\net\\ReadNGo_Group2_C20\\Services\\Interfaces\\IBookService.cs",
+              "RelativeToolTip": "Services\\Interfaces\\IBookService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-09T17:06:54.97Z",
+              "WhenOpened": "2025-05-10T07:56:40.986Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "BookDTO.cs",
+              "DocumentMoniker": "C:\\Users\\Legion\\Desktop\\net\\ReadNGo_Group2_C20\\DTO\\BookDTO.cs",
+              "RelativeDocumentMoniker": "DTO\\BookDTO.cs",
+              "ToolTip": "C:\\Users\\Legion\\Desktop\\net\\ReadNGo_Group2_C20\\DTO\\BookDTO.cs",
+              "RelativeToolTip": "DTO\\BookDTO.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAAUwCEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-10T07:38:44.725Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "BookService.cs",
+              "DocumentMoniker": "C:\\Users\\Legion\\Desktop\\net\\ReadNGo_Group2_C20\\Services\\Implementations\\BookService.cs",
+              "RelativeDocumentMoniker": "Services\\Implementations\\BookService.cs",
+              "ToolTip": "C:\\Users\\Legion\\Desktop\\net\\ReadNGo_Group2_C20\\Services\\Implementations\\BookService.cs",
+              "RelativeToolTip": "Services\\Implementations\\BookService.cs",
+              "ViewState": "AgIAACYAAAAAAAAAAAAgwDAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-10T06:57:21.325Z",
               "EditorCaption": ""
             }
           ]
