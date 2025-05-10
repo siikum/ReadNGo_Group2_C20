@@ -134,6 +134,17 @@ namespace ReadNGo.Controllers
             var clearedCount = _adminService.ClearExpiredDiscounts();
             return Ok(new { message = $"{clearedCount} expired discounts cleared." });
         }
+        // PUT: api/Admin/set-discount-combined
+        [HttpPut("set-discount-combined/{bookId}")]
+        public IActionResult SetDiscountWithAutoCleanup(int bookId, [FromBody] AdminSetDiscountDTO discount)
+        {
+            var success = _adminService.SetDiscountWithAutoCleanup(bookId, discount);
+
+            if (success)
+                return Ok(new { message = "Expired discounts cleared and new discount applied successfully." });
+            else
+                return NotFound(new { message = $"Book with ID {bookId} not found or discount invalid." });
+        }
 
 
         // POST: api/Admin/create-announcement
@@ -147,6 +158,15 @@ namespace ReadNGo.Controllers
 
             return Ok(new { message = "Announcement published successfully." });
         }
+
+        // GET: api/Admin/announcements
+        [HttpGet("announcements")]
+        public IActionResult GetAnnouncements()
+        {
+            var announcements = _adminService.GetAllAnnouncements();
+            return Ok(announcements);
+        }
+
 
         // POST: api/Admin/create-staff
         [HttpPost("create-staff")]
