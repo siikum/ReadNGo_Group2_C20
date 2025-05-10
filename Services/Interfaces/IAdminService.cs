@@ -13,11 +13,14 @@ namespace ReadNGo.Services.Interfaces
         bool DeleteBook(int bookId);
         bool SetDiscount(int bookId, AdminSetDiscountDTO discountDto);
         bool CreateAnnouncement(AnnouncementDTO announcement);
+        List<AnnouncementDTO> GetAllAnnouncements();
+
         int ClearExpiredDiscounts();
         bool CreateStaff(StaffDTO staffDto);
 
         bool CheckStaffEmailExists(string email);
         bool EditBookWithImage(int bookId, EditBookWithImageDTO updated, string? imagePath);
+        bool SetDiscountWithAutoCleanup(int bookId, AdminSetDiscountDTO discountDto);
 
 
 

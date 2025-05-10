@@ -126,7 +126,6 @@ namespace ReadNGo.Services.Implementations
         }
 
 
-        // Setting a discount on a book
         public bool SetDiscount(int bookId, AdminSetDiscountDTO discountDto)
         {
             try
@@ -145,13 +144,21 @@ namespace ReadNGo.Services.Implementations
                     return false;
                 }
 
+                var now = DateTime.UtcNow;
+
+                // Reject discounts that are already expired
+                if (discountDto.EndDate < now)
+                {
+                    Console.WriteLine("Cannot apply discount: EndDate is already in the past.");
+                    return false;
+                }
+
                 // Apply discount fields
                 book.DiscountPercentage = discountDto.Percentage;
                 book.DiscountStartDate = discountDto.StartDate;
                 book.DiscountEndDate = discountDto.EndDate;
 
-                // Auto-set IsOnSale based on today's date
-                var now = DateTime.UtcNow;
+                // Set IsOnSale only if current date is within discount range
                 book.IsOnSale = now >= discountDto.StartDate && now <= discountDto.EndDate;
 
                 _context.SaveChanges();
@@ -166,6 +173,7 @@ namespace ReadNGo.Services.Implementations
         }
 
 
+        // Clears expired discounts from all books
         public int ClearExpiredDiscounts()
         {
             var now = DateTime.UtcNow;
@@ -188,14 +196,20 @@ namespace ReadNGo.Services.Implementations
             return expiredBooks.Count;
         }
 
+        // Combines cleanup and discount setting in one call
+        public bool SetDiscountWithAutoCleanup(int bookId, AdminSetDiscountDTO discountDto)
+        {
+            // Step 1: Clear expired discounts globally
+            ClearExpiredDiscounts();
 
-
-
-
+            // Step 2: Apply new discount to the specified book
+            return SetDiscount(bookId, discountDto);
+        }
 
         // Creating an announcement
         public bool CreateAnnouncement(AnnouncementDTO announcementDto)
         {
+
             try
             {
                 if (announcementDto.StartTime >= announcementDto.EndTime)
@@ -220,6 +234,26 @@ namespace ReadNGo.Services.Implementations
                 return false;
             }
         }
+
+
+        public List<AnnouncementDTO> GetAllAnnouncements()
+        {
+            var now = DateTime.UtcNow;
+            return _context.Announcements
+                .Where(a => a.StartTime <= now && a.EndTime >= now && a.IsActive)
+                .OrderByDescending(a => a.StartTime)
+                .Select(a => new AnnouncementDTO
+                {
+                    Title = a.Title,
+                    Message = a.Message,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime
+                })
+                .ToList();
+        }
+
+
+
 
         public bool CreateStaff(StaffDTO staffDto)
         {
