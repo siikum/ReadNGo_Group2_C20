@@ -51,6 +51,20 @@ export interface CreateStaffData {
     password: string;
 }
 
+export interface StaffLoginData {
+    email: string;
+    password: string;
+}
+
+export interface StaffLoginResponse {
+    success: boolean;
+    message: string;
+    token: string;
+    fullName: string;
+    email: string;
+    role: string;
+}
+
 export interface CreateAnnouncementData {
     title: string;
     message: string;
@@ -381,4 +395,54 @@ export const adminCreateAnnouncement = async (
             error: error.response?.data || 'Failed to create announcement'
         };
     }
+};
+
+
+export const loginStaff = async (credentials: StaffLoginData): Promise<ApiResponse<StaffLoginResponse>> => {
+    try {
+        const response = await api.post('/api/StaffAuth/login', credentials);
+
+        // Store the token and user details in localStorage
+        if (response.data && response.data.token) {
+            localStorage.setItem('staffToken', response.data.token);
+            localStorage.setItem('staffRole', response.data.role);
+            localStorage.setItem('staffEmail', response.data.email);
+            localStorage.setItem('staffName', response.data.fullName);
+        }
+
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.response?.data?.message || 'Staff login failed'
+        };
+    }
+};
+
+// Add a helper function to check if staff is authenticated
+export const isStaffAuthenticated = (): boolean => {
+    const token = localStorage.getItem('staffToken');
+    const role = localStorage.getItem('staffRole');
+    return !!(token && role === 'Staff');
+};
+
+// Add a helper function to get staff details
+export const getStaffDetails = () => {
+    return {
+        token: localStorage.getItem('staffToken'),
+        role: localStorage.getItem('staffRole'),
+        email: localStorage.getItem('staffEmail'),
+        fullName: localStorage.getItem('staffName')
+    };
+};
+
+// Add a logout function
+export const logoutStaff = () => {
+    localStorage.removeItem('staffToken');
+    localStorage.removeItem('staffRole');
+    localStorage.removeItem('staffEmail');
+    localStorage.removeItem('staffName');
 };
