@@ -39,12 +39,12 @@ namespace ReadNGo.Services.Implementations
         }
 
         // Filter books by various criteria
-        public List<BookDTO> FilterBooks(string genre = null, string author = null, string format = null,
-            string language = null, string publisher = null)
+        public List<BookDTO> FilterBooks( string genre = null, string author = null, string format = null, string language = null, string publisher = null, bool? availableInLibrary = null, decimal? minPrice = null ,decimal? maxPrice = null, double? minRating = null)
         {
-            var query = _context.Books.AsQueryable();
+            var query = _context.Books
+                .Include(b => b.Reviews)
+                .AsQueryable();
 
-            // Apply filters if they are provided
             if (!string.IsNullOrEmpty(genre))
                 query = query.Where(b => b.Genre.Contains(genre));
 
@@ -60,12 +60,25 @@ namespace ReadNGo.Services.Implementations
             if (!string.IsNullOrEmpty(publisher))
                 query = query.Where(b => b.Publisher.Contains(publisher));
 
+            if (availableInLibrary.HasValue && availableInLibrary.Value)
+                query = query.Where(b => b.StockQuantity > 0);
+
+            if (minPrice.HasValue)
+                query = query.Where(b => b.Price >= minPrice.Value);
+
+            if (maxPrice.HasValue)
+                query = query.Where(b => b.Price <= maxPrice.Value);
+
+            if (minRating.HasValue)
+                query = query.Where(b => b.Reviews.Any() &&
+                    b.Reviews.Average(r => r.Rating) >= minRating.Value);
+
             return query
                 .AsNoTracking()
-                .Include(b => b.Reviews)
                 .Select(MapToDTO)
                 .ToList();
         }
+
 
         // Search books by query (title, author, ISBN or description)
         //public List<BookDTO> SearchBooks(string query)
@@ -89,6 +102,8 @@ namespace ReadNGo.Services.Implementations
 
             string lowerQuery = query.ToLower();
 
+          
+
             return _context.Books
                 .Where(b =>
                     b.Title.ToLower().Contains(lowerQuery) ||
@@ -102,6 +117,7 @@ namespace ReadNGo.Services.Implementations
                 .Select(MapToDTO)
                 .ToList();
         }
+
 
         // Sort books by different criteria
         public List<BookDTO> SortBooks(string by)

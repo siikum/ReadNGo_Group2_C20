@@ -12,15 +12,11 @@ using ReadNGo.DBContext;
 namespace ReadNGo_Group2_C20.Migrations
 {
     [DbContext(typeof(ReadNGoContext))]
-<<<<<<<< HEAD:Migrations/20250510095626_FullInitialbyRubin.Designer.cs
-    [Migration("20250510095626_FullInitialbyRubin")]
-========
 <<<<<<<< HEAD:Migrations/20250510063228_FullInitialbyRubin.Designer.cs
     [Migration("20250510063228_FullInitialbyRubin")]
 ========
     [Migration("20250510064334_FullInitialbyRubin")]
 >>>>>>>> 4d6abcaf2b80dc9815785ee8ba8dfc54681a19b0:Migrations/20250510064334_FullInitialbyRubin.Designer.cs
->>>>>>>> 1ad5caf958475a4df6f5475365fb6f1ed315b1a8:Migrations/20250510063228_FullInitialbyRubin.Designer.cs
     partial class FullInitialbyRubin
     {
         /// <inheritdoc />
@@ -275,10 +271,6 @@ namespace ReadNGo_Group2_C20.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
 

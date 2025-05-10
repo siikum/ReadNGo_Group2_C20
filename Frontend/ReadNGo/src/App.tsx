@@ -1,7 +1,7 @@
 ﻿import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Start from "./pages/start";
-import Login from "./pages/login";
-import Register from "./pages/register";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Books from "./pages/Books";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminAddBooks from "./pages/AdminAddBooks";
@@ -12,6 +12,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminCreateStaff from "./pages/AdminCreateStaff";
 import AdminCreateAnnouncement from "./pages/AdminCreateAnnouncement";
 import StaffDashboard from "./pages/StaffDashboard"; // Add this import
+import Homepage from "./pages/Homepage";
 
 export default function App() {
     return (
@@ -22,35 +23,11 @@ export default function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/books" element={<Books />} />
                 <Route path="/create-order" element={<CreateOrderPage />} />
-                <Route path="/User-Get-Books" element={<AdminGetBooks />} />
+                {/*<Route path="/User-Get-Books" element={<AdminGetBooks />} />\*/}
+                <Route path="/edit-book/:id" element={<EditBookPage />} />
+                {/*<Route path="admin-create-staff" element={<AdminCreateStaff />} />*/}
 
-                {/* Protected routes for both Admin and Staff */}
-                <Route
-                    path="/Admin-Get-Books"
-                    element={
-                        <ProtectedRoute allowedRoles={["Admin", "Staff"]}>
-                            <AdminGetBooks />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/Admin-Add-Books"
-                    element={
-                        <ProtectedRoute allowedRoles={["Admin", "Staff"]}>
-                            <AdminAddBooks />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/edit-book/:id"
-                    element={
-                        <ProtectedRoute allowedRoles={["Admin", "Staff"]}>
-                            <EditBookPage />
-                        </ProtectedRoute>
-                    }
-                />
-
-                {/* Protected admin-only routes */}
+                {/* ✅ Protected admin routes */}
                 <Route
                     path="/dashboard"
                     element={

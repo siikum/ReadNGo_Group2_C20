@@ -43,7 +43,7 @@ export default function Login() {
                 } else if (userRole === "Member") {
                     navigate("/User-Get-Books");
                 } else {
-                    navigate("/");
+                    navigate("/homepage");
                 }
 
                 // Reset fields

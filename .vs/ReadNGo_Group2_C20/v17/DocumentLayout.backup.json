@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\",
+  "WorkspaceRootPath": "C:\\Users\\Legion\\Desktop\\net\\ReadNGo_Group2_C20\\",
   "Documents": [
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Migrations\\20250510095626_FullInitialbyRubin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -46,12 +46,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 0,

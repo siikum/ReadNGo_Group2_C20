@@ -33,7 +33,6 @@ namespace ReadNGo.Services.Implementations
 
             _context.WishlistItems.Add(wishlistItem);
             _context.SaveChanges();
-
             return true;
         }
 
@@ -48,16 +47,17 @@ namespace ReadNGo.Services.Implementations
                 }).ToList();
         }
 
-        public bool RemoveFromWishlist(int bookId)
+        public bool RemoveFromWishlist(int userId, int bookId)
         {
-            var item = _context.WishlistItems.FirstOrDefault(w => w.BookId == bookId);
+            var item = _context.WishlistItems
+                .FirstOrDefault(w => w.UserId == userId && w.BookId == bookId);
+
             if (item == null)
                 return false;
 
             _context.WishlistItems.Remove(item);
             _context.SaveChanges();
-
             return true;
         }
-    }
-}
+    } // Closing brace for class
+} // Closing brace for namespace
