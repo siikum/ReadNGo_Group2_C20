@@ -40,7 +40,7 @@ export default function Login() {
                 } else if (userRole === "Member" || userRole === "Staff") {
                     navigate("/User-Get-Books");
                 } else {
-                    navigate("/");
+                    navigate("/homepage");
                 }
 
                 // Optionally reset fields
