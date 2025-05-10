@@ -23,8 +23,8 @@ export default function AdminAddBooks() {
         description: "",
         isbn: "",
         stockQuantity: 0,
-        averageRating: 0,
-        reviewCount: 0,
+        //averageRating: 0,
+        //reviewCount: 0,
     });
 
     const [image, setImage] = useState<File | null>(null);
@@ -35,7 +35,7 @@ export default function AdminAddBooks() {
         setBook(prev => ({
             ...prev,
             [name]:
-                type === "number" || ["price", "discountPercentage", "stockQuantity", "averageRating", "reviewCount"].includes(name)
+                type === "number" || ["price", "discountPercentage", "stockQuantity"].includes(name)
                     ? Number(value)
                     : name.includes("Date")
                         ? value
@@ -86,8 +86,8 @@ export default function AdminAddBooks() {
                 description: "",
                 isbn: "",
                 stockQuantity: 0,
-                averageRating: 0,
-                reviewCount: 0,
+                //averageRating: 0,
+                //reviewCount: 0,
             });
             setImage(null);
         } else {
@@ -149,8 +149,8 @@ export default function AdminAddBooks() {
 
                     {/* Stock & Rating */}
                     <InputField label="Stock Quantity" name="stockQuantity" value={book.stockQuantity} onChange={handleChange} type="number" />
-                    <InputField label="Average Rating" name="averageRating" value={book.averageRating} onChange={handleChange} type="number" />
-                    <InputField label="Review Count" name="reviewCount" value={book.reviewCount} onChange={handleChange} type="number" />
+                    {/*<InputField label="Average Rating" name="averageRating" value={book.averageRating} onChange={handleChange} type="number" />*/}
+                    {/*<InputField label="Review Count" name="reviewCount" value={book.reviewCount} onChange={handleChange} type="number" />*/}
                     <InputField label="ISBN" name="isbn" value={book.isbn} onChange={handleChange} />
 
                     {/* Dates */}

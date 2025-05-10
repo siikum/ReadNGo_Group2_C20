@@ -33,8 +33,8 @@ export interface AddBook {
     description: string;
     isbn: string;
     stockQuantity: number;
-    averageRating: number;
-    reviewCount: number;
+    //averageRating: number;
+    //reviewCount: number;
 }
 
 
@@ -186,8 +186,8 @@ export const addBooks = async (bookData: AddBook, imageFile: File): Promise<ApiR
         formData.append("StockQuantity", bookData.stockQuantity.toString());
 
         // Optional (if backend accepts or calculates these):
-        formData.append("AverageRating", bookData.averageRating.toString());
-        formData.append("ReviewCount", bookData.reviewCount.toString());
+        //formData.append("AverageRating", bookData.averageRating.toString());
+        //formData.append("ReviewCount", bookData.reviewCount.toString());
 
         // Append image file
         formData.append("Image", imageFile);
@@ -234,8 +234,8 @@ export const editBook = async (
         formData.append("Description", bookData.description);
         formData.append("ISBN", bookData.isbn);
         formData.append("StockQuantity", bookData.stockQuantity.toString());
-        formData.append("AverageRating", bookData.averageRating.toString());
-        formData.append("ReviewCount", bookData.reviewCount.toString());
+        //formData.append("AverageRating", bookData.averageRating.toString());
+        //formData.append("ReviewCount", bookData.reviewCount.toString());
 
         if (imageFile) {
             formData.append("Image", imageFile);

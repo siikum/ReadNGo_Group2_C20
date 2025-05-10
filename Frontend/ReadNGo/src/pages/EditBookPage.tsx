@@ -90,8 +90,8 @@ export default function EditBookPage() {
                         ["price", "Price"],
                         ["discountPercentage", "Discount %"],
                         ["stockQuantity", "Stock"],
-                        ["averageRating", "Rating"],
-                        ["reviewCount", "Review Count"],
+                        //["averageRating", "Rating"],
+                        //["reviewCount", "Review Count"],
                     ].map(([field, label]) => (
                         <InputField
                             key={field}
