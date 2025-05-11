@@ -24,19 +24,31 @@ namespace ReadNGo.Services.Implementations
             _context = context;
             _configuration = configuration;
         }
-        public bool Register(UserRegisterDTO userDTO)
+        public User Register(UserRegisterDTO userDTO)
         {
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(userDTO.Password);
-            var user = new User
+            try
             {
-                FullName = userDTO.FullName,
-                Email = userDTO.Email,
-                Password = hashedPassword
-            };
-            _context.Users.Add(user);
-            _context.SaveChanges();
+                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(userDTO.Password);
+                var user = new User
+                {
+                    FullName = userDTO.FullName,
+                    Email = userDTO.Email,
+                    Password = hashedPassword,
+                    MembershipId = Guid.NewGuid()
+                };
+                _context.Users.Add(user);
+                _context.SaveChanges();
+                return user;
+            }
+            catch (Exception ex)
+            {
+                // Log the error
+                Console.WriteLine($"Registration error: {ex.Message}");
+                Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
 
-            return true;
+                // Return null to indicate failure
+                return null;
+            }
         }
 
         //public bool Login(UserLoginDTO credentials) => true;

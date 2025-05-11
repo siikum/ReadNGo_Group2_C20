@@ -23,6 +23,7 @@ namespace ReadNGo.DBContext
         public DbSet<WishlistItem> WishlistItems { get; set; }
         public DbSet<Announcement> Announcements { get; set; }
         public DbSet<Staff> Staffs { get; set; }
+        public DbSet<OrderProcessingLog> OrderProcessingLogs { get; set; }
 
 
         // optional: customize table names etc.

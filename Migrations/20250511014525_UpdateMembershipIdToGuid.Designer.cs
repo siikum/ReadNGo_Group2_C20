@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ReadNGo.DBContext;
@@ -11,9 +12,11 @@ using ReadNGo.DBContext;
 namespace ReadNGo_Group2_C20.Migrations
 {
     [DbContext(typeof(ReadNGoContext))]
-    partial class ReadNGoContextModelSnapshot : ModelSnapshot
+    [Migration("20250511014525_UpdateMembershipIdToGuid")]
+    partial class UpdateMembershipIdToGuid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -213,45 +216,6 @@ namespace ReadNGo_Group2_C20.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("ReadNGo_Group2_C20.Models.OrderProcessingLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ClaimCodeUsed")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("MembershipIdProvided")
-                        .HasColumnType("text");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ResultMessage")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("Success")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderProcessingLogs");
-                });
-
             modelBuilder.Entity("ReadNGo_Group2_C20.Models.Review", b =>
                 {
                     b.Property<int>("Id")
@@ -410,17 +374,6 @@ namespace ReadNGo_Group2_C20.Migrations
                         .IsRequired();
 
                     b.Navigation("Book");
-
-                    b.Navigation("Order");
-                });
-
-            modelBuilder.Entity("ReadNGo_Group2_C20.Models.OrderProcessingLog", b =>
-                {
-                    b.HasOne("ReadNGo_Group2_C20.Models.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Order");
                 });

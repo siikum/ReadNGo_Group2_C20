@@ -23,6 +23,7 @@ builder.Services.AddScoped<IWishlistService, WishlistService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddSignalR();
+builder.Services.AddScoped<IStaffService, StaffService>();
 
 // JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

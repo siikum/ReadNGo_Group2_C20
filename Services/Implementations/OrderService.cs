@@ -37,7 +37,6 @@ namespace ReadNGo.Services.Implementations
             {
                 // Build order items
                 var orderItems = new List<OrderItem>();
-
                 foreach (var bookId in orderDto.BookIds)
                 {
                     var book = _context.Books.FirstOrDefault(b => b.Id == bookId);
@@ -59,6 +58,9 @@ namespace ReadNGo.Services.Implementations
                     return false;
                 }
 
+                // Calculate discount BEFORE saving the order
+                var discountCheck = CalculateOrderDiscount(orderDto.UserId, orderItems.Count);
+
                 //  Create order
                 var order = new Order
                 {
@@ -78,12 +80,11 @@ namespace ReadNGo.Services.Implementations
                 var user = _context.Users.FirstOrDefault(u => u.Id == orderDto.UserId);
                 if (user != null)
                 {
-                    var discountCheck = CheckDiscount(orderDto.UserId);
-
                     _emailService.SendOrderConfirmation(
                         toEmail: user.Email,
                         userName: user.FullName,
                         userId: user.Id,
+                        membershipId: user.MembershipId.ToString(),
                         bookTitles: orderItems.Select(i => _context.Books.FirstOrDefault(b => b.Id == i.BookId)?.Title ?? "Unknown").ToList(),
                         claimCode: order.ClaimCode,
                         totalBeforeDiscount: order.TotalAmount,
@@ -101,18 +102,17 @@ namespace ReadNGo.Services.Implementations
                         FinalAmount = Math.Round(order.TotalAmount * (1 - discountCheck.Discount / 100m), 2),
                         Timestamp = DateTime.UtcNow
                     })
-.ContinueWith(task =>
-{
-    if (task.IsFaulted)
-    {
-        Console.WriteLine("❌ SignalR failed: " + task.Exception?.GetBaseException().Message);
-    }
-    else
-    {
-        Console.WriteLine("✅ SignalR message sent successfully");
-    }
-});
-
+                    .ContinueWith(task =>
+                    {
+                        if (task.IsFaulted)
+                        {
+                            Console.WriteLine("❌ SignalR failed: " + task.Exception?.GetBaseException().Message);
+                        }
+                        else
+                        {
+                            Console.WriteLine("✅ SignalR message sent successfully");
+                        }
+                    });
                 }
 
                 Console.WriteLine($"Order placed for user {orderDto.UserId} with {order.OrderItems.Count} items. ClaimCode: {order.ClaimCode}");
@@ -124,11 +124,6 @@ namespace ReadNGo.Services.Implementations
                 return false;
             }
         }
-
-
-
-
-
         public bool CancelOrder(int orderId)
         {
             try
@@ -241,7 +236,47 @@ namespace ReadNGo.Services.Implementations
         }
 
 
+        public DiscountResultDTO CalculateOrderDiscount(int userId, int bookCount)
+        {
+            try
+            {
+                decimal discount = 0;
+                bool eligible = false;
 
+                // RULE 1: Current order has 5+ books → +5%
+                if (bookCount >= 5)
+                {
+                    discount += 5;
+                    eligible = true;
+                }
+
+                // RULE 2: Every 10th completed order → +10%
+                int completedOrderCount = _context.Orders
+                    .Count(o => o.UserId == userId && !o.IsCancelled);
+
+                // Check if this WILL BE their 10th, 20th, 30th, etc. order
+                if ((completedOrderCount + 1) % 10 == 0)
+                {
+                    discount += 10;
+                    eligible = true;
+                }
+
+                return new DiscountResultDTO
+                {
+                    Eligible = eligible,
+                    Discount = discount
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("CALCULATE ORDER DISCOUNT ERROR: " + ex.Message);
+                return new DiscountResultDTO
+                {
+                    Eligible = false,
+                    Discount = 0
+                };
+            }
+        }
 
         public DiscountResultDTO CheckDiscount(int userId)
         {
