@@ -12,8 +12,8 @@ using ReadNGo.DBContext;
 namespace ReadNGo_Group2_C20.Migrations
 {
     [DbContext(typeof(ReadNGoContext))]
-    [Migration("20250511023709_MakeMembershipIdProvidedNullable")]
-    partial class MakeMembershipIdProvidedNullable
+    [Migration("20250511082026_FullInitialbyRubin")]
+    partial class FullInitialbyRubin
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -309,6 +309,10 @@ namespace ReadNGo_Group2_C20.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("Staffs");
@@ -334,6 +338,10 @@ namespace ReadNGo_Group2_C20.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
 

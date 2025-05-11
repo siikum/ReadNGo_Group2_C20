@@ -82,7 +82,8 @@ namespace ReadNGo_Group2_C20.Migrations
                     FullName = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false),
-                    Role = table.Column<string>(type: "text", nullable: false)
+                    Role = table.Column<string>(type: "text", nullable: false),
+                    MembershipId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -224,6 +225,31 @@ namespace ReadNGo_Group2_C20.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "OrderProcessingLogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    OrderId = table.Column<int>(type: "integer", nullable: false),
+                    Action = table.Column<string>(type: "text", nullable: false),
+                    Success = table.Column<bool>(type: "boolean", nullable: false),
+                    ResultMessage = table.Column<string>(type: "text", nullable: false),
+                    ClaimCodeUsed = table.Column<string>(type: "text", nullable: false),
+                    MembershipIdProvided = table.Column<string>(type: "text", nullable: true),
+                    Timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderProcessingLogs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderProcessingLogs_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_CartItems_BookId",
                 table: "CartItems",
@@ -242,6 +268,11 @@ namespace ReadNGo_Group2_C20.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderId",
                 table: "OrderItems",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderProcessingLogs_OrderId",
+                table: "OrderProcessingLogs",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
@@ -287,6 +318,9 @@ namespace ReadNGo_Group2_C20.Migrations
 
             migrationBuilder.DropTable(
                 name: "OrderItems");
+
+            migrationBuilder.DropTable(
+                name: "OrderProcessingLogs");
 
             migrationBuilder.DropTable(
                 name: "Reviews");

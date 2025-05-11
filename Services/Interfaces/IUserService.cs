@@ -6,7 +6,7 @@ namespace ReadNGo.Services.Interfaces
 {
     public interface IUserService
     {
-        User Register(UserRegisterDTO user); // changed from bool to User
+        bool Register(UserRegisterDTO user); // changed from bool to User
         string Login(UserLoginDTO credentials);
         UserRegisterDTO GetProfile(int id);
         string GetClaimCode(int orderId);
