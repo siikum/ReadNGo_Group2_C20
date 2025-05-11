@@ -37,6 +37,22 @@ export default function App() {
                     }
                 />
                 <Route
+                    path="/Admin-add-books"
+                    element={
+                        <ProtectedRoute allowedRoles={["Admin"]}>
+                            <AdminAddBooks />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/Admin-get-books"
+                    element={
+                        <ProtectedRoute allowedRoles={["Admin"]}>
+                            <AdminGetBooks />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
                     path="/Admin-Create-Staff"
                     element={
                         <ProtectedRoute allowedRoles={["Admin"]}>
