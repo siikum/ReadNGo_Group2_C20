@@ -19,6 +19,7 @@
            string toEmail,
            string userName,
            int userId,
+           string membershipId,
            List<string> bookTitles,
            string claimCode,
            decimal totalBeforeDiscount,
@@ -48,6 +49,7 @@ Dear {userName},
 🧾 Order Summary:
 ----------------------------------------
 👤 User ID: {userId}
+👤 Membership ID: {membershipId}
 👤 Name: {userName}
 📚 Books:
  - {booksList}

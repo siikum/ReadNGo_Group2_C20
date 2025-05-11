@@ -15,5 +15,7 @@ namespace ReadNGo.Services.Interfaces
         List<OrderDTO> GetOrdersByUser(int userId);
         ApplyDiscountResultDTO ApplyDiscount(ApplyDiscountDTO discount);
         DiscountResultDTO CheckDiscount(int userId);
+        DiscountResultDTO CalculateOrderDiscount(int userId, int bookCount);
+
     }
 }

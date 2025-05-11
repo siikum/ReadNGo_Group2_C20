@@ -2,7 +2,16 @@
 {
     public interface IEmailService
     {
-        void SendOrderConfirmation(string toEmail, string userName, int userId, List<string> bookTitles, string claimCode, decimal totalBeforeDiscount, decimal discountPercent, decimal totalAfterDiscount);
+        void SendOrderConfirmation(
+            string toEmail, 
+            string userName, 
+            int userId,
+            string membershipId,
+            List<string> bookTitles, 
+            string claimCode, 
+            decimal totalBeforeDiscount, 
+            decimal discountPercent, 
+            decimal totalAfterDiscount);
     }
 
 }
