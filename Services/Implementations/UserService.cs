@@ -26,18 +26,18 @@ namespace ReadNGo.Services.Implementations
         }
         public bool Register(UserRegisterDTO userDTO)
         {
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(userDTO.Password);
-
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(userDTO.Password);
             var user = new User
             {
                 FullName = userDTO.FullName,
                 Email = userDTO.Email,
                 Password = hashedPassword,
-                Role = userDTO.Role ?? "Member"
+                Role= userDTO.Role ?? "Member",
+                MembershipId=Guid.NewGuid()
             };
-
             _context.Users.Add(user);
             _context.SaveChanges();
+
             return true;
         }
 
