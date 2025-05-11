@@ -1,71 +1,87 @@
-// src/components/Navbar.tsx
-import React from 'react';
-import { ShoppingCart, User } from 'lucide-react';
-import { Button } from './ui/button';
+// @/components/NavBar.tsx
+import { ShoppingCart, User, Heart } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useCart } from '@/context/CartContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Link, useNavigate } from 'react-router-dom';
 
-export interface NavbarProps {
-  cartCount?: number;
-  isLoggedIn?: boolean;
-  onLoginClick?: () => void;
-  onLogoutClick?: () => void;
-}
+export const Navbar = () => {
+  const { cart, wishlist } = useCart();
+  const navigate = useNavigate();
 
-const Navbar: React.FC<NavbarProps> = ({
-  cartCount = 0,
-  isLoggedIn = false,
-  onLoginClick,
-  onLogoutClick,
-}) => {
+  const handleLogout = () => {
+    // Add your logout logic here
+    console.log('User logged out');
+    navigate('/login');
+  };
+
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo and Title */}
-          <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-gray-900">ReadNGo</h1>
-          </div>
-
-          {/* Right side items */}
-          <div className="flex items-center space-x-4">
-            {/* Cart */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {cartCount}
+    <nav className="sticky top-0 z-50 bg-white shadow-sm border-b">
+      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+        <Link to="/" className="text-xl font-bold text-primary hover:text-primary/90">
+          ReadNGo
+        </Link>
+        
+        <div className="flex items-center gap-4">
+          {/* Wishlist Icon */}
+          <Link to="/wishlist" className="relative">
+            <Button variant="ghost" size="icon">
+              <Heart className="h-5 w-5" />
+              {wishlist.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {wishlist.length}
                 </span>
               )}
             </Button>
+          </Link>
 
-            {/* Login/Logout Button */}
-            {isLoggedIn ? (
-              <Button
-                onClick={onLogoutClick}
-                variant="outline"
-                className="flex items-center gap-2"
+          {/* Cart Icon */}
+          <Link to="/cart" className="relative">
+            <Button variant="ghost" size="icon">
+              <ShoppingCart className="h-5 w-5" />
+              {cart.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {cart.reduce((total, item) => total + item.quantity, 0)}
+                </span>
+              )}
+            </Button>
+          </Link>
+
+          {/* Profile Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <User className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem 
+                onClick={() => navigate('/orders')}
+                className="cursor-pointer"
               >
-                <User className="h-4 w-4" />
+                My Orders
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => navigate('/wishlist')}
+                className="cursor-pointer"
+              >
+                My Wishlist
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={handleLogout}
+                className="cursor-pointer focus:bg-red-50 focus:text-red-500"
+              >
                 Logout
-              </Button>
-            ) : (
-              <Button
-                onClick={onLoginClick}
-                variant="default"
-                className="flex items-center gap-2"
-              >
-                <User className="h-4 w-4" />
-                Login
-              </Button>
-            )}
-          </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </nav>
   );
 };
-
-export default Navbar;

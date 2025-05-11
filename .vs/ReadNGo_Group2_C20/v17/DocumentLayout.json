@@ -3,8 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\dotnettt\\readngo_group2_c20\\wwwroot\\signalr-test.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:wwwroot\\signalr-test.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|d:\\code\\appdev\\migrations\\20250510063228_fullinitialbyrubin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:migrations\\20250510063228_fullinitialbyrubin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\dotnettt\\readngo_group2_c20\\frontend\\readngo\\src\\api\\apiconfig.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:frontend\\readngo\\src\\api\\apiconfig.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\dotnettt\\readngo_group2_c20\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\dotnettt\\readngo_group2_c20\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -61,22 +69,14 @@
               "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\wwwroot\\signalr-test.html",
               "RelativeToolTip": "wwwroot\\signalr-test.html",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-05-11T08:42:17.047Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAGkAAAAAAAAAAAAAAH4AAAAAAAAAAAAAAA==",
+<<<<<<< HEAD
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-05-09T17:21:52.575Z"
+=======
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-11T08:26:37.427Z",
               "EditorCaption": ""
+>>>>>>> 3c6a2dd06d726b2824df83d3c8b35e13f361c6b7
             },
             {
               "$type": "Document",
@@ -106,6 +106,17 @@
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Code\\Appdev\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "D:\\Code\\Appdev\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAkAAABrAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-05-09T17:18:19.697Z"
+=======
               "DocumentIndex": 5,
               "Title": "IUserService.cs",
               "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Services\\Interfaces\\IUserService.cs",
@@ -116,6 +127,7 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-11T08:11:43.484Z",
               "EditorCaption": ""
+>>>>>>> 3c6a2dd06d726b2824df83d3c8b35e13f361c6b7
             },
             {
               "$type": "Document",
