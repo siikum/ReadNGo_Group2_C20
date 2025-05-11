@@ -118,12 +118,12 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseCors("AllowAll"); // Swagger needs full access
+    //app.UseCors("AllowAll"); // Swagger needs full access
 }
-else
-{
-    app.UseCors("AllowFrontend"); // React frontend only
-}
+//else
+//{
+//    app.UseCors("AllowFrontend"); // React frontend only
+//}
 
 app.UseHttpsRedirection();
 
