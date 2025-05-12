@@ -1,4 +1,5 @@
-﻿import api from '@/api/AxiosInstance';
+﻿// Fixed getCart function in apiConfig.ts
+import api from '@/api/AxiosInstance';
 
 // Define interfaces for user-related data
 export interface RegisterData {
@@ -11,6 +12,7 @@ export interface LoginData {
     email: string;
     password: string;
 }
+
 export interface CreateOrderData {
     userId: number;
     bookIds: number[];
@@ -24,24 +26,21 @@ export interface AddBook {
     language: string;
     format: string;
     publisher: string;
-    publicationDate: string; // Changed from Date to string
+    publicationDate: string;
     price: number;
     isOnSale: boolean;
     discountPercentage: number;
-    discountStartDate: string; // Changed from Date to string
-    discountEndDate: string;   // Added missing field and using string
+    discountStartDate: string;
+    discountEndDate: string;
     description: string;
     isbn: string;
     stockQuantity: number;
-    //averageRating: number;
-    //reviewCount: number;
 }
-
 
 interface DiscountPayload {
     percentage: number;
     isOnSale: boolean;
-    startDate: string; // ISO string (e.g., "2025-05-09T11:08:36.443Z")
+    startDate: string;
     endDate: string;
 }
 
@@ -58,7 +57,7 @@ export interface Book {
 export interface ClaimCodeResponse {
     message: string;
     orderId?: number;
-    membershipId?: string;  // Changed to string to match the actual response
+    membershipId?: string;
     totalAmount?: number;
     books?: Book[];
 }
@@ -67,6 +66,24 @@ export interface AddToCartData {
     userId: number;
     bookId: number;
     quantity: number;
+}
+
+export interface CartItem {
+    bookId: number;
+    title: string;
+    author: string;
+    price: number;
+    quantity: number;
+    totalPrice: number;
+}
+
+export interface CartResponse {
+    user: {
+        id: number;
+        fullName: string;
+        email: string;
+    };
+    cartItems: CartItem[];
 }
 
 export interface CreateStaffData {
@@ -79,7 +96,13 @@ export interface StaffLoginData {
     email: string;
     password: string;
 }
-
+interface LoginResponse {
+    token: string;
+    userId: number;
+    email: string;
+    role: string;
+    fullName: string;
+}
 export interface StaffLoginResponse {
     success: boolean;
     message: string;
@@ -92,7 +115,7 @@ export interface StaffLoginResponse {
 export interface CreateAnnouncementData {
     title: string;
     message: string;
-    startTime: string; // ISO format
+    startTime: string;
     endTime: string;
 }
 
@@ -109,20 +132,17 @@ export interface ProcessedOrdersResponse {
 
 export interface StaffDashboardResponse {
     pendingOrdersCount: number;
-    processedOrdersCount: number; 
-    totalOrders: number;          
+    processedOrdersCount: number;
+    totalOrders: number;
     pendingOrdersValue: number;
     processedOrdersValue: number;
 }
-
 
 export interface ApiResponse<T> {
     success: boolean;
     data?: T;
     error?: string;
 }
-
-
 
 // User registration
 export const registerUser = async (userData: RegisterData): Promise<ApiResponse<string>> => {
@@ -141,13 +161,23 @@ export const registerUser = async (userData: RegisterData): Promise<ApiResponse<
 };
 
 // User login
-export const loginUser = async (credentials: LoginData): Promise<ApiResponse<{ token: string }>> => {
+export const loginUser = async (credentials: LoginData): Promise<ApiResponse<LoginResponse>> => {
+    // where LoginResponse is:
+   
+
+    // Rest of your function remains the same
     try {
         const response = await api.post('/api/User/login', credentials);
-        // Store the token in localStorage for later use
+
+        // Store the token and userId in localStorage
         if (response.data && response.data.token) {
             localStorage.setItem('token', response.data.token);
+            localStorage.setItem('userId', response.data.userId.toString());
+            localStorage.setItem('userRole', response.data.role);
+            localStorage.setItem('userEmail', response.data.email);
+            localStorage.setItem('userName', response.data.fullName);
         }
+
         return {
             success: true,
             data: response.data
@@ -207,20 +237,28 @@ export const createOrder = async (orderData: CreateOrderData): Promise<ApiRespon
     }
 };
 
-//export const addBooks = async (bookData: AddBook): Promise<ApiResponse<any>> => {
-//    try {
-//        const response = await api.post('/api/Admin/add-book-with-image', bookData);
-//        return {
-//            success: true,
-//            data: response.data
-//        };
-//    } catch (error) {
-//        return {
-//            success: false,
-//            error: error.response?.data || 'Book creation failed'
-//        };
-//    }
-//};
+// This function is used to place an order with the current cart items
+export const placeOrder = async (): Promise<ApiResponse<{ claimCode: string; orderId: number }>> => {
+    try {
+        // Get current user ID from localStorage or context
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+            throw new Error('User not authenticated');
+        }
+
+        const response = await api.post('/api/Order/place', { userId: parseInt(userId) });
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to place order'
+        };
+    }
+};
+
 export const addBooks = async (bookData: AddBook, imageFile: File): Promise<ApiResponse<any>> => {
     try {
         const formData = new FormData();
@@ -241,10 +279,6 @@ export const addBooks = async (bookData: AddBook, imageFile: File): Promise<ApiR
         formData.append("Description", bookData.description);
         formData.append("ISBN", bookData.isbn);
         formData.append("StockQuantity", bookData.stockQuantity.toString());
-
-        // Optional (if backend accepts or calculates these):
-        //formData.append("AverageRating", bookData.averageRating.toString());
-        //formData.append("ReviewCount", bookData.reviewCount.toString());
 
         // Append image file
         formData.append("Image", imageFile);
@@ -291,8 +325,6 @@ export const editBook = async (
         formData.append("Description", bookData.description);
         formData.append("ISBN", bookData.isbn);
         formData.append("StockQuantity", bookData.stockQuantity.toString());
-        //formData.append("AverageRating", bookData.averageRating.toString());
-        //formData.append("ReviewCount", bookData.reviewCount.toString());
 
         if (imageFile) {
             formData.append("Image", imageFile);
@@ -320,8 +352,6 @@ export const editBook = async (
     }
 };
 
-
-
 export const deleteBook = async (bookId: number): Promise<ApiResponse<any>> => {
     try {
         const response = await api.delete(`/api/Admin/delete-book/${bookId}`);
@@ -336,7 +366,6 @@ export const deleteBook = async (bookId: number): Promise<ApiResponse<any>> => {
         };
     }
 };
-
 
 // Update the getBooks function to use GET method without parameters
 export const getBooks = async (): Promise<ApiResponse<any[]>> => {
@@ -353,7 +382,6 @@ export const getBooks = async (): Promise<ApiResponse<any[]>> => {
         };
     }
 };
-
 
 export const booksFilter = async (queryParams: string = ""): Promise<ApiResponse<any[]>> => {
     try {
@@ -407,7 +435,6 @@ export const setDiscount = async (
     }
 };
 
-
 export const createStaff = async (staffData: CreateStaffData): Promise<ApiResponse<any>> => {
     try {
         const response = await api.post('/api/Admin/create-staff', staffData);
@@ -440,10 +467,9 @@ export const adminCreateAnnouncement = async (
     }
 };
 
-export const addToCart = async (
-    cartData: AddToCartData
-): Promise<ApiResponse<any>> => {
+export const addToCart = async (cartData: AddToCartData): Promise<ApiResponse<any>> => {
     try {
+        console.log('Adding to cart with data:', cartData); // Add logging to check the data
         const response = await api.post('/api/Cart/add', cartData);
         return {
             success: true,
@@ -453,6 +479,22 @@ export const addToCart = async (
         return {
             success: false,
             error: error.response?.data || 'Failed to add to cart'
+        };
+    }
+};
+
+// Fixed getCart function with correct endpoint
+export const getCart = async (userId: number): Promise<ApiResponse<CartResponse>> => {
+    try {
+        const response = await api.get(`/api/Cart/${userId}`);
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to fetch cart'
         };
     }
 };
@@ -488,6 +530,7 @@ export const processedOrders = async (): Promise<ApiResponse<ProcessedOrdersResp
         };
     }
 };
+
 export const dashboard = async (): Promise<ApiResponse<StaffDashboardResponse>> => {
     try {
         const response = await api.get('/api/Staff/dashboard');
@@ -502,8 +545,6 @@ export const dashboard = async (): Promise<ApiResponse<StaffDashboardResponse>> 
         };
     }
 };
-
-
 
 export const loginStaff = async (credentials: StaffLoginData): Promise<ApiResponse<StaffLoginResponse>> => {
     try {
@@ -546,7 +587,6 @@ export const getStaffDetails = () => {
     };
 };
 
-
 // Add a logout function
 export const logoutStaff = () => {
     localStorage.removeItem('staffToken');
@@ -554,5 +594,3 @@ export const logoutStaff = () => {
     localStorage.removeItem('staffEmail');
     localStorage.removeItem('staffName');
 };
-
-

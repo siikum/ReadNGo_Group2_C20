@@ -23,8 +23,19 @@ export interface Book {
   isBestseller: boolean;
 }
 
-export interface CartItem extends Book {
-  quantity: number;
+export interface CartItem {
+    id: number;
+    title: string;
+    author: string;
+    price: number;
+    quantity: number;
+    image: string;
+    // Make these optional with ?
+    genre?: string;
+    format?: string;
+    stock?: number;
+    rating?: number;
+    // ... other properties marked as optional
 }
 
 export interface Review {

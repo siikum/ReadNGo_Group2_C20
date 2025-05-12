@@ -1,7 +1,7 @@
 // @/context/CartContext.tsx
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import { Book, CartItem, Order, Review } from '@/types/books';
 import { addToCart as addToCartAPI, createOrder as createOrderAPI } from '@/api/apiConfig';
 import type { AddToCartData } from '@/api/apiConfig';
@@ -25,6 +25,7 @@ type CartContextType = {
     getBookReviews: (bookId: number) => Review[];
     hasUserReviewedBook: (bookId: number) => boolean;
     canUserReviewBook: (bookId: number) => boolean;
+    setCartFromApi: (cartItems: any[]) => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -61,10 +62,35 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     const currentUserId = 1;
     const currentUserName = 'John Doe';
 
+    // Use useCallback to memoize the setCartFromApi function
+    const setCartFromApi = useCallback((apiCartItems: any[]) => {
+        // Transform API cartItems to match your local format
+        const transformedItems = apiCartItems.map(item => ({
+            id: item.bookId,
+            title: item.title,
+            author: item.author,
+            price: item.price,
+            quantity: item.quantity,
+            // Update the placeholder image path to match your application structure
+            image: item.imagePath || '/images/book-placeholder.jpg',
+        }));
+
+        setCart(transformedItems);
+    }, []);
+
     const addToCart = async (book: Book) => {
+        // Get the real user ID from localStorage
+        const userId = localStorage.getItem('userId');
+
+        if (!userId) {
+            console.error('User not authenticated');
+            throw new Error('User not authenticated');
+            return;
+        }
+
         // Call API to add to cart
         const cartData: AddToCartData = {
-            userId: currentUserId,
+            userId: parseInt(userId), // Use the real user ID from localStorage
             bookId: book.id,
             quantity: 1
         };
@@ -85,7 +111,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                 return [...prev, { ...book, quantity: 1 }];
             });
         } else {
-            // Handle error (you might want to show a toast notification)
+            // Handle error
             console.error('Failed to add to cart:', response.error);
             throw new Error(response.error || 'Failed to add to cart');
         }
@@ -242,6 +268,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                 getBookReviews,
                 hasUserReviewedBook,
                 canUserReviewBook,
+                setCartFromApi
             }}
         >
             {children}

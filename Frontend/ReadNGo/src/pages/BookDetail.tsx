@@ -121,26 +121,59 @@ export default function BookDetail() {
     };
 
     const handleAddToCart = async () => {
+        if (!book) return;
+
         try {
-            // Map the book data to match expected cart format
-            const cartBook = {
-                ...book,
-                stock: book.stockQuantity,
-                discount: book.discountPercentage,
-                image: book.imagePath ? `https://localhost:7149${book.imagePath}` : '/placeholder-book.png',
-                rating: book.averageRating,
-                // Add any other properties that the cart context expects
-                isBestseller: false, // You might need to add these fields to your API response
-                isAwardWinner: false,
-                isNewRelease: false,
+            setIsAddingToCart(true);
+
+            // Get the userId from localStorage
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                navigate('/login');
+                return;
+            }
+
+            // Directly call the API function to ensure correct userId is used
+            const cartData = {
+                userId: parseInt(userId),
+                bookId: book.id,
+                quantity: 1
             };
-            await addToCart(cartBook);
-            // You might want to show a success toast here
-            alert('Book added to cart successfully!');
+
+            // Option 1: Call API directly (most reliable)
+            const response = await addToCartAPI(cartData);
+
+            if (response.success) {
+                // You can still call the context method for local state update
+                // but with correct book structure
+                const cartBook = {
+                    id: book.id, // This should match what your CartItem expects
+                    title: book.title,
+                    author: book.author,
+                    price: book.price,
+                    genre: book.genre,
+                    format: book.format,
+                    stock: book.stockQuantity,
+                    rating: book.averageRating,
+                    image: book.imagePath ? `https://localhost:7149${book.imagePath}` : '/images/book-placeholder.jpg',
+                    // Add other fields as needed
+                };
+
+                // Call context method for local state
+                await addToCart(cartBook);
+
+                alert('Book added to cart successfully!');
+
+                // Navigate to cart with state to trigger refresh
+                navigate('/cart', { state: { bookAdded: Date.now() } });
+            } else {
+                throw new Error(response.error || 'Failed to add to cart');
+            }
         } catch (error) {
-            // Handle error (show error toast)
-            alert('Failed to add book to cart. Please try again.');
             console.error('Error adding to cart:', error);
+            alert('Failed to add book to cart. Please try again.');
+        } finally {
+            setIsAddingToCart(false);
         }
     };
 
