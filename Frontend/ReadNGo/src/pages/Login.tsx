@@ -41,9 +41,9 @@ export default function Login() {
                 } else if (userRole === "Staff") {
                     navigate("/staff-dashboard");
                 } else if (userRole === "Member") {
-                    navigate("/User-Get-Books");
-                } else {
                     navigate("/homepage");
+                } else {
+                    navigate("/");
                 }
 
                 // Reset fields

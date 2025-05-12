@@ -1,120 +1,138 @@
-// src/components/BookCard.tsx
-import React from 'react';
-import { Star, ShoppingCart } from 'lucide-react';
-import { Button } from './ui/button';
-import { Card, CardContent, CardFooter, CardHeader } from './ui/card';
-import { Badge } from './ui/badge';
-import { Book } from '../types/books';
+// @/components/BookCard.tsx
+import { Book } from '@/types/books';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { useCart } from '@/context/CartContext';
+import { ShoppingCart, Heart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-export interface BookCardProps {
-  book: Book;
-  onAddToCart?: (book: Book) => void;
-  onViewDetails?: (book: Book) => void;
+interface BookCardProps {
+    book: Book;
+    onAddToCart?: () => void;
 }
 
-const BookCard: React.FC<BookCardProps> = ({
-  book,
-  onAddToCart,
-  onViewDetails,
-}) => {
-  const formatCurrency = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(price);
-  };
+export const BookCard = ({ book, onAddToCart }: BookCardProps) => {
+    const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useCart();
+    const navigate = useNavigate();
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-    });
-  };
+    const calculateDiscountedPrice = () => {
+        return book.discount > 0
+            ? (book.price * (1 - book.discount / 100)).toFixed(2)
+            : book.price.toFixed(2);
+    };
 
-  return (
-    <Card className="h-full flex flex-col transition-transform hover:scale-105">
-      <CardHeader className="p-0">
-        <div className="relative">
-          <img
-            src={book.imagePath || '/placeholder-book.jpg'}
-            alt={book.title}
-            className="w-full h-48 object-cover rounded-t-lg"
-            onError={(e) => {
-              e.currentTarget.src = '/placeholder-book.jpg';
-            }}
-          />
-          {book.isOnSale && (
-            <Badge className="absolute top-2 right-2 bg-red-500">
-              {book.discountPercentage}% OFF
-            </Badge>
-          )}
-        </div>
-      </CardHeader>
+    const handleCardClick = () => {
+        navigate(`/books/${book.id}`);
+    };
 
-      <CardContent className="flex-1 p-4">
-        <h3 
-          className="font-semibold text-lg line-clamp-2 mb-1 cursor-pointer hover:text-blue-600"
-          onClick={() => onViewDetails?.(book)}
+    const handleAddToCart = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+
+        // If onAddToCart prop is provided, use it. Otherwise use context
+        if (onAddToCart) {
+            onAddToCart();
+        } else {
+            try {
+                await addToCart(book);
+            } catch (error) {
+                console.error('Error adding to cart:', error);
+            }
+        }
+    };
+
+    const handleWishlistToggle = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (isInWishlist(book.id)) {
+            removeFromWishlist(book.id);
+        } else {
+            addToWishlist(book.id);
+        }
+    };
+
+    return (
+        <Card
+            className="overflow-hidden hover:shadow-lg transition-all cursor-pointer"
+            onClick={handleCardClick}
         >
-          {book.title}
-        </h3>
-        <p className="text-sm text-gray-600 mb-2">by {book.author}</p>
-        
-        <div className="flex items-center gap-2 mb-2">
-          <Badge variant="secondary" className="text-xs">
-            {book.genre}
-          </Badge>
-          <Badge variant="outline" className="text-xs">
-            {book.format}
-          </Badge>
-        </div>
+            <div className="relative aspect-[3/4] overflow-hidden">
+                <img
+                    src={book.image}
+                    alt={book.title}
+                    className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
+                />
 
-        <div className="flex items-center gap-1 mb-2">
-          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-          <span className="text-sm font-medium">{book.averageRating.toFixed(1)}</span>
-          <span className="text-sm text-gray-500">({book.reviewCount})</span>
-        </div>
+                {/* Wishlist Button */}
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 bg-white/80 hover:bg-white"
+                    onClick={handleWishlistToggle}
+                >
+                    <Heart
+                        className={`h-4 w-4 ${isInWishlist(book.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'
+                            }`}
+                    />
+                </Button>
 
-        <div className="flex items-center gap-2">
-          {book.isOnSale ? (
-            <>
-              <span className="text-lg font-bold text-red-600">
-                {formatCurrency(book.actualPrice)}
-              </span>
-              <span className="text-sm text-gray-500 line-through">
-                {formatCurrency(book.price)}
-              </span>
-            </>
-          ) : (
-            <span className="text-lg font-bold">
-              {formatCurrency(book.price)}
-            </span>
-          )}
-        </div>
+                {book.discount > 0 && (
+                    <Badge className="absolute top-2 left-2 bg-red-500">
+                        -{book.discount}%
+                    </Badge>
+                )}
 
-        <div className="text-sm text-gray-500 mt-1">
-          Published: {formatDate(book.publicationDate)}
-        </div>
-      </CardContent>
+                {book.stock === 0 && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <Badge variant="secondary" className="text-lg">Out of Stock</Badge>
+                    </div>
+                )}
+            </div>
 
-      <CardFooter className="p-4 pt-0">
-        <Button
-          className="w-full"
-          disabled={book.stockQuantity === 0}
-          onClick={() => onAddToCart?.(book)}
-        >
-          {book.stockQuantity === 0 ? (
-            'Out of Stock'
-          ) : (
-            <>
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              Add to Cart
-            </>
-          )}
-        </Button>
-      </CardFooter>
-    </Card>
-  );
+            <CardContent className="p-4">
+                <h3 className="font-semibold text-lg mb-1 line-clamp-1">{book.title}</h3>
+                <p className="text-sm text-gray-600 mb-2">{book.author}</p>
+
+                <div className="flex items-baseline gap-2 mb-2">
+                    <span className="text-lg font-bold text-primary">
+                        ${calculateDiscountedPrice()}
+                    </span>
+                    {book.discount > 0 && (
+                        <span className="text-sm text-gray-500 line-through">
+                            ${book.price.toFixed(2)}
+                        </span>
+                    )}
+                </div>
+
+                <div className="flex items-center gap-1 mb-2">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                        <span
+                            key={i}
+                            className={`text-sm ${i < Math.floor(book.rating) ? 'text-yellow-400' : 'text-gray-300'
+                                }`}
+                        >
+                            ★
+                        </span>
+                    ))}
+                    <span className="text-sm text-gray-600">({book.rating})</span>
+                </div>
+
+                {book.isBestseller && (
+                    <Badge variant="secondary" className="text-xs">
+                        Bestseller
+                    </Badge>
+                )}
+            </CardContent>
+
+            <CardFooter className="p-4 pt-0">
+                <Button
+                    className="w-full"
+                    onClick={handleAddToCart}
+                    disabled={book.stock === 0}
+                >
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    {book.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                </Button>
+            </CardFooter>
+        </Card>
+    );
 };
-
-export default BookCard;

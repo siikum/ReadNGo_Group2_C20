@@ -11,21 +11,41 @@ import EditBookPage from "./pages/EditBookPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminCreateStaff from "./pages/AdminCreateStaff";
 import AdminCreateAnnouncement from "./pages/AdminCreateAnnouncement";
-import StaffDashboard from "./pages/StaffDashboard"; // Add this import
-import Homepage from "./pages/Homepage";
+
+import HomePage from "./pages/HomePage";
+import Cart from "./pages/CartPage";
+import { CartProvider } from '@/context/CartContext';
+import BookDetail from "./pages/BookDetail";
+import Wishlist from "./pages/Wishlist";
+import Orders from "./components/Order";
+import StaffProcessedOrders from "./pages/StaffProcessedOrders";
+import StaffClaimCode from "./pages/StaffClaimCode";
+import StaffDashboard from "./pages/StaffDashboard";
 
 export default function App() {
     return (
+        
+        <CartProvider>
         <Router>
+            
             <Routes>
-                <Route path="/" element={<Start />} />
+                <Route path="/homepage" element={<HomePage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/books" element={<Books />} />
                 <Route path="/create-order" element={<CreateOrderPage />} />
                 {/*<Route path="/User-Get-Books" element={<AdminGetBooks />} />\*/}
                 <Route path="/edit-book/:id" element={<EditBookPage />} />
+
+                 <Route path="/cart" element={<Cart />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/wishlist" element={<Wishlist />} />
+                    <Route path="/orders" element={<Orders />} />
                 {/*<Route path="admin-create-staff" element={<AdminCreateStaff />} />*/}
+
+                <Route path="/homepage" element={<HomePage />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/books/:id" element={<BookDetail />} />
 
                 {/* ✅ Protected admin routes */}
                 <Route
@@ -69,16 +89,35 @@ export default function App() {
                     }
                 />
 
-                {/* Protected staff routes */}
+                    {/* Protected staff routes */}
+                    <Route
+                        path="/staff-dashboard"
+                        element={
+                            <ProtectedRoute allowedRoles={["Staff"]}>
+                                <StaffDashboard />
+                            </ProtectedRoute>
+                        }
+                    />
                 <Route
-                    path="/staff-dashboard"
+                    path="/staff-claim-code"
                     element={
                         <ProtectedRoute allowedRoles={["Staff"]}>
-                            <StaffDashboard />
+                            <StaffClaimCode />
                         </ProtectedRoute>
                     }
-                />
+                    />
+                    <Route
+                        path="/staff-processed-orders"
+                        element={
+                            <ProtectedRoute allowedRoles={["Staff"]}>
+                                <StaffProcessedOrders />
+                            </ProtectedRoute>
+                        }
+                    />
             </Routes>
         </Router>
+        
+        </CartProvider>
+        
     );
 }
