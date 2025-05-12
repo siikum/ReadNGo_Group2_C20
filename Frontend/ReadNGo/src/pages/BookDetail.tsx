@@ -120,20 +120,28 @@ export default function BookDetail() {
             : book.price.toFixed(2);
     };
 
-    const handleAddToCart = () => {
-        // Map the book data to match expected cart format
-        const cartBook = {
-            ...book,
-            stock: book.stockQuantity,
-            discount: book.discountPercentage,
-            image: book.imagePath ? `https://localhost:7149${book.imagePath}` : '/placeholder-book.png',
-            rating: book.averageRating,
-            // Add any other properties that the cart context expects
-            isBestseller: false, // You might need to add these fields to your API response
-            isAwardWinner: false,
-            isNewRelease: false,
-        };
-        addToCart(cartBook);
+    const handleAddToCart = async () => {
+        try {
+            // Map the book data to match expected cart format
+            const cartBook = {
+                ...book,
+                stock: book.stockQuantity,
+                discount: book.discountPercentage,
+                image: book.imagePath ? `https://localhost:7149${book.imagePath}` : '/placeholder-book.png',
+                rating: book.averageRating,
+                // Add any other properties that the cart context expects
+                isBestseller: false, // You might need to add these fields to your API response
+                isAwardWinner: false,
+                isNewRelease: false,
+            };
+            await addToCart(cartBook);
+            // You might want to show a success toast here
+            alert('Book added to cart successfully!');
+        } catch (error) {
+            // Handle error (show error toast)
+            alert('Failed to add book to cart. Please try again.');
+            console.error('Error adding to cart:', error);
+        }
     };
 
     const handleWishlistToggle = () => {

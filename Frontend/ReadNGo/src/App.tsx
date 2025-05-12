@@ -11,13 +11,16 @@ import EditBookPage from "./pages/EditBookPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminCreateStaff from "./pages/AdminCreateStaff";
 import AdminCreateAnnouncement from "./pages/AdminCreateAnnouncement";
-import StaffDashboard from "./pages/StaffDashboard"; // Add this import
+
 import HomePage from "./pages/HomePage";
 import Cart from "./pages/CartPage";
 import { CartProvider } from '@/context/CartContext';
 import BookDetail from "./pages/BookDetail";
 import Wishlist from "./pages/Wishlist";
 import Orders from "./components/Order";
+import StaffProcessedOrders from "./pages/StaffProcessedOrders";
+import StaffClaimCode from "./pages/StaffClaimCode";
+import StaffDashboard from "./pages/StaffDashboard";
 
 export default function App() {
     return (
@@ -26,7 +29,7 @@ export default function App() {
         <Router>
             
             <Routes>
-                <Route path="/" element={<HomePage />} />
+                <Route path="/homepage" element={<HomePage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/books" element={<Books />} />
@@ -86,15 +89,31 @@ export default function App() {
                     }
                 />
 
-                {/* Protected staff routes */}
+                    {/* Protected staff routes */}
+                    <Route
+                        path="/staff-dashboard"
+                        element={
+                            <ProtectedRoute allowedRoles={["Staff"]}>
+                                <StaffDashboard />
+                            </ProtectedRoute>
+                        }
+                    />
                 <Route
-                    path="/staff-dashboard"
+                    path="/staff-claim-code"
                     element={
                         <ProtectedRoute allowedRoles={["Staff"]}>
-                            <StaffDashboard />
+                            <StaffClaimCode />
                         </ProtectedRoute>
                     }
-                />
+                    />
+                    <Route
+                        path="/staff-processed-orders"
+                        element={
+                            <ProtectedRoute allowedRoles={["Staff"]}>
+                                <StaffProcessedOrders />
+                            </ProtectedRoute>
+                        }
+                    />
             </Routes>
         </Router>
         

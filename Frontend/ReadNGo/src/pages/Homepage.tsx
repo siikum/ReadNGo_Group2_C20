@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Navbar } from '@/components/NavBar';
 import { getBooks } from '@/api/apiConfig';
+import { useCart } from '@/context/CartContext';
 
 export const Homepage = () => {
     const [books, setBooks] = useState<any[]>([]);
@@ -17,6 +18,30 @@ export const Homepage = () => {
     const [sortOption, setSortOption] = useState('popularity');
     const [currentPage, setCurrentPage] = useState(1);
     const booksPerPage = 8;
+
+    const { addToCart } = useCart();
+
+    const handleAddToCart = async (book: any) => {
+        try {
+            // Map the book data to match expected cart format
+            const cartBook = {
+                ...book,
+                image: book.imagePath ? `https://localhost:7149${book.imagePath}` : '/placeholder-book.png',
+                stock: book.stockQuantity,
+                discount: book.discountPercentage,
+                rating: book.averageRating,
+                isBestseller: false,
+                isAwardWinner: false,
+                isNewRelease: false,
+                popularity: book.reviewCount || 0
+            };
+            await addToCart(cartBook);
+            alert('Book added to cart successfully!');
+        } catch (error) {
+            alert('Failed to add book to cart. Please try again.');
+            console.error('Error adding to cart:', error);
+        }
+    };
 
     // Fetch books from API
     useEffect(() => {
@@ -156,21 +181,26 @@ export const Homepage = () => {
                 {/* Book Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
                     {currentBooks.map(book => {
-                        // Debug: Log what we're passing to BookCard
+                        // Prepare book data with all necessary properties
                         const bookData = {
                             ...book,
-                            imagePath: book.imagePath ? `https://localhost:7149${book.imagePath}` : null,
-                            // Also try providing alternative property names that BookCard might expect
-                            image: book.imagePath ? `https://localhost:7149${book.imagePath}` : null,
-                            coverImageUrl: book.imagePath ? `https://localhost:7149${book.imagePath}` : null,
+                            // Map properties to match what BookCard expects
+                            image: book.imagePath ? `https://localhost:7149${book.imagePath}` : '/placeholder-book.png',
+                            stock: book.stockQuantity,
+                            discount: book.discountPercentage,
+                            rating: book.averageRating,
+                            // Add default values for properties not in API
+                            isBestseller: false,
+                            isAwardWinner: false,
+                            isNewRelease: false,
+                            popularity: book.reviewCount || 0
                         };
-
-                        console.log('Passing to BookCard:', bookData);
 
                         return (
                             <BookCard
                                 key={book.id}
                                 book={bookData}
+                                onAddToCart={() => handleAddToCart(book)}
                             />
                         );
                     })}

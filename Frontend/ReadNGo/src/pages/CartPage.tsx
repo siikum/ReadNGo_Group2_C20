@@ -23,17 +23,24 @@ export const CartPage = () => {
   const discountAmount = subtotal * discount;
   const total = subtotal - discountAmount;
 
-  const generateConfirmationCode = () => {
-    return Math.random().toString(36).substring(2, 10).toUpperCase();
-  };
+  //const generateConfirmationCode = () => {
+  //  return Math.random().toString(36).substring(2, 10).toUpperCase();
+  //};
 
-  const handlePlaceOrder = () => {
-    // Generate confirmation code
-    const code = generateConfirmationCode();
-    setConfirmationCode(code);
-    setOrderPlaced(true);
-    clearCart();
-  };
+    const handlePlaceOrder = async () => {
+        try {
+            const order = await placeOrder();
+            if (order) {
+                // Order placed successfully
+                setConfirmationCode(order.claimCode);
+                setOrderPlaced(true);
+            }
+        } catch (error) {
+            // Handle error
+            alert('Failed to place order. Please try again.');
+            console.error('Error placing order:', error);
+        }
+    };
 
   if (orderPlaced) {
     return (

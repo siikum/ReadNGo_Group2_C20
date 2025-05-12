@@ -45,6 +45,30 @@ interface DiscountPayload {
     endDate: string;
 }
 
+export interface ProcessClaimData {
+    claimCode: string;
+    membershipId: string;
+}
+
+export interface Book {
+    bookId: number;
+    quantity: number;
+}
+
+export interface ClaimCodeResponse {
+    message: string;
+    orderId?: number;
+    membershipId?: string;  // Changed to string to match the actual response
+    totalAmount?: number;
+    books?: Book[];
+}
+
+export interface AddToCartData {
+    userId: number;
+    bookId: number;
+    quantity: number;
+}
+
 export interface CreateStaffData {
     fullName: string;
     email: string;
@@ -70,6 +94,25 @@ export interface CreateAnnouncementData {
     message: string;
     startTime: string; // ISO format
     endTime: string;
+}
+
+export interface ProcessedOrdersResponse {
+    orderId: number;
+    userName: string;
+    claimCode: string;
+    bookCount: number;
+    finalAmount: number;
+    orderDate: string;
+    isConfirmed: boolean;
+    isCancelled: boolean;
+}
+
+export interface StaffDashboardResponse {
+    pendingOrdersCount: number;
+    processedOrdersCount: number; 
+    totalOrders: number;          
+    pendingOrdersValue: number;
+    processedOrdersValue: number;
 }
 
 
@@ -397,6 +440,70 @@ export const adminCreateAnnouncement = async (
     }
 };
 
+export const addToCart = async (
+    cartData: AddToCartData
+): Promise<ApiResponse<any>> => {
+    try {
+        const response = await api.post('/api/Cart/add', cartData);
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to add to cart'
+        };
+    }
+};
+
+export const processClaimCode = async (
+    claimData: ProcessClaimData
+): Promise<ApiResponse<ClaimCodeResponse>> => {
+    try {
+        const response = await api.post('/api/Staff/process-claim', claimData);
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.response?.data?.message || 'Failed to process claim code'
+        };
+    }
+};
+
+export const processedOrders = async (): Promise<ApiResponse<ProcessedOrdersResponse[]>> => {
+    try {
+        const response = await api.get('/api/Staff/orders/processed');
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.response?.data?.message || 'Failed to fetch processed orders'
+        };
+    }
+};
+export const dashboard = async (): Promise<ApiResponse<StaffDashboardResponse>> => {
+    try {
+        const response = await api.get('/api/Staff/dashboard');
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.response?.data?.message || 'Failed to fetch dashboard data'
+        };
+    }
+};
+
+
 
 export const loginStaff = async (credentials: StaffLoginData): Promise<ApiResponse<StaffLoginResponse>> => {
     try {
@@ -439,6 +546,7 @@ export const getStaffDetails = () => {
     };
 };
 
+
 // Add a logout function
 export const logoutStaff = () => {
     localStorage.removeItem('staffToken');
@@ -446,3 +554,5 @@ export const logoutStaff = () => {
     localStorage.removeItem('staffEmail');
     localStorage.removeItem('staffName');
 };
+
+
