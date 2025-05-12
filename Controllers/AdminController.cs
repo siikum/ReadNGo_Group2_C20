@@ -24,6 +24,7 @@ namespace ReadNGo.Controllers
         }
 
         // POST: api/Admin/add-book
+        // POST: api/Admin/add-book
         [HttpPost("add-book-with-image")]
         [Consumes("multipart/form-data")]
         public IActionResult AddBookWithImage([FromForm] BookWithImageDTO bookWithImage)
@@ -38,13 +39,20 @@ namespace ReadNGo.Controllers
 
             try
             {
+                // Create directory if it doesn't exist
+                var directory = Path.GetDirectoryName(imagePath);
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
                 // Save file
                 using (var stream = new FileStream(imagePath, FileMode.Create))
                 {
                     bookWithImage.Image.CopyTo(stream);
                 }
 
-                // Convert to BookDTO and inject the path
+                // Convert to BookDTO and inject the path - INCLUDING Category and ArrivalDate
                 var bookDto = new BookDTO
                 {
                     Title = bookWithImage.Title,
@@ -54,6 +62,8 @@ namespace ReadNGo.Controllers
                     Format = bookWithImage.Format,
                     Publisher = bookWithImage.Publisher,
                     PublicationDate = DateTime.SpecifyKind(bookWithImage.PublicationDate, DateTimeKind.Utc),
+                    Category = bookWithImage.Category,  // Added Category
+                    ArrivalDate = DateTime.SpecifyKind(bookWithImage.ArrivalDate, DateTimeKind.Utc),  // Added ArrivalDate
                     Price = bookWithImage.Price,
                     IsOnSale = bookWithImage.IsOnSale,
                     DiscountPercentage = bookWithImage.DiscountPercentage,
@@ -75,6 +85,7 @@ namespace ReadNGo.Controllers
         }
 
         // PUT: api/Admin/edit-book-with-image/{bookId}
+        // PUT: api/Admin/edit-book-with-image/{bookId}
         [HttpPut("edit-book-with-image/{bookId}")]
         [Consumes("multipart/form-data")]
         public IActionResult EditBookWithImage(int bookId, [FromForm] EditBookWithImageDTO updated)
@@ -86,6 +97,13 @@ namespace ReadNGo.Controllers
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(updated.Image.FileName);
                 var fullPath = Path.Combine("wwwroot", "images", fileName);
                 imagePath = $"/images/{fileName}";
+
+                // Create directory if it doesn't exist
+                var directory = Path.GetDirectoryName(fullPath);
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
 
                 using (var stream = new FileStream(fullPath, FileMode.Create))
                 {

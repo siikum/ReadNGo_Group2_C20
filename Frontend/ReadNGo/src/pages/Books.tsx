@@ -1,4 +1,4 @@
-import Sidebar from "@/components/sidebar";
+import Sidebar from "@/components/Sidebar";
 import BooksTable from "@/components/DataTable";
 
 export default function BooksPage() {

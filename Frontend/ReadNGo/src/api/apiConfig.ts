@@ -24,12 +24,14 @@ export interface AddBook {
     language: string;
     format: string;
     publisher: string;
-    publicationDate: string; // Changed from Date to string
+    publicationDate: string;
+    category: string;        // Added this field
+    arrivalDate: string;     // Added this field
     price: number;
     isOnSale: boolean;
     discountPercentage: number;
-    discountStartDate: string; // Changed from Date to string
-    discountEndDate: string;   // Added missing field and using string
+    discountStartDate: string;
+    discountEndDate: string;
     description: string;
     isbn: string;
     stockQuantity: number;
@@ -89,7 +91,7 @@ export const registerUser = async (userData: RegisterData): Promise<ApiResponse<
             success: true,
             data: response.data
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             error: error.response?.data || 'Registration failed'
@@ -109,7 +111,7 @@ export const loginUser = async (credentials: LoginData): Promise<ApiResponse<{ t
             success: true,
             data: response.data
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             error: error.response?.data || 'Login failed'
@@ -125,7 +127,7 @@ export const getUserProfile = async (userId: number): Promise<ApiResponse<any>> 
             success: true,
             data: response.data
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             error: error.response?.data || 'Failed to fetch profile'
@@ -141,7 +143,7 @@ export const getClaimCode = async (orderId: number): Promise<ApiResponse<string>
             success: true,
             data: response.data
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             error: error.response?.data || 'Failed to get claim code'
@@ -156,7 +158,7 @@ export const createOrder = async (orderData: CreateOrderData): Promise<ApiRespon
             success: true,
             data: response.data
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             error: error.response?.data || 'Order creation failed'
@@ -164,20 +166,6 @@ export const createOrder = async (orderData: CreateOrderData): Promise<ApiRespon
     }
 };
 
-//export const addBooks = async (bookData: AddBook): Promise<ApiResponse<any>> => {
-//    try {
-//        const response = await api.post('/api/Admin/add-book-with-image', bookData);
-//        return {
-//            success: true,
-//            data: response.data
-//        };
-//    } catch (error) {
-//        return {
-//            success: false,
-//            error: error.response?.data || 'Book creation failed'
-//        };
-//    }
-//};
 export const addBooks = async (bookData: AddBook, imageFile: File): Promise<ApiResponse<any>> => {
     try {
         const formData = new FormData();
@@ -189,22 +177,34 @@ export const addBooks = async (bookData: AddBook, imageFile: File): Promise<ApiR
         formData.append("Language", bookData.language);
         formData.append("Format", bookData.format);
         formData.append("Publisher", bookData.publisher);
-        formData.append("PublicationDate", bookData.publicationDate);
+
+        // Format dates to ISO string for backend compatibility
+        formData.append("PublicationDate", new Date(bookData.publicationDate).toISOString());
+        formData.append("Category", bookData.category);
+        formData.append("ArrivalDate", new Date(bookData.arrivalDate).toISOString());
+
         formData.append("Price", bookData.price.toString());
         formData.append("IsOnSale", bookData.isOnSale.toString());
         formData.append("DiscountPercentage", bookData.discountPercentage.toString());
-        formData.append("DiscountStartDate", bookData.discountStartDate);
-        formData.append("DiscountEndDate", bookData.discountEndDate);
+
+        // Only append discount dates if the book is on sale
+        if (bookData.isOnSale) {
+            formData.append("DiscountStartDate", new Date(bookData.discountStartDate).toISOString());
+            formData.append("DiscountEndDate", new Date(bookData.discountEndDate).toISOString());
+        }
+
         formData.append("Description", bookData.description);
         formData.append("ISBN", bookData.isbn);
         formData.append("StockQuantity", bookData.stockQuantity.toString());
 
-        // Optional (if backend accepts or calculates these):
-        //formData.append("AverageRating", bookData.averageRating.toString());
-        //formData.append("ReviewCount", bookData.reviewCount.toString());
-
         // Append image file
         formData.append("Image", imageFile);
+
+        // Log the FormData contents for debugging
+        console.log('FormData contents:');
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
 
         const response = await api.post('/api/Admin/add-book-with-image', formData, {
             headers: {
@@ -217,6 +217,8 @@ export const addBooks = async (bookData: AddBook, imageFile: File): Promise<ApiR
             data: response.data
         };
     } catch (error: any) {
+        console.error('Error adding book:', error);
+        console.error('Error response:', error.response?.data);
         return {
             success: false,
             error: error.response?.data || 'Book creation failed'
@@ -239,20 +241,34 @@ export const editBook = async (
         formData.append("Language", bookData.language);
         formData.append("Format", bookData.format);
         formData.append("Publisher", bookData.publisher);
-        formData.append("PublicationDate", bookData.publicationDate);
+
+        // Format dates to ISO string for backend compatibility
+        formData.append("PublicationDate", new Date(bookData.publicationDate).toISOString());
+        formData.append("Category", bookData.category);
+        formData.append("ArrivalDate", new Date(bookData.arrivalDate).toISOString());
+
         formData.append("Price", bookData.price.toString());
         formData.append("IsOnSale", bookData.isOnSale.toString());
         formData.append("DiscountPercentage", bookData.discountPercentage.toString());
-        formData.append("DiscountStartDate", bookData.discountStartDate);
-        formData.append("DiscountEndDate", bookData.discountEndDate);
+
+        // Format discount dates to ISO string if they exist and book is on sale
+        if (bookData.isOnSale && bookData.discountStartDate && bookData.discountEndDate) {
+            formData.append("DiscountStartDate", new Date(bookData.discountStartDate).toISOString());
+            formData.append("DiscountEndDate", new Date(bookData.discountEndDate).toISOString());
+        }
+
         formData.append("Description", bookData.description);
         formData.append("ISBN", bookData.isbn);
         formData.append("StockQuantity", bookData.stockQuantity.toString());
-        //formData.append("AverageRating", bookData.averageRating.toString());
-        //formData.append("ReviewCount", bookData.reviewCount.toString());
 
         if (imageFile) {
             formData.append("Image", imageFile);
+        }
+
+        // Log the FormData contents for debugging
+        console.log('Edit book FormData contents:');
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
         }
 
         const response = await api.put(
@@ -270,6 +286,8 @@ export const editBook = async (
             data: response.data,
         };
     } catch (error: any) {
+        console.error('Error editing book:', error);
+        console.error('Error response:', error.response?.data);
         return {
             success: false,
             error: error.response?.data || "Book update failed",
@@ -286,7 +304,7 @@ export const deleteBook = async (bookId: number): Promise<ApiResponse<any>> => {
             success: true,
             data: response.data
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             error: error.response?.data || 'Book deletion failed'
@@ -303,7 +321,7 @@ export const getBooks = async (): Promise<ApiResponse<any[]>> => {
             success: true,
             data: response.data
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             error: error.response?.data || 'Failed to fetch books'
@@ -312,16 +330,35 @@ export const getBooks = async (): Promise<ApiResponse<any[]>> => {
 };
 
 
-export const booksFilter = async (queryParams: string = ""): Promise<ApiResponse<any[]>> => {
+export const booksFilter = async (queryParams: any = {}): Promise<ApiResponse<any[]>> => {
     try {
-        // Build the URL with query parameters
-        const url = `/api/Book/filter${queryParams ? `?${queryParams}` : ''}`;
+        // Build query string from object
+        const params = new URLSearchParams();
+
+        // Add each parameter if it exists
+        if (queryParams.category) params.append('category', queryParams.category);
+        if (queryParams.genre) params.append('genre', queryParams.genre);
+        if (queryParams.author) params.append('author', queryParams.author);
+        if (queryParams.format) params.append('format', queryParams.format);
+        if (queryParams.language) params.append('language', queryParams.language);
+        if (queryParams.publisher) params.append('publisher', queryParams.publisher);
+        if (queryParams.availableInLibrary !== undefined) params.append('availableInLibrary', queryParams.availableInLibrary.toString());
+        if (queryParams.minPrice !== undefined) params.append('minPrice', queryParams.minPrice.toString());
+        if (queryParams.maxPrice !== undefined) params.append('maxPrice', queryParams.maxPrice.toString());
+        if (queryParams.minRating !== undefined) params.append('minRating', queryParams.minRating.toString());
+
+        const queryString = params.toString();
+        const url = `/api/Book/filter${queryString ? `?${queryString}` : ''}`;
+
+        console.log('Filter URL:', url);  // Debug log
+
         const response = await api.get(url);
         return {
             success: true,
             data: response.data
         };
-    } catch (error) {
+    } catch (error: any) {
+        console.error('Filter error:', error);
         return {
             success: false,
             error: error.response?.data || 'Failed to fetch filtered books'
@@ -333,12 +370,20 @@ export const booksSearchByTitle = async (query: string): Promise<ApiResponse<any
     try {
         // Use the correct endpoint for search with query parameter
         const url = `/api/Book/search?query=${encodeURIComponent(query)}`;
+        console.log('Search URL:', url);
+        console.log('Search query:', query);
+
         const response = await api.get(url);
+        console.log('Search response:', response);
+        console.log('Search response data:', response.data);
+
         return {
             success: true,
             data: response.data
         };
-    } catch (error) {
+    } catch (error: any) {
+        console.error('Search API error:', error);
+        console.error('Search error response:', error.response);
         return {
             success: false,
             error: error.response?.data || 'Failed to search books'
@@ -445,4 +490,63 @@ export const logoutStaff = () => {
     localStorage.removeItem('staffRole');
     localStorage.removeItem('staffEmail');
     localStorage.removeItem('staffName');
+};
+
+export const getDistinctAuthors = async (): Promise<ApiResponse<string[]>> => {
+    try {
+        const response = await api.get('/api/Book/authors');
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to fetch authors'
+        };
+    }
+};
+
+export const getDistinctGenres = async (): Promise<ApiResponse<string[]>> => {
+    try {
+        const response = await api.get('/api/Book/genres');
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to fetch genres'
+        };
+    }
+};
+export const getDistinctLanguages = async (): Promise<ApiResponse<string[]>> => {
+    try {
+        const response = await api.get('/api/Book/languages');
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to fetch languages'
+        };
+    }
+};
+
+export const getDistinctFormats = async (): Promise<ApiResponse<string[]>> => {
+    try {
+        const response = await api.get('/api/Book/formats');
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to fetch formats'
+        };
+    }
 };

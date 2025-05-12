@@ -14,16 +14,14 @@ namespace ReadNGo.Services.Implementations
     public class AdminService : IAdminService
     {
         private readonly ReadNGoContext _context;
-        //private readonly IJwtService _jwtService;
 
         // Constructor injection of the database context
         public AdminService(ReadNGoContext context)
         {
             _context = context;
-            
         }
 
-        // Add a new book to the catalog
+        // Add a new book to the catalog - Updated to include Category and ArrivalDate
         public bool AddBook(BookDTO bookDto)
         {
             try
@@ -38,6 +36,8 @@ namespace ReadNGo.Services.Implementations
                     Format = bookDto.Format,
                     Publisher = bookDto.Publisher,
                     PublicationDate = DateTime.SpecifyKind(bookDto.PublicationDate, DateTimeKind.Utc),
+                    Category = bookDto.Category,  // Added Category
+                    ArrivalDate = DateTime.SpecifyKind(bookDto.ArrivalDate, DateTimeKind.Utc),  // Added ArrivalDate
                     IsOnSale = bookDto.IsOnSale,
                     DiscountPercentage = bookDto.DiscountPercentage,
                     DiscountStartDate = bookDto.DiscountStartDate.HasValue ? DateTime.SpecifyKind(bookDto.DiscountStartDate.Value, DateTimeKind.Utc) : null,
@@ -47,7 +47,6 @@ namespace ReadNGo.Services.Implementations
                     StockQuantity = bookDto.StockQuantity,
                     ImagePath = bookDto.ImagePath
                 };
-
 
                 _context.Books.Add(newBook);
                 _context.SaveChanges();
@@ -76,6 +75,8 @@ namespace ReadNGo.Services.Implementations
                 book.Format = updated.Format;
                 book.Publisher = updated.Publisher;
                 book.PublicationDate = DateTime.SpecifyKind(updated.PublicationDate, DateTimeKind.Utc);
+                book.Category = updated.Category;  // Added Category
+                book.ArrivalDate = DateTime.SpecifyKind(updated.ArrivalDate, DateTimeKind.Utc);  // Added ArrivalDate
                 book.Price = updated.Price;
                 book.IsOnSale = updated.IsOnSale;
                 book.DiscountPercentage = updated.DiscountPercentage;
@@ -100,9 +101,7 @@ namespace ReadNGo.Services.Implementations
             }
         }
 
-
-
-        // Delete a book
+        // Delete a book (unchanged)
         public bool DeleteBook(int bookId)
         {
             try
@@ -128,6 +127,7 @@ namespace ReadNGo.Services.Implementations
             }
         }
 
+        // ... rest of the methods remain unchanged ...
 
         public bool SetDiscount(int bookId, AdminSetDiscountDTO discountDto)
         {
@@ -175,7 +175,6 @@ namespace ReadNGo.Services.Implementations
             }
         }
 
-
         // Clears expired discounts from all books
         public int ClearExpiredDiscounts()
         {
@@ -212,7 +211,6 @@ namespace ReadNGo.Services.Implementations
         // Creating an announcement
         public bool CreateAnnouncement(AnnouncementDTO announcementDto)
         {
-
             try
             {
                 if (announcementDto.StartTime >= announcementDto.EndTime)
@@ -220,13 +218,12 @@ namespace ReadNGo.Services.Implementations
 
                 var announcement = new Announcement
                 {
-                    Title = announcementDto.Title, // Set title
+                    Title = announcementDto.Title,
                     Message = announcementDto.Message,
                     StartTime = announcementDto.StartTime,
                     EndTime = announcementDto.EndTime,
                     IsActive = true
                 };
-
 
                 _context.Announcements.Add(announcement);
                 _context.SaveChanges();
@@ -237,7 +234,6 @@ namespace ReadNGo.Services.Implementations
                 return false;
             }
         }
-
 
         public List<AnnouncementDTO> GetAllAnnouncements()
         {
@@ -254,9 +250,6 @@ namespace ReadNGo.Services.Implementations
                 })
                 .ToList();
         }
-
-
-
 
         public bool CreateStaff(StaffDTO staffDto)
         {
@@ -294,8 +287,5 @@ namespace ReadNGo.Services.Implementations
         {
             return _context.Staffs.Any(s => s.Email == email);
         }
-
-
-
     }
 }

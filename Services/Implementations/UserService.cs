@@ -26,7 +26,7 @@ namespace ReadNGo.Services.Implementations
         }
         public bool Register(UserRegisterDTO userDTO)
         {
-            try{
+           
                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(userDTO.Password);
             var user = new User
             {
@@ -41,12 +41,7 @@ namespace ReadNGo.Services.Implementations
 
             return true;
 
-            }catch(Exception ex){
-                Console.WriteLine($"Registration error: {ex.Message}");
-                Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
-
-                return null;
-            }
+          
          
         }
 

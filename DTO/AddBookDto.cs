@@ -1,4 +1,5 @@
-﻿namespace ReadNGo_Group2_C20.DTO
+﻿// Update the AddBookDto to include Category and ArrivalDate
+namespace ReadNGo_Group2_C20.DTO
 {
     public class AddBookDto
     {
@@ -9,6 +10,8 @@
         public string Format { get; set; }
         public string Publisher { get; set; }
         public DateTime PublicationDate { get; set; }
+        public string Category { get; set; }  // Added Category
+        public DateTime ArrivalDate { get; set; }  // Added ArrivalDate
         public decimal Price { get; set; }
         public bool IsOnSale { get; set; }
         public decimal? DiscountPercentage { get; set; }
@@ -19,7 +22,6 @@
         public int StockQuantity { get; set; }
         public string? ImagePath { get; set; }
         public IFormFile? Image { get; set; }
-
-
     }
 }
+
