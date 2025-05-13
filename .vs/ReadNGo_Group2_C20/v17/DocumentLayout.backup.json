@@ -1,38 +1,30 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Code\\Appdev\\",
+  "WorkspaceRootPath": "C:\\Users\\Hp\\Desktop\\rubbs\\ReadNGo_Group2_C20\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|d:\\code\\appdev\\migrations\\20250510063228_fullinitialbyrubin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:migrations\\20250510063228_fullinitialbyrubin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\rubbs\\readngo_group2_c20\\frontend\\readngo\\src\\api\\apiconfig.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:frontend\\readngo\\src\\api\\apiconfig.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|d:\\code\\appdev\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\rubbs\\readngo_group2_c20\\frontend\\readngo\\src\\pages\\login.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:frontend\\readngo\\src\\pages\\login.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|d:\\code\\appdev\\frontend\\readngo\\src\\pages\\admincreateannouncement.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:frontend\\readngo\\src\\pages\\admincreateannouncement.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\rubbs\\readngo_group2_c20\\frontend\\readngo\\src\\lib\\auth.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:frontend\\readngo\\src\\lib\\auth.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|d:\\code\\appdev\\frontend\\readngo\\src\\pages\\admincreatestaff.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:frontend\\readngo\\src\\pages\\admincreatestaff.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\rubbs\\readngo_group2_c20\\frontend\\readngo\\src\\app.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:frontend\\readngo\\src\\app.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|d:\\code\\appdev\\services\\implementations\\adminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:services\\implementations\\adminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\rubbs\\readngo_group2_c20\\frontend\\readngo\\src\\api\\axiosinstance.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:frontend\\readngo\\src\\api\\axiosinstance.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|d:\\code\\appdev\\models\\announcement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:models\\announcement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|d:\\code\\appdev\\dto\\announcementdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:dto\\announcementdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|d:\\code\\appdev\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|c:\\users\\hp\\desktop\\rubbs\\readngo_group2_c20\\frontend\\readngo\\src\\lib\\utils.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{07C7860A-DDB2-400C-988B-6D9416495AA5}|ReadNGo_Group2_C20.csproj|solutionrelative:frontend\\readngo\\src\\lib\\utils.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -42,35 +34,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-<<<<<<< HEAD
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "20250510063228_FullInitialbyRubin.cs",
-              "DocumentMoniker": "D:\\Code\\Appdev\\Migrations\\20250510063228_FullInitialbyRubin.cs",
-              "RelativeDocumentMoniker": "Migrations\\20250510063228_FullInitialbyRubin.cs",
-              "ToolTip": "D:\\Code\\Appdev\\Migrations\\20250510063228_FullInitialbyRubin.cs",
-              "RelativeToolTip": "Migrations\\20250510063228_FullInitialbyRubin.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-10T06:32:29.183Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "AdminCreateStaff.tsx",
-              "DocumentMoniker": "D:\\Code\\Appdev\\Frontend\\ReadNGo\\src\\pages\\AdminCreateStaff.tsx",
-              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\pages\\AdminCreateStaff.tsx",
-              "ToolTip": "D:\\Code\\Appdev\\Frontend\\ReadNGo\\src\\pages\\AdminCreateStaff.tsx",
-              "RelativeToolTip": "Frontend\\ReadNGo\\src\\pages\\AdminCreateStaff.tsx",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-05-09T17:21:52.575Z"
-=======
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -78,295 +42,77 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAGkAAAAAAAAAAAAAAH0AAAADAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-10T11:40:37.947Z",
-              "EditorCaption": ""
->>>>>>> 3c6a2dd06d726b2824df83d3c8b35e13f361c6b7
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-<<<<<<< HEAD
-              "Title": "AdminCreateAnnouncement.tsx",
-              "DocumentMoniker": "D:\\Code\\Appdev\\Frontend\\ReadNGo\\src\\pages\\AdminCreateAnnouncement.tsx",
-              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\pages\\AdminCreateAnnouncement.tsx",
-              "ToolTip": "D:\\Code\\Appdev\\Frontend\\ReadNGo\\src\\pages\\AdminCreateAnnouncement.tsx",
-              "RelativeToolTip": "Frontend\\ReadNGo\\src\\pages\\AdminCreateAnnouncement.tsx",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAAwBgAAAA4AAAAAAAAAA==",
+              "DocumentIndex": 4,
+              "Title": "AxiosInstance.ts",
+              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\rubbs\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\api\\AxiosInstance.ts",
+              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\api\\AxiosInstance.ts",
+              "ToolTip": "C:\\Users\\Hp\\Desktop\\rubbs\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\api\\AxiosInstance.ts",
+              "RelativeToolTip": "Frontend\\ReadNGo\\src\\api\\AxiosInstance.ts",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAAACQAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-05-09T17:21:43.406Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "D:\\Code\\Appdev\\appsettings.json",
-              "RelativeDocumentMoniker": "appsettings.json",
-              "ToolTip": "D:\\Code\\Appdev\\appsettings.json",
-              "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAkAAABrAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-09T17:18:19.697Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "AnnouncementDTO.cs",
-              "DocumentMoniker": "D:\\Code\\Appdev\\DTO\\AnnouncementDTO.cs",
-              "RelativeDocumentMoniker": "DTO\\AnnouncementDTO.cs",
-              "ToolTip": "D:\\Code\\Appdev\\DTO\\AnnouncementDTO.cs",
-              "RelativeToolTip": "DTO\\AnnouncementDTO.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-09T17:08:44.759Z"
-=======
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\appsettings.json",
-              "RelativeDocumentMoniker": "appsettings.json",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\appsettings.json",
-              "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-10T10:58:58.93Z",
-              "EditorCaption": ""
->>>>>>> 3c6a2dd06d726b2824df83d3c8b35e13f361c6b7
+              "WhenOpened": "2025-05-12T16:11:26.997Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-<<<<<<< HEAD
-              "Title": "Announcement.cs",
-              "DocumentMoniker": "D:\\Code\\Appdev\\Models\\Announcement.cs",
-              "RelativeDocumentMoniker": "Models\\Announcement.cs",
-              "ToolTip": "D:\\Code\\Appdev\\Models\\Announcement.cs",
-              "RelativeToolTip": "Models\\Announcement.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-09T17:10:21.743Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "AdminService.cs",
-              "DocumentMoniker": "D:\\Code\\Appdev\\Services\\Implementations\\AdminService.cs",
-              "RelativeDocumentMoniker": "Services\\Implementations\\AdminService.cs",
-              "ToolTip": "D:\\Code\\Appdev\\Services\\Implementations\\AdminService.cs",
-              "RelativeToolTip": "Services\\Implementations\\AdminService.cs",
-              "ViewState": "AgIAAPIAAAAAAAAAAAAuwNMAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-09T17:09:05.875Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "AdminController.cs",
-              "DocumentMoniker": "D:\\Code\\Appdev\\Controllers\\AdminController.cs",
-              "RelativeDocumentMoniker": "Controllers\\AdminController.cs",
-              "ToolTip": "D:\\Code\\Appdev\\Controllers\\AdminController.cs",
-              "RelativeToolTip": "Controllers\\AdminController.cs",
-              "ViewState": "AgIAAIEAAAAAAAAAAAAjwI4AAABKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-09T17:06:54.97Z"
-=======
-              "Title": "auth.ts",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\lib\\auth.ts",
-              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\lib\\auth.ts",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\lib\\auth.ts",
-              "RelativeToolTip": "Frontend\\ReadNGo\\src\\lib\\auth.ts",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAmwBkAAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-05-10T10:23:04.427Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "ProtectedRoute.tsx",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\components\\ProtectedRoute.tsx",
-              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\components\\ProtectedRoute.tsx",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\components\\ProtectedRoute.tsx",
-              "RelativeToolTip": "Frontend\\ReadNGo\\src\\components\\ProtectedRoute.tsx",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-05-10T10:21:33.493Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "App.tsx",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\App.tsx",
-              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\App.tsx",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\App.tsx",
-              "RelativeToolTip": "Frontend\\ReadNGo\\src\\App.tsx",
-              "ViewState": "AgIAADAAAAAAAAAAAAAAwDMAAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-05-10T10:11:03.596Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Login.tsx",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\pages\\Login.tsx",
-              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\pages\\Login.tsx",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\pages\\Login.tsx",
-              "RelativeToolTip": "Frontend\\ReadNGo\\src\\pages\\Login.tsx",
-              "ViewState": "AgIAAGIAAAAAAAAAAAAmwHwAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-05-10T10:07:58.755Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "AdminDashboard.tsx",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\pages\\AdminDashboard.tsx",
-              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\pages\\AdminDashboard.tsx",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\pages\\AdminDashboard.tsx",
-              "RelativeToolTip": "Frontend\\ReadNGo\\src\\pages\\AdminDashboard.tsx",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-05-10T10:09:04.109Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "StaffDashboard.tsx",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\pages\\StaffDashboard.tsx",
-              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\pages\\StaffDashboard.tsx",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\pages\\StaffDashboard.tsx",
-              "RelativeToolTip": "Frontend\\ReadNGo\\src\\pages\\StaffDashboard.tsx",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-05-10T10:08:57.127Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "AdminController.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Controllers\\AdminController.cs",
-              "RelativeDocumentMoniker": "Controllers\\AdminController.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Controllers\\AdminController.cs",
-              "RelativeToolTip": "Controllers\\AdminController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAMYAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-10T10:05:26.807Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "20250511082026_FullInitialbyRubin.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Migrations\\20250511082026_FullInitialbyRubin.cs",
-              "RelativeDocumentMoniker": "Migrations\\20250511082026_FullInitialbyRubin.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Migrations\\20250511082026_FullInitialbyRubin.cs",
-              "RelativeToolTip": "Migrations\\20250511082026_FullInitialbyRubin.cs",
+              "Title": "utils.ts",
+              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\rubbs\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\lib\\utils.ts",
+              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\lib\\utils.ts",
+              "ToolTip": "C:\\Users\\Hp\\Desktop\\rubbs\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\lib\\utils.ts",
+              "RelativeToolTip": "Frontend\\ReadNGo\\src\\lib\\utils.ts",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-11T08:20:26.62Z",
-              "EditorCaption": ""
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-05-12T16:11:25.567Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "UserController.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Controllers\\UserController.cs",
-              "RelativeDocumentMoniker": "Controllers\\UserController.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Controllers\\UserController.cs",
-              "RelativeToolTip": "Controllers\\UserController.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAA/wB0AAAA+AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-11T08:12:23.962Z",
-              "EditorCaption": ""
+              "Title": "App.tsx",
+              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\rubbs\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\App.tsx",
+              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\App.tsx",
+              "ToolTip": "C:\\Users\\Hp\\Desktop\\rubbs\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\App.tsx",
+              "RelativeToolTip": "Frontend\\ReadNGo\\src\\App.tsx",
+              "ViewState": "AgIAAGAAAAAAAAAAAAAAAGQAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-05-12T16:09:08.894Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "IUserService.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Services\\Interfaces\\IUserService.cs",
-              "RelativeDocumentMoniker": "Services\\Interfaces\\IUserService.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Services\\Interfaces\\IUserService.cs",
-              "RelativeToolTip": "Services\\Interfaces\\IUserService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-11T08:11:43.484Z",
+              "DocumentIndex": 1,
+              "Title": "Login.tsx",
+              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\rubbs\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\pages\\Login.tsx",
+              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\pages\\Login.tsx",
+              "ToolTip": "C:\\Users\\Hp\\Desktop\\rubbs\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\pages\\Login.tsx",
+              "RelativeToolTip": "Frontend\\ReadNGo\\src\\pages\\Login.tsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-05-12T16:04:57.497Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "UserService.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Services\\Implementations\\UserService.cs",
-              "RelativeDocumentMoniker": "Services\\Implementations\\UserService.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Services\\Implementations\\UserService.cs",
-              "RelativeToolTip": "Services\\Implementations\\UserService.cs",
-              "ViewState": "AgIAABgAAAAAAAAAAAAjwCYAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-11T08:11:40.623Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "App.tsx",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\App.tsx",
-              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\App.tsx",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\App.tsx",
-              "RelativeToolTip": "Frontend\\ReadNGo\\src\\App.tsx",
-              "ViewState": "AgIAAB0AAAAAAAAAAAAAwBQAAAA2AAAAAAAAAA==",
+              "Title": "auth.ts",
+              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\rubbs\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\lib\\auth.ts",
+              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\lib\\auth.ts",
+              "ToolTip": "C:\\Users\\Hp\\Desktop\\rubbs\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\lib\\auth.ts",
+              "RelativeToolTip": "Frontend\\ReadNGo\\src\\lib\\auth.ts",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAABQAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-05-11T07:52:22.513Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-12T16:04:24.612Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "AdminGetBooks.tsx",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\pages\\AdminGetBooks.tsx",
-              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\pages\\AdminGetBooks.tsx",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\pages\\AdminGetBooks.tsx",
-              "RelativeToolTip": "Frontend\\ReadNGo\\src\\pages\\AdminGetBooks.tsx",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAABAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "apiConfig.ts",
+              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\rubbs\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\api\\apiConfig.ts",
+              "RelativeDocumentMoniker": "Frontend\\ReadNGo\\src\\api\\apiConfig.ts",
+              "ToolTip": "C:\\Users\\Hp\\Desktop\\rubbs\\ReadNGo_Group2_C20\\Frontend\\ReadNGo\\src\\api\\apiConfig.ts",
+              "RelativeToolTip": "Frontend\\ReadNGo\\src\\api\\apiConfig.ts",
+              "ViewState": "AgIAAPIBAAAAAAAAAAAAAMcAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-05-11T07:42:14.743Z",
+              "WhenOpened": "2025-05-12T16:03:22.397Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "IJWTService.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Services\\Interfaces\\IJWTService.cs",
-              "RelativeDocumentMoniker": "Services\\Interfaces\\IJWTService.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\Services\\Interfaces\\IJWTService.cs",
-              "RelativeToolTip": "Services\\Interfaces\\IJWTService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-10T09:48:53.204Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "StaffLoginDTO.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\DTO\\StaffLoginDTO.cs",
-              "RelativeDocumentMoniker": "DTO\\StaffLoginDTO.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Dotnettt\\ReadNGo_Group2_C20\\DTO\\StaffLoginDTO.cs",
-              "RelativeToolTip": "DTO\\StaffLoginDTO.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-10T09:48:00.702Z",
-              "EditorCaption": ""
->>>>>>> 3c6a2dd06d726b2824df83d3c8b35e13f361c6b7
             }
           ]
         }

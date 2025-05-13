@@ -37,6 +37,11 @@ export interface AddBook {
     stockQuantity: number;
 }
 
+interface RemoveCartPayload {
+    userId: number;
+    bookId: number;
+}
+
 interface DiscountPayload {
     percentage: number;
     isOnSale: boolean;
@@ -162,32 +167,105 @@ export const registerUser = async (userData: RegisterData): Promise<ApiResponse<
 
 // User login
 export const loginUser = async (credentials: LoginData): Promise<ApiResponse<LoginResponse>> => {
-    // where LoginResponse is:
-   
+    console.log(credentials, "Credentials");
 
-    // Rest of your function remains the same
     try {
-        const response = await api.post('/api/User/login', credentials);
+        const response = await api.post("/api/User/login", credentials);
+        console.log(response, "response from login");
 
-        // Store the token and userId in localStorage
-        if (response.data && response.data.token) {
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('userId', response.data.userId.toString());
-            localStorage.setItem('userRole', response.data.role);
-            localStorage.setItem('userEmail', response.data.email);
-            localStorage.setItem('userName', response.data.fullName);
+        // Check if response and response.data exist
+        if (response && response.data) {
+            // Safely store values in localStorage with null checks
+            if (response.data.token) localStorage.setItem("token", response.data.token);
+            if (response.data.userId) localStorage.setItem("userId", response.data.userId.toString());
+            if (response.data.role) localStorage.setItem("userRole", response.data.role);
+            if (response.data.email) localStorage.setItem("userEmail", response.data.email);
+            if (response.data.fullName) localStorage.setItem("userName", response.data.fullName);
+
+            return {
+                success: true,
+                data: response.data,
+            };
+        } else {
+            // Handle case where response or response.data is undefined
+            return {
+                success: false,
+                error: "Invalid response data",
+            };
         }
-
-        return {
-            success: true,
-            data: response.data
-        };
     } catch (error) {
+        console.error("Login error:", error);
         return {
             success: false,
-            error: error.response?.data || 'Login failed'
+            error: error.response?.data || "Login failed",
         };
     }
+};
+
+export const loginStaff = async (credentials: StaffLoginData): Promise<ApiResponse<StaffLoginResponse>> => {
+    try {
+        const response = await api.post('/api/StaffAuth/login', credentials);
+
+        // Check if response and response.data exist
+        if (response && response.data && response.data.token) {
+            // Store the token and user details in localStorage
+            localStorage.setItem('staffToken', response.data.token);
+            localStorage.setItem('token', response.data.token); // Also store as regular token for consistency
+            localStorage.setItem('staffRole', response.data.role);
+            localStorage.setItem('userRole', response.data.role); // Also store as userRole for consistency
+            localStorage.setItem('staffEmail', response.data.email);
+            localStorage.setItem('userEmail', response.data.email); // Also store as userEmail for consistency
+            localStorage.setItem('staffName', response.data.fullName);
+            localStorage.setItem('userName', response.data.fullName); // Also store as userName for consistency
+            localStorage.setItem('userId', response.data.userId?.toString() || '0'); // Add userId if available
+
+            return {
+                success: true,
+                data: response.data
+            };
+        } else {
+            return {
+                success: false,
+                error: "Invalid response data"
+            };
+        }
+    } catch (error: any) {
+        console.error("Staff login error:", error);
+        return {
+            success: false,
+            error: error.response?.data?.message || 'Staff login failed'
+        };
+    }
+};
+
+export const isAuthenticated = (): boolean => {
+    const token = localStorage.getItem('token');
+    return !!token; // Returns true if token exists
+};
+
+// Add a helper function to check user type
+export const getUserType = (): 'Admin' | 'Staff' | 'Member' | null => {
+    const role = localStorage.getItem('userRole');
+    if (role === 'Admin' || role === 'Staff' || role === 'Member') {
+        return role as 'Admin' | 'Staff' | 'Member';
+    }
+    return null;
+};
+
+// Add a unified logout function that works for all user types
+export const logout = () => {
+    // Clear all auth-related localStorage items
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userName');
+
+    // Also clear staff-specific items
+    localStorage.removeItem('staffToken');
+    localStorage.removeItem('staffRole');
+    localStorage.removeItem('staffEmail');
+    localStorage.removeItem('staffName');
 };
 
 // Get user profile
@@ -483,6 +561,22 @@ export const addToCart = async (cartData: AddToCartData): Promise<ApiResponse<an
     }
 };
 
+
+export const deleteCart = async (CartData:RemoveCartPayload): Promise<ApiResponse<any>> => {
+    try {
+        const response = await api.delete(`/api/Admin/delete-book/${bookId}`);
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.response?.data || 'Book deletion failed'
+        };
+    }
+};
+
 // Fixed getCart function with correct endpoint
 export const getCart = async (userId: number): Promise<ApiResponse<CartResponse>> => {
     try {
@@ -546,51 +640,51 @@ export const dashboard = async (): Promise<ApiResponse<StaffDashboardResponse>> 
     }
 };
 
-export const loginStaff = async (credentials: StaffLoginData): Promise<ApiResponse<StaffLoginResponse>> => {
-    try {
-        const response = await api.post('/api/StaffAuth/login', credentials);
+//export const loginStaff = async (credentials: StaffLoginData): Promise<ApiResponse<StaffLoginResponse>> => {
+//    try {
+//        const response = await api.post('/api/StaffAuth/login', credentials);
 
-        // Store the token and user details in localStorage
-        if (response.data && response.data.token) {
-            localStorage.setItem('staffToken', response.data.token);
-            localStorage.setItem('staffRole', response.data.role);
-            localStorage.setItem('staffEmail', response.data.email);
-            localStorage.setItem('staffName', response.data.fullName);
-        }
+//        // Store the token and user details in localStorage
+//        if (response.data && response.data.token) {
+//            localStorage.setItem('staffToken', response.data.token);
+//            localStorage.setItem('staffRole', response.data.role);
+//            localStorage.setItem('staffEmail', response.data.email);
+//            localStorage.setItem('staffName', response.data.fullName);
+//        }
 
-        return {
-            success: true,
-            data: response.data
-        };
-    } catch (error: any) {
-        return {
-            success: false,
-            error: error.response?.data?.message || 'Staff login failed'
-        };
-    }
-};
+//        return {
+//            success: true,
+//            data: response.data
+//        };
+//    } catch (error: any) {
+//        return {
+//            success: false,
+//            error: error.response?.data?.message || 'Staff login failed'
+//        };
+//    }
+//};
 
 // Add a helper function to check if staff is authenticated
-export const isStaffAuthenticated = (): boolean => {
-    const token = localStorage.getItem('staffToken');
-    const role = localStorage.getItem('staffRole');
-    return !!(token && role === 'Staff');
-};
+//export const isStaffAuthenticated = (): boolean => {
+//    const token = localStorage.getItem('staffToken');
+//    const role = localStorage.getItem('staffRole');
+//    return !!(token && role === 'Staff');
+//};
 
 // Add a helper function to get staff details
-export const getStaffDetails = () => {
-    return {
-        token: localStorage.getItem('staffToken'),
-        role: localStorage.getItem('staffRole'),
-        email: localStorage.getItem('staffEmail'),
-        fullName: localStorage.getItem('staffName')
-    };
-};
+//export const getStaffDetails = () => {
+//    return {
+//        token: localStorage.getItem('staffToken'),
+//        role: localStorage.getItem('staffRole'),
+//        email: localStorage.getItem('staffEmail'),
+//        fullName: localStorage.getItem('staffName')
+//    };
+//};
 
-// Add a logout function
-export const logoutStaff = () => {
-    localStorage.removeItem('staffToken');
-    localStorage.removeItem('staffRole');
-    localStorage.removeItem('staffEmail');
-    localStorage.removeItem('staffName');
-};
+//// Add a logout function
+//export const logoutStaff = () => {
+//    localStorage.removeItem('staffToken');
+//    localStorage.removeItem('staffRole');
+//    localStorage.removeItem('staffEmail');
+//    localStorage.removeItem('staffName');
+//};

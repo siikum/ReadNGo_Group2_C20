@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser, loginStaff } from "@/api/apiConfig";
 import { jwtDecode } from "jwt-decode";
+import { getUserRole } from "@/lib/auth";
 
 interface JwtPayload {
     email: string;
@@ -19,6 +20,11 @@ export default function Login() {
     const navigate = useNavigate();
 
     const handleLogin = async () => {
+        if (!email || !password) {
+            setMessage("Please enter both email and password");
+            return;
+        }
+
         setLoading(true);
         setMessage("");
 
@@ -27,23 +33,27 @@ export default function Login() {
             const result = await loginUser({ email, password });
 
             if (result.success && result.data?.token) {
-                const token = result.data.token;
-                localStorage.setItem("token", token);
-
-                // Decode the token to get the role
-                const decoded = jwtDecode<JwtPayload>(token);
-                const userRole = decoded.role;
+                // Login successful
                 setMessage("Login successful!");
 
+                // Get user role
+                const role = getUserRole();
+
                 // Navigate based on role
-                if (userRole === "Admin") {
+                if (role === "Admin") {
                     navigate("/dashboard");
-                } else if (userRole === "Staff") {
-                    navigate("/staff-dashboard");
-                } else if (userRole === "Member") {
+                } else if (role === "Member") {
                     navigate("/homepage");
                 } else {
-                    navigate("/");
+                    // If role is not Admin or Member, try staff login
+                    const staffResult = await loginStaff({ email, password });
+
+                    if (staffResult.success && staffResult.data?.token) {
+                        setMessage("Staff login successful!");
+                        navigate("/staff-dashboard");
+                    } else {
+                        setMessage("Login failed: Unknown user role");
+                    }
                 }
 
                 // Reset fields
@@ -54,13 +64,6 @@ export default function Login() {
                 const staffResult = await loginStaff({ email, password });
 
                 if (staffResult.success && staffResult.data?.token) {
-                    // Store staff token
-                    localStorage.setItem("staffToken", staffResult.data.token);
-                    localStorage.setItem("token", staffResult.data.token); // Also store as regular token
-                    localStorage.setItem("staffRole", staffResult.data.role);
-                    localStorage.setItem("staffEmail", staffResult.data.email);
-                    localStorage.setItem("staffName", staffResult.data.fullName);
-
                     setMessage("Staff login successful!");
                     navigate("/staff-dashboard");
 
@@ -69,14 +72,21 @@ export default function Login() {
                     setPassword("");
                 } else {
                     // Both logins failed
-                    setMessage("Invalid email or password");
+                    setMessage(result.error || staffResult.error || "Invalid email or password");
                 }
             }
         } catch (error) {
+            console.error("Login error:", error);
             setMessage("An unexpected error occurred");
-            console.error(error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    // Handle Enter key press
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleLogin();
         }
     };
 
@@ -99,6 +109,7 @@ export default function Login() {
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    onKeyDown={handleKeyDown}
                 />
 
                 <Input
@@ -106,6 +117,7 @@ export default function Login() {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    onKeyDown={handleKeyDown}
                 />
 
                 <Button
