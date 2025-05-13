@@ -628,20 +628,31 @@ export const addToCart = async (cartData: AddToCartData): Promise<ApiResponse<an
 };
 
 
-//export const deleteCart = async (CartData:RemoveCartPayload): Promise<ApiResponse<any>> => {
-//    try {
-//        const response = await api.delete(`/api/Admin/delete-book/${bookId}`);
-//        return {
-//            success: true,
-//            data: response.data
-//        };
-//    } catch (error) {
-//        return {
-//            success: false,
-//            error: error.response?.data || 'Book deletion failed'
-//        };
-//    }
-//};
+// @/api/apiConfig.ts
+
+// In apiConfig.ts, replace the existing deleteFromCart function:
+export const deleteFromCart = async (userId: number, bookId: number): Promise<ApiResponse<any>> => {
+    try {
+        // Use the correct endpoint according to Swagger: /api/Cart/remove
+        const response = await api.delete('/api/Cart/remove', {
+            params: {
+                userId: userId,
+                bookId: bookId
+            }
+        });
+
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        console.error('Error removing item from cart:', error);
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to remove item from cart'
+        };
+    }
+};
 
 export const getAnnouncements = async () => {
     try {

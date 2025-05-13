@@ -1,10 +1,16 @@
 // @/context/CartContext.tsx
+// @/context/CartContext.tsx
 'use client';
 
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import { Book, CartItem, Order, Review } from '@/types/books';
-import { addToCart as addToCartAPI, createOrder as createOrderAPI } from '@/api/apiConfig';
-import type { AddToCartData } from '@/api/apiConfig';
+import {
+    addToCart as addToCartAPI,
+    createOrder as createOrderAPI,
+    deleteFromCart,  // Import as a value, not a type
+    getCart  // Add this to import getCart for the fetchCart function
+} from '@/api/apiConfig';
+import type { AddToCartData } from '@/api/apiConfig';  // Keep this as type import
 
 type CartContextType = {
     cart: CartItem[];
@@ -78,6 +84,24 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         setCart(transformedItems);
     }, []);
 
+    const fetchCart = useCallback(async () => {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+            console.error('User not authenticated');
+            return;
+        }
+        try {
+            const response = await getCart(parseInt(userId));
+            if (response.success && response.data && response.data.cartItems) {
+                setCartFromApi(response.data.cartItems);
+            } else {
+                console.error('Failed to fetch cart:', response.error);
+            }
+        } catch (err) {
+            console.error('Error fetching cart:', err);
+        }
+    }, [setCartFromApi]);
+
     const addToCart = async (book: Book) => {
         // Get the real user ID from localStorage
         const userId = localStorage.getItem('userId');
@@ -117,8 +141,31 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const removeFromCart = (bookId: number) => {
+    // In CartContext.tsx, update the removeFromCart function:
+    // In CartContext.tsx, update the removeFromCart function:
+    const removeFromCart = async (bookId: number) => {
+        const userId = localStorage.getItem('userId');
+
+        if (!userId) {
+            console.error('User not authenticated');
+            return;
+        }
+
+        // Optimistically update UI first for better user experience
         setCart(prev => prev.filter(item => item.id !== bookId));
+
+        // Then sync with backend
+        try {
+            const response = await deleteFromCart(parseInt(userId), bookId);
+            if (!response.success) {
+                console.error('Failed to delete item from cart:', response.error);
+                // Optionally fetch the cart again to sync with backend state
+                fetchCart(); // You'd need to implement this function
+            }
+        } catch (err) {
+            console.error('Error calling deleteFromCart API:', err);
+            // Consider fetching the cart again to restore state from backend
+        }
     };
 
     const updateQuantity = (bookId: number, quantity: number) => {

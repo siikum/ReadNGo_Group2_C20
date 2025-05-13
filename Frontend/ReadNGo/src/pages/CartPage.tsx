@@ -7,6 +7,7 @@ import { useState, useEffect,useCallback } from 'react';
 import { useLocation,useNavigate } from 'react-router-dom';
 import { getCart, placeOrder } from '@/api/apiConfig';
 import { getUserRole } from '@/lib/auth';
+import { deleteCart } from '@/api/apiConfig';
 
 export const CartPage = () => {
     const {
@@ -25,6 +26,8 @@ export const CartPage = () => {
     const location = useLocation();
 
     const userRole = getUserRole();
+
+
 
     // Check authentication first
     useEffect(() => {
@@ -80,6 +83,10 @@ export const CartPage = () => {
     const discount = applyDiscount();
     const discountAmount = subtotal * discount;
     const total = subtotal - discountAmount;
+
+
+
+
 
     const handlePlaceOrder = async () => {
         try {
@@ -222,12 +229,13 @@ export const CartPage = () => {
                                                 onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)}
                                                 className="w-16 p-2 border rounded text-center"
                                             />
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => removeFromCart(item.id)}
-                                                className="text-red-500 hover:text-red-600"
-                                            >
+                                            {/*<Button*/}
+                                            {/*    variant="ghost"*/}
+                                            {/*    size="icon"*/}
+                                            {/*    onClick={() => removeFromCart(item.id)}*/}
+                                            {/*    className="text-red-500 hover:text-red-600"*/}
+                                            {/*>*/}
+                                            <Button onClick={() => removeFromCart(item.id)}>Remove
                                                 <Trash2 size={16} />
                                             </Button>
                                         </div>
