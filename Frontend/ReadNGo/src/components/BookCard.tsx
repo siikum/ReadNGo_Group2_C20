@@ -103,18 +103,18 @@ export const BookCard = ({ book, onAddToCart }: BookCardProps) => {
                     )}
                 </div>
 
-                <div className="flex items-center gap-1 mb-2">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                        <span
-                            key={i}
-                            className={`text-sm ${i < Math.floor(book.rating) ? 'text-yellow-400' : 'text-gray-300'
-                                }`}
-                        >
-                            ★
-                        </span>
-                    ))}
-                    <span className="text-sm text-gray-600">({book.rating})</span>
-                </div>
+                {/*<div className="flex items-center gap-1 mb-2">*/}
+                {/*    {Array.from({ length: 5 }).map((_, i) => (*/}
+                {/*        <span*/}
+                {/*            key={i}*/}
+                {/*            className={`text-sm ${i < Math.floor(book.rating) ? 'text-yellow-400' : 'text-gray-300'*/}
+                {/*                }`}*/}
+                {/*        >*/}
+                {/*            ★*/}
+                {/*        </span>*/}
+                {/*    ))}*/}
+                {/*    <span className="text-sm text-gray-600">({book.rating})</span>*/}
+                {/*</div>*/}
 
                 {book.isBestseller && (
                     <Badge variant="secondary" className="text-xs">

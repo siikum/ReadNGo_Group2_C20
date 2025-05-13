@@ -1,11 +1,13 @@
-// @/pages/CartPage.tsx
+﻿// @/pages/CartPage.tsx
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
 import { Navbar } from '@/components/NavBar';
 import { Trash2 } from 'lucide-react';
 import { useState, useEffect,useCallback } from 'react';
 import { useLocation,useNavigate } from 'react-router-dom';
-import { getCart, placeOrder } from '@/api/apiConfig';
+//import { getCart, placeOrder } from '@/api/apiConfig';
+import { getCart } from '@/api/apiConfig'; // Remove placeOrder here
+
 import { getUserRole } from '@/lib/auth';
 import { deleteCart } from '@/api/apiConfig';
 
@@ -24,7 +26,7 @@ export const CartPage = () => {
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
     const location = useLocation();
-
+    const { placeOrder } = useCart(); 
     const userRole = getUserRole();
 
 
@@ -91,14 +93,14 @@ export const CartPage = () => {
     const handlePlaceOrder = async () => {
         try {
             setLoading(true);
-            const response = await placeOrder();
+            const order = await placeOrder(); // ✅ this calls the context function
 
-            if (response.success && response.data) {
-                setConfirmationCode(response.data.claimCode);
+            if (order) {
+                setConfirmationCode(order.claimCode);
                 setOrderPlaced(true);
-                clearCart(); // Clear the cart after successful order
+                clearCart(); // already included in context logic, so this may not be needed
             } else {
-                alert(response.error || 'Failed to place order. Please try again.');
+                alert('Failed to place order. Please try again.');
             }
         } catch (error) {
             console.error('Error placing order:', error);

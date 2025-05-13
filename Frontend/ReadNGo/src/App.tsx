@@ -21,6 +21,7 @@ import Orders from "./components/Order";
 import StaffProcessedOrders from "./pages/StaffProcessedOrders";
 import StaffClaimCode from "./pages/StaffClaimCode";
 import StaffDashboard from "./pages/StaffDashboard";
+import OrderDetails from "./pages/OrderDetails";
 
 export default function App() {
     return (
@@ -37,6 +38,8 @@ export default function App() {
                 <Route path="/create-order" element={<CreateOrderPage />} />
                 {/*<Route path="/User-Get-Books" element={<AdminGetBooks />} />\*/}
                     <Route path="/edit-book/:id" element={<EditBookPage />} />
+
+                    <Route path="/order-details" element={< OrderDetails />} />
 
 
                  <Route path="/cart" element={<Cart />} />

@@ -188,24 +188,42 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         return discount;
     };
 
+    // Fixed placeOrder function for CartContext.tsx
+
     const placeOrder = async () => {
         if (cart.length === 0) return null;
 
         try {
-            // Prepare order data for API
-            const bookIds = cart.flatMap(item =>
-                Array(item.quantity).fill(item.id)
-            );
+            // Get the userId from localStorage
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                console.error('User not authenticated');
+                throw new Error('User not authenticated');
+            }
 
+            console.log('Starting place order with userId:', userId);
+            console.log('Cart items:', cart);
+
+            // Prepare order data for API - collect all bookIds
+            const bookIds = cart.map(item => item.id);
+
+            console.log('Sending bookIds to API:', bookIds);
+
+            // Call API to create order with the correct data structure
             const orderData = {
-                userId: currentUserId,
+                userId: parseInt(userId),
                 bookIds: bookIds
             };
 
-            // Call API to create order
+            console.log('Sending order data:', orderData);
+
+            // Call the createOrder API function
             const response = await createOrderAPI(orderData);
+            console.log('API response:', response);
 
             if (response.success) {
+                console.log('Order created successfully:', response.data);
+
                 // Create local order object
                 const discount = applyDiscount();
                 const subtotal = cart.reduce(
@@ -213,24 +231,25 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                 );
                 const total = subtotal * (1 - discount);
 
-                const newOrder: Order = {
-                    id: response.data.id || Math.random().toString(36).substring(2, 9),
+                const newOrder = {
+                    id: response.data.id || String(Date.now()),
                     items: [...cart],
                     total,
                     discount,
                     date: new Date().toISOString(),
                     status: 'completed',
-                    claimCode: response.data.claimCode || Math.random().toString(36).substring(2, 8).toUpperCase(),
+                    claimCode: response.data.claimCode || String(Date.now()),
                 };
 
                 setOrders(prev => [...prev, newOrder]);
-                setCart([]);
+                clearCart();
                 return newOrder;
             } else {
+                console.error('API error:', response.error);
                 throw new Error(response.error || 'Failed to place order');
             }
         } catch (error) {
-            console.error('Failed to place order:', error);
+            console.error('Error placing order:', error);
             throw error;
         }
     };

@@ -302,17 +302,63 @@ export const getClaimCode = async (orderId: number): Promise<ApiResponse<string>
     }
 };
 
-export const createOrder = async (orderData: CreateOrderData): Promise<ApiResponse<any>> => {
+// Enhanced createOrder function for apiConfig.ts
+
+export const createOrder = async (
+    orderData: CreateOrderData
+): Promise<ApiResponse<any>> => {
     try {
-        const response = await api.post('/api/Order/create', orderData);
+        // Add detailed logging
+        console.log('📦 Creating order with data:', JSON.stringify(orderData));
+
+        // Validate orderData
+        if (!orderData.userId || !orderData.bookIds || orderData.bookIds.length === 0) {
+            console.error('❌ Invalid order data:', orderData);
+            return {
+                success: false,
+                error: 'Invalid order data: missing userId or bookIds',
+            };
+        }
+
+        // Get the auth token
+        const token = localStorage.getItem('token');
+        console.log('🔑 Auth token exists:', !!token);
+
+        // Make the API call with proper headers
+        const response = await api.post('/api/Order/create', orderData, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token ? `Bearer ${token}` : ''
+            }
+        });
+
+        console.log('✅ Order creation successful, response:', response.data);
+
         return {
             success: true,
-            data: response.data
+            data: response.data,
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
+        // Enhanced error logging
+        console.error('❌ Order creation failed:', error);
+
+        let errorMsg = 'Order creation failed';
+
+        if (error instanceof Error) {
+            console.error('Error name:', error.name);
+            console.error('Error message:', error.message);
+        }
+
+        if (typeof error === 'object' && error !== null && 'response' in error) {
+            const axiosError = error as any;
+            console.error('Response status:', axiosError.response?.status);
+            console.error('Response data:', axiosError.response?.data);
+            errorMsg = axiosError.response?.data || errorMsg;
+        }
+
         return {
             success: false,
-            error: error.response?.data || 'Order creation failed'
+            error: errorMsg,
         };
     }
 };
@@ -694,6 +740,21 @@ export const getCart = async (userId: number): Promise<ApiResponse<CartResponse>
     }
 };
 
+export const getOrder = async (userId: number): Promise<ApiResponse<CartResponse>> => {
+    try {
+        const response = await api.get(`/api/Order/user/${userId}`);
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to fetch cart'
+        };
+    }
+};
+
 export const processClaimCode = async (
     claimData: ProcessClaimData
 ): Promise<ApiResponse<ClaimCodeResponse>> => {
@@ -722,6 +783,21 @@ export const processedOrders = async (): Promise<ApiResponse<ProcessedOrdersResp
         return {
             success: false,
             error: error.response?.data?.message || 'Failed to fetch processed orders'
+        };
+    }
+};
+
+export const getOrderStatus = async (orderId: number): Promise<ApiResponse<{ isConfirmed: boolean, isCancelled: boolean }>> => {
+    try {
+        const response = await api.get(`/api/Order/status/${orderId}`);
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to fetch order status'
         };
     }
 };

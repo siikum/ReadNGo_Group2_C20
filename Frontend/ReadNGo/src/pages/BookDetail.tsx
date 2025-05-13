@@ -33,6 +33,11 @@ interface Book {
     imagePath: string;
 }
 
+//interface BookCardProps {
+//    book: Book;
+//    onAddToCart?: () => void;
+//}
+
 export default function BookDetail() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
@@ -53,6 +58,21 @@ export default function BookDetail() {
     const [showReviewForm, setShowReviewForm] = useState(false);
     const [rating, setRating] = useState(5);
     const [comment, setComment] = useState('');
+
+    //const handleAddToCart = async (e: React.MouseEvent) => {
+    //    e.stopPropagation();
+
+    //    // If onAddToCart prop is provided, use it. Otherwise use context
+    //    if (onAddToCart) {
+    //        onAddToCart();
+    //    } else {
+    //        try {
+    //            await addToCart(book);
+    //        } catch (error) {
+    //            console.error('Error adding to cart:', error);
+    //        }
+    //    }
+    //};
 
     // Fetch book details
     useEffect(() => {
@@ -120,60 +140,83 @@ export default function BookDetail() {
             : book.price.toFixed(2);
     };
 
+    //const handleAddToCart = async () => {
+    //    if (!book) return;
+
+    //    try {
+    //        setIsAddingToCart(true);
+
+    //        // Get the userId from localStorage
+    //        const userId = localStorage.getItem('userId');
+    //        if (!userId) {
+    //            navigate('/login');
+    //            return;
+    //        }
+
+    //        // Directly call the API function to ensure correct userId is used
+    //        const cartData = {
+    //            userId: parseInt(userId),
+    //            bookId: book.id,
+    //            quantity: 1
+    //        };
+
+    //        // Option 1: Call API directly (most reliable)
+    //        const response = await addToCartAPI(cartData);
+
+    //        if (response.success) {
+    //            // You can still call the context method for local state update
+    //            // but with correct book structure
+    //            const cartBook = {
+    //                id: book.id, // This should match what your CartItem expects
+    //                title: book.title,
+    //                author: book.author,
+    //                price: book.price,
+    //                genre: book.genre,
+    //                format: book.format,
+    //                stock: book.stockQuantity,
+    //                rating: book.averageRating,
+    //                image: book.imagePath ? `https://localhost:7149${book.imagePath}` : '/images/book-placeholder.jpg',
+    //                // Add other fields as needed
+    //            };
+
+    //            // Call context method for local state
+    //            await addToCart(cartBook);
+
+    //            alert('Book added to cart successfully!');
+
+    //            // Navigate to cart with state to trigger refresh
+    //            navigate('/cart', { state: { bookAdded: Date.now() } });
+    //        } else {
+    //            throw new Error(response.error || 'Failed to add to cart');
+    //        }
+    //    } catch (error) {
+    //        console.error('Error adding to cart:', error);
+    //        alert('Failed to add book to cart. Please try again.');
+    //    } finally {
+    //        setIsAddingToCart(false);
+    //    }
+    //};
     const handleAddToCart = async () => {
         if (!book) return;
 
         try {
-            setIsAddingToCart(true);
-
-            // Get the userId from localStorage
-            const userId = localStorage.getItem('userId');
-            if (!userId) {
-                navigate('/login');
-                return;
-            }
-
-            // Directly call the API function to ensure correct userId is used
-            const cartData = {
-                userId: parseInt(userId),
-                bookId: book.id,
-                quantity: 1
+            // Create a properly formatted book object for the cart
+            const cartBook = {
+                id: book.id,
+                title: book.title,
+                author: book.author,
+                price: book.price,
+                discount: book.isOnSale ? book.discountPercentage : 0,
+                stock: book.stockQuantity,
+                rating: book.averageRating,
+                isBestseller: false, // Add default value
+                image: book.imagePath ? `https://localhost:7149${book.imagePath}` : '/images/book-placeholder.jpg',
             };
 
-            // Option 1: Call API directly (most reliable)
-            const response = await addToCartAPI(cartData);
-
-            if (response.success) {
-                // You can still call the context method for local state update
-                // but with correct book structure
-                const cartBook = {
-                    id: book.id, // This should match what your CartItem expects
-                    title: book.title,
-                    author: book.author,
-                    price: book.price,
-                    genre: book.genre,
-                    format: book.format,
-                    stock: book.stockQuantity,
-                    rating: book.averageRating,
-                    image: book.imagePath ? `https://localhost:7149${book.imagePath}` : '/images/book-placeholder.jpg',
-                    // Add other fields as needed
-                };
-
-                // Call context method for local state
-                await addToCart(cartBook);
-
-                alert('Book added to cart successfully!');
-
-                // Navigate to cart with state to trigger refresh
-                navigate('/cart', { state: { bookAdded: Date.now() } });
-            } else {
-                throw new Error(response.error || 'Failed to add to cart');
-            }
+            // Call the addToCart function from the context
+            await addToCart(cartBook);
         } catch (error) {
             console.error('Error adding to cart:', error);
-            alert('Failed to add book to cart. Please try again.');
-        } finally {
-            setIsAddingToCart(false);
         }
     };
 
