@@ -38,6 +38,19 @@ export default function Login() {
 
                 // Get user role
                 const role = getUserRole();
+                // The loginUser function already sets token in localStorage
+                
+                // Get the role directly from the response
+                const userRole = result.data.role;
+                
+                console.log("Login successful as:", userRole); // Debug log
+                setMessage(`Login successful as ${userRole}!`);
+
+                // Clear any staff-related tokens to prevent conflicts
+                localStorage.removeItem("staffToken");
+                localStorage.removeItem("staffRole");
+                localStorage.removeItem("staffEmail");
+                localStorage.removeItem("staffName");
 
                 // Navigate based on role
                 if (role === "Admin") {
@@ -64,6 +77,20 @@ export default function Login() {
                 const staffResult = await loginStaff({ email, password });
 
                 if (staffResult.success && staffResult.data?.token) {
+                    // Clear any regular user tokens to prevent conflicts
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("userRole");
+                    localStorage.removeItem("userEmail");
+                    localStorage.removeItem("userName");
+                    
+                    // Then set staff token
+                    localStorage.setItem("staffToken", staffResult.data.token);
+                    localStorage.setItem("staffRole", staffResult.data.role);
+                    localStorage.setItem("staffEmail", staffResult.data.email);
+                    localStorage.setItem("staffName", staffResult.data.fullName);
+
+                    console.log("Staff login successful"); // Debug log
                     setMessage("Staff login successful!");
                     navigate("/staff-dashboard");
 

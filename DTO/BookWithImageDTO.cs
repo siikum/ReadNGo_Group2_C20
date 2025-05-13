@@ -13,6 +13,8 @@ namespace ReadNGo.DTO
         public string Format { get; set; }
         public string Publisher { get; set; }
         public DateTime PublicationDate { get; set; }
+        public string Category { get; set; }  // Added Category
+        public DateTime ArrivalDate { get; set; }  // Added ArrivalDate
         public decimal Price { get; set; }
         public bool IsOnSale { get; set; }
         public decimal? DiscountPercentage { get; set; }

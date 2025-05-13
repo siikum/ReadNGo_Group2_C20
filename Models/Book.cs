@@ -17,6 +17,8 @@ namespace ReadNGo_Group2_C20.Models
         public string Format { get; set; }
         public string Publisher { get; set; }
         public DateTime PublicationDate { get; set; }
+        public string Category { get; set; }
+        public DateTime ArrivalDate { get; set; }
         public decimal Price { get; set; }
         public bool IsOnSale { get; set; } = false;
         public decimal? DiscountPercentage { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ReadNGo.DTO;
 using ReadNGo.Services.Interfaces;
 
@@ -29,25 +30,39 @@ namespace ReadNGo_Group2_C20.Controllers
         public ActionResult<BookDTO> GetBookById(int id)
         {
             var book = _bookService.GetBookById(id);
-
             if (book == null)
             {
                 return NotFound($"Book with ID {id} not found");
             }
-
             return Ok(book);
         }
 
-        // GET: api/Book/filter
+        // GET: api/Book/filter - UPDATED WITH ALL PARAMETERS
         [HttpGet("filter")]
         public ActionResult<IEnumerable<BookDTO>> FilterBooks(
+            [FromQuery] string category = null,           // Added category
             [FromQuery] string genre = null,
             [FromQuery] string author = null,
             [FromQuery] string format = null,
             [FromQuery] string language = null,
-            [FromQuery] string publisher = null)
+            [FromQuery] string publisher = null,
+            [FromQuery] bool? availableInLibrary = null,  // Added availability filter
+            [FromQuery] decimal? minPrice = null,         // Added minimum price
+            [FromQuery] decimal? maxPrice = null,         // Added maximum price
+            [FromQuery] double? minRating = null)         // Added minimum rating
         {
-            var books = _bookService.FilterBooks(genre, author, format, language, publisher);
+            var books = _bookService.FilterBooks(
+                category,
+                genre,
+                author,
+                format,
+                language,
+                publisher,
+                availableInLibrary,
+                minPrice,
+                maxPrice,
+                minRating);
+
             return Ok(books);
         }
 
@@ -73,6 +88,35 @@ namespace ReadNGo_Group2_C20.Controllers
         {
             var books = _bookService.GetBooksByCategory(type);
             return Ok(books);
+        }
+        // GET: api/Book/authors
+        [HttpGet("authors")]
+        public ActionResult<IEnumerable<string>> GetDistinctAuthors()
+        {
+            var authors = _bookService.GetDistinctAuthors();
+            return Ok(authors);
+        }
+
+        // GET: api/Book/genres
+        [HttpGet("genres")]
+        public ActionResult<IEnumerable<string>> GetDistinctGenres()
+        {
+            var genres = _bookService.GetDistinctGenres();
+            return Ok(genres);
+        }
+        [HttpGet("languages")]
+        public ActionResult<IEnumerable<string>> GetDistinctLanguages()
+        {
+            var languages = _bookService.GetDistinctLanguages();
+            return Ok(languages);
+        }
+
+        // GET: api/Book/formats
+        [HttpGet("formats")]
+        public ActionResult<IEnumerable<string>> GetDistinctFormats()
+        {
+            var formats = _bookService.GetDistinctFormats();
+            return Ok(formats);
         }
     }
 }

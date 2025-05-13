@@ -24,9 +24,9 @@ namespace ReadNGo.Controllers
         public IActionResult Register(UserRegisterDTO userDTO)
         {
             var result = _userService.Register(userDTO);
-            if (result)
+            if(result)
                 return Ok("User Registered Successfully");
-            else
+                else
                 return BadRequest("User Registration Failed");
         }
 

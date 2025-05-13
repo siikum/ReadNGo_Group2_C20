@@ -8,8 +8,8 @@ namespace ReadNGo.Services.Interfaces
     {
         List<BookDTO> GetAllBooks();
         BookDTO GetBookById(int id);
-
         List<BookDTO> FilterBooks(
+            string category = null,  // Added category parameter
             string genre = null,
             string author = null,
             string format = null,
@@ -20,9 +20,14 @@ namespace ReadNGo.Services.Interfaces
             decimal? maxPrice = null,
             double? minRating = null
         );
-
         List<BookDTO> SearchBooks(string query);
         List<BookDTO> SortBooks(string by);
         List<BookDTO> GetBooksByCategory(string type);
+
+        List<string> GetDistinctAuthors();
+        List<string> GetDistinctGenres();
+
+        List<string> GetDistinctLanguages();
+        List<string> GetDistinctFormats();
     }
 }

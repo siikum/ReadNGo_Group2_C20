@@ -29,13 +29,15 @@ export default function App() {
         <Router>
             
             <Routes>
-                <Route path="/homepage" element={<HomePage />} />
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/homepage" element={<HomePage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/books" element={<Books />} />
                 <Route path="/create-order" element={<CreateOrderPage />} />
                 {/*<Route path="/User-Get-Books" element={<AdminGetBooks />} />\*/}
-                <Route path="/edit-book/:id" element={<EditBookPage />} />
+                    <Route path="/edit-book/:id" element={<EditBookPage />} />
+
 
                  <Route path="/cart" element={<Cart />} />
                     <Route path="/login" element={<Login />} />

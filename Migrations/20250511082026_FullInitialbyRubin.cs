@@ -45,6 +45,8 @@ namespace ReadNGo_Group2_C20.Migrations
                     Format = table.Column<string>(type: "text", nullable: false),
                     Publisher = table.Column<string>(type: "text", nullable: false),
                     PublicationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Category = table.Column<string>(type: "text", nullable: false),
+                    ArrivalDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
                     IsOnSale = table.Column<bool>(type: "boolean", nullable: false),
                     DiscountPercentage = table.Column<decimal>(type: "numeric", nullable: true),

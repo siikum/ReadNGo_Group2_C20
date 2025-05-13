@@ -12,7 +12,11 @@ using ReadNGo.DBContext;
 namespace ReadNGo_Group2_C20.Migrations
 {
     [DbContext(typeof(ReadNGoContext))]
+<<<<<<<< HEAD:Migrations/20250511075407_FullInitialbyRubin.Designer.cs
+    [Migration("20250511075407_FullInitialbyRubin")]
+========
     [Migration("20250511082026_FullInitialbyRubin")]
+>>>>>>>> 49e6114680a0caa28431f6121e83cc244f055cef:Migrations/20250511082026_FullInitialbyRubin.Designer.cs
     partial class FullInitialbyRubin
     {
         /// <inheritdoc />
@@ -63,7 +67,14 @@ namespace ReadNGo_Group2_C20.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("ArrivalDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Author")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Category")
                         .IsRequired()
                         .HasColumnType("text");
 
