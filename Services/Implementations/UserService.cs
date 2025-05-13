@@ -32,8 +32,8 @@ namespace ReadNGo.Services.Implementations
                 FullName = userDTO.FullName,
                 Email = userDTO.Email,
                 Password = hashedPassword,
-                Role= userDTO.Role ?? "Member",
-                MembershipId=Guid.NewGuid()
+                Role = userDTO.Role ?? "Member",
+                MembershipId = Guid.NewGuid()
             };
             _context.Users.Add(user);
             _context.SaveChanges();
@@ -41,7 +41,16 @@ namespace ReadNGo.Services.Implementations
             return true;
         }
 
-        public string Login(UserLoginDTO credentials)
+        public class LoginResponse
+        {
+            public string Token { get; set; }
+            public int UserId { get; set; }
+            public string Email { get; set; }
+            public string Role { get; set; }
+            public string FullName { get; set; }
+        }
+
+        public LoginResponse Login(UserLoginDTO credentials)
         {
             Console.WriteLine($"🔍 Login attempt: {credentials.Email} / {credentials.Password}");
 
@@ -49,7 +58,15 @@ namespace ReadNGo.Services.Implementations
             if (credentials.Email == "admins@gmail.com" && credentials.Password == "Admin@1234")
             {
                 Console.WriteLine("✅ Admin login matched!");
-                return GenerateJwtToken("Admin", credentials.Email);
+                var adminToken = GenerateJwtToken("Admin", credentials.Email);
+                return new LoginResponse
+                {
+                    Token = adminToken,
+                    UserId = 0, // Or a specific admin ID if you have one
+                    Email = credentials.Email,
+                    Role = "Admin",
+                    FullName = "Admin User"
+                };
             }
 
             Console.WriteLine("❌ Admin check failed. Proceeding to DB...");
@@ -69,7 +86,16 @@ namespace ReadNGo.Services.Implementations
             }
 
             Console.WriteLine("✅ DB user login matched!");
-            return GenerateJwtToken(user.Role, user.Email);
+            var token = GenerateJwtToken(user.Role, user.Email);
+
+            return new LoginResponse
+            {
+                Token = token,
+                UserId = user.Id,
+                Email = user.Email,
+                Role = user.Role,
+                FullName = user.FullName
+            };
         }
 
         private string GenerateJwtToken(string role, string email)

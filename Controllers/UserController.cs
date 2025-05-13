@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ReadNGo.DBContext;
 using ReadNGo.DTO;
+using ReadNGo.Services.Implementations;
 using ReadNGo.Services.Interfaces;
 using ReadNGo_Group2_C20.Models;
 
@@ -12,7 +13,7 @@ namespace ReadNGo.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-       
+
         private readonly IUserService _userService;
         public UserController(IUserService userService)
         {
@@ -24,32 +25,32 @@ namespace ReadNGo.Controllers
         public IActionResult Register(UserRegisterDTO userDTO)
         {
             var result = _userService.Register(userDTO);
-            if(result)
+            if (result)
                 return Ok("User Registered Successfully");
-                else
+            else
                 return BadRequest("User Registration Failed");
         }
 
-       
+
         [HttpPost("login")]
         public IActionResult Login(UserLoginDTO credentials)
         {
-            var token = _userService.Login(credentials);
-
-            if (token == null)
+            var loginResponse = _userService.Login(credentials);
+            if (loginResponse == null)
                 return Unauthorized("Invalid email or password.");
-
-            return Ok(new { Token = token });
+            return Ok(loginResponse);
         }
 
 
         [HttpGet("profile/{id}")]
-        public IActionResult GetProfile(int id) {
+        public IActionResult GetProfile(int id)
+        {
             return Ok("Get user profile...");
         }
 
         [HttpGet("claim-code/{orderId}")]
-        public IActionResult GetClaimCode(int orderId) {
+        public IActionResult GetClaimCode(int orderId)
+        {
             return Ok("Get claim code...");
         }
     }

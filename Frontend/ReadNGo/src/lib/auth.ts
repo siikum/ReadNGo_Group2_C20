@@ -7,69 +7,33 @@ interface JwtPayload {
     exp: number;
 }
 
-function isTokenValid(token: string): boolean {
-    try {
-        const decoded = jwtDecode<JwtPayload>(token);
-        return decoded.exp * 1000 > Date.now();
-    } catch (error) {
-        console.error("Invalid token format:", error);
-        return false;
-    }
-}
-
 export function getUserRole(): string | null {
+    // First check for regular token
     const token = localStorage.getItem("token");
     const staffToken = localStorage.getItem("staffToken");
 
-    if (token && isTokenValid(token)) {
-        try {
+    try {
+        // Try regular token first
+        if (token) {
             const decoded = jwtDecode<JwtPayload>(token);
-            return decoded.role;
-        } catch {
-            return null;
+            // Check if token is not expired
+            if (decoded.exp * 1000 > Date.now()) {
+                return decoded.role;
+            }
         }
-    }
 
-    if (staffToken && isTokenValid(staffToken)) {
-        try {
+        // If no regular token or it's expired, try staff token
+        if (staffToken) {
             const decoded = jwtDecode<JwtPayload>(staffToken);
-            return decoded.role;
-        } catch {
-            return null;
+            // Check if token is not expired
+            if (decoded.exp * 1000 > Date.now()) {
+                return decoded.role;
+            }
         }
+    } catch (error) {
+        console.error("Error decoding token:", error);
+        return null;
     }
 
     return null;
-}
-
-export function isLoggedIn(): boolean {
-    return !!getUserRole();
-}
-
-export function getUserEmail(): string | null {
-    const token = localStorage.getItem("token");
-    const staffToken = localStorage.getItem("staffToken");
-
-    if (token && isTokenValid(token)) {
-        return jwtDecode<JwtPayload>(token).email;
-    }
-
-    if (staffToken && isTokenValid(staffToken)) {
-        return jwtDecode<JwtPayload>(staffToken).email;
-    }
-
-    return null;
-}
-
-export function logout(): void {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("userRole");
-    localStorage.removeItem("userEmail");
-    localStorage.removeItem("userName");
-
-    localStorage.removeItem("staffToken");
-    localStorage.removeItem("staffRole");
-    localStorage.removeItem("staffEmail");
-    localStorage.removeItem("staffName");
 }
