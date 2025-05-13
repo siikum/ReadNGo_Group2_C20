@@ -628,18 +628,42 @@ export const addToCart = async (cartData: AddToCartData): Promise<ApiResponse<an
 };
 
 
-export const deleteCart = async (CartData:RemoveCartPayload): Promise<ApiResponse<any>> => {
+//export const deleteCart = async (CartData:RemoveCartPayload): Promise<ApiResponse<any>> => {
+//    try {
+//        const response = await api.delete(`/api/Admin/delete-book/${bookId}`);
+//        return {
+//            success: true,
+//            data: response.data
+//        };
+//    } catch (error) {
+//        return {
+//            success: false,
+//            error: error.response?.data || 'Book deletion failed'
+//        };
+//    }
+//};
+
+export const getAnnouncements = async () => {
     try {
-        const response = await api.delete(`/api/Admin/delete-book/${bookId}`);
-        return {
-            success: true,
-            data: response.data
-        };
+        const response = await fetch(
+            "https://localhost:7149/api/User/announcements",
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch announcements");
+        }
+
+        const data = await response.json();
+        return { success: true, data };
     } catch (error) {
-        return {
-            success: false,
-            error: error.response?.data || 'Book deletion failed'
-        };
+        console.error("Error fetching announcements:", error);
+        return { success: false, error: "Failed to fetch announcements" };
     }
 };
 

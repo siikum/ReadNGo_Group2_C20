@@ -13,14 +13,17 @@ import {
     getDistinctAuthors, 
     getDistinctGenres, 
     getDistinctLanguages, 
+    getAnnouncements,
     getDistinctFormats 
 } from '@/api/apiConfig';
 import { useCart } from '@/context/CartContext';
+import { AnnouncementCard } from "@/components/ui/AnnouncementCard";
 import { Badge } from '@/components/ui/badge';
 
 export const Homepage = () => {
     const [books, setBooks] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [announcements, setAnnouncements] = useState<any[]>([]); // New state for announcements
     const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -78,6 +81,34 @@ export const Homepage = () => {
             console.error('Error adding to cart:', error);
         }
     };
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+
+                // Fetch books
+                const booksResult = await getBooks();
+                if (booksResult.success && booksResult.data) {
+                    setBooks(booksResult.data);
+                } else {
+                    setError(booksResult.error || 'Failed to fetch books');
+                }
+
+                // Fetch announcements
+                const announcementsResult = await getAnnouncements();
+                if (announcementsResult.success && announcementsResult.data) {
+                    setAnnouncements(announcementsResult.data);
+                }
+
+            } catch (err) {
+                setError('Failed to fetch data');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     // Fetch all dropdown data
     useEffect(() => {
@@ -335,7 +366,21 @@ export const Homepage = () => {
         <div className="min-h-screen bg-gray-50">
             <Navbar />
 
+
             <div className="container mx-auto px-4 py-8">
+                {announcements.length > 0 && (
+                    <div className="mb-8">
+                        {announcements.map((announcement, index) => (
+                            <AnnouncementCard
+                                key={index}
+                                title={announcement.title}
+                                message={announcement.message}
+                                startTime={announcement.startTime}
+                                endTime={announcement.endTime}
+                            />
+                        ))}
+                    </div>
+                )}
                 {/* Search & Filters */}
                 <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
                     <h2 className="text-xl font-semibold mb-4">Find Your Next Read</h2>
