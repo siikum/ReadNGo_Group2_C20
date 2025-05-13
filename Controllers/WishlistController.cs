@@ -1,7 +1,4 @@
-﻿
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using ReadNGo.DTO;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using ReadNGo.DTO;
 using ReadNGo.Services.Interfaces;
@@ -36,10 +33,10 @@ namespace ReadNGo.Controllers
             return Ok(wishlist);
         }
 
-        [HttpDelete("remove/{bookId}")]
-        public IActionResult RemoveFromWishlist(int bookId)
+        [HttpDelete("remove/{userId}/{bookId}")]
+        public IActionResult RemoveFromWishlist(int userId, int bookId)
         {
-            var result = _wishlistService.RemoveFromWishlist(bookId);
+            var result = _wishlistService.RemoveFromWishlist(userId, bookId);
             if (result)
                 return Ok("Removed from wishlist.");
             else
@@ -47,4 +44,3 @@ namespace ReadNGo.Controllers
         }
     }
 }
-

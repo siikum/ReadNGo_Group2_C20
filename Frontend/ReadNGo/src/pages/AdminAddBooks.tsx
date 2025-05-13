@@ -1,8 +1,40 @@
-﻿import { useState } from "react";
+﻿import { useState, useEffect } from "react";
+import Sidebar from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { addBooks } from "@/api/apiConfig";
 import type { AddBook } from "@/api/apiConfig";
+
+interface InputFieldProps {
+    label: string;
+    name: string;
+    value: string | number;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    type?: string;
+    required?: boolean;
+    disabled?: boolean;
+    min?: string | number;
+    step?: string | number;
+}
 
 export default function AdminAddBooks() {
     const [book, setBook] = useState<AddBook>({
@@ -14,64 +46,200 @@ export default function AdminAddBooks() {
         format: "",
         publisher: "",
         publicationDate: new Date().toISOString(),
+        category: "",
+        arrivalDate: new Date().toISOString(),
         price: 0,
         isOnSale: false,
         discountPercentage: 0,
         discountStartDate: new Date().toISOString(),
-        discountEndDate: new Date().toISOString(), // Added missing field
+        discountEndDate: new Date().toISOString(),
         description: "",
         isbn: "",
         stockQuantity: 0,
-        averageRating: 0,
-        reviewCount: 0,
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value, type } = e.target as HTMLInputElement; // Type assertion to access 'type'
+    const [image, setImage] = useState<File | null>(null);
+    const [isbnError, setIsbnError] = useState<string>("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-        if (name === "isOnSale") {
+    const categories = [
+        "All Books",
+        "Bestsellers",
+        "Award Winners",
+        "New Releases",
+        "New Arrivals",
+        "Coming Soon",
+        "Deals"
+    ];
+
+    // Auto-determine category based on conditions
+    useEffect(() => {
+        let autoCategory = "";
+
+        // Check if arrival date is in the future
+        const arrivalDate = new Date(book.arrivalDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        arrivalDate.setHours(0, 0, 0, 0);
+
+        if (arrivalDate > today) {
+            autoCategory = "Coming Soon";
+            // Set stock quantity to 0 for future arrivals
             setBook(prev => ({
                 ...prev,
-                [name]: (e.target as HTMLInputElement).checked
+                category: "Coming Soon",
+                stockQuantity: 0
             }));
+        } else {
+            // Check if it's a new arrival (arrived in the past month)
+            const oneMonthAgo = new Date();
+            oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+            if (arrivalDate >= oneMonthAgo) {
+                autoCategory = "New Arrivals";
+            }
+
+            // Check if it's a new release (published in the past three months)
+            const publicationDate = new Date(book.publicationDate);
+            const threeMonthsAgo = new Date();
+            threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+            if (publicationDate >= threeMonthsAgo) {
+                autoCategory = "New Releases";
+            }
+
+            // Check if it's on sale
+            if (book.isOnSale && book.discountPercentage > 0) {
+                autoCategory = "Deals";
+            }
+
+            // If a category was auto-determined, set it
+            if (autoCategory && book.category !== autoCategory) {
+                setBook(prev => ({
+                    ...prev,
+                    category: autoCategory
+                }));
+            }
+        }
+    }, [book.arrivalDate, book.publicationDate, book.isOnSale, book.discountPercentage]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value, type } = e.target;
+
+        // Handle ISBN validation
+        if (name === "isbn") {
+            if (value.length <= 10) {
+                setBook(prev => ({ ...prev, isbn: value }));
+                if (value.length < 10) {
+                    setIsbnError("ISBN must be exactly 10 digits");
+                } else if (!/^\d{10}$/.test(value)) {
+                    setIsbnError("ISBN must contain only digits");
+                } else {
+                    setIsbnError("");
+                }
+            }
             return;
         }
 
+        // Handle numeric fields differently
+        if (type === "number" || ["price", "discountPercentage", "stockQuantity"].includes(name)) {
+            // If the field is empty, set it to empty string instead of 0
+            // This allows users to clear the field and type a new number
+            if (value === "") {
+                setBook(prev => ({
+                    ...prev,
+                    [name]: ""
+                }));
+            } else {
+                setBook(prev => ({
+                    ...prev,
+                    [name]: Number(value)
+                }));
+            }
+        } else {
+            setBook(prev => ({
+                ...prev,
+                [name]: name.includes("Date") ? value : value,
+            }));
+        }
+    };
+
+    const handleSelectChange = (value: string) => {
+        setBook(prev => ({ ...prev, category: value }));
+    };
+
+    const handleCheckboxChange = (checked: boolean) => {
         setBook(prev => ({
             ...prev,
-            [name]: type === "number" || name === "price" || name === "discountPercentage" ||
-                name === "stockQuantity" || name === "averageRating" || name === "reviewCount"
-                ? Number(value)
-                : name.includes("Date") ? value // Keep date as string when it comes from input
-                    : value,
+            isOnSale: checked,
+            ...(checked ? {} : {
+                discountPercentage: 0,
+                discountStartDate: new Date().toISOString(),
+                discountEndDate: new Date().toISOString()
+            })
         }));
     };
 
-    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setBook(prev => ({
-            ...prev,
-            [name]: value ? new Date(value).toISOString() : new Date().toISOString()
-        }));
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) setImage(file);
+    };
+
+    const formatDateForInput = (dateString: string) => {
+        try {
+            return new Date(dateString).toISOString().split("T")[0];
+        } catch {
+            return "";
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        try {
-            // Create a copy to ensure proper formatting
-            const bookToSubmit = {
-                ...book,
-                // Ensure dates are in ISO format
-                publicationDate: book.publicationDate,
-                discountStartDate: book.discountStartDate,
-                discountEndDate: book.discountEndDate
-            };
 
-            console.log("Submitting data:", bookToSubmit);
-            const response = await addBooks(bookToSubmit);
+        if (!image) {
+            toast.error("Image Required", {
+                description: "Please upload a book cover image.",
+            });
+            return;
+        }
+
+        if (book.isbn.length !== 10 || !/^\d{10}$/.test(book.isbn)) {
+            toast.error("Invalid ISBN", {
+                description: "ISBN must be exactly 10 digits.",
+            });
+            return;
+        }
+
+        if (book.isOnSale) {
+            if (!book.discountPercentage || book.discountPercentage <= 0) {
+                toast.error("Invalid Discount", {
+                    description: "Please enter a valid discount percentage.",
+                });
+                return;
+            }
+            if (!book.discountStartDate || !book.discountEndDate) {
+                toast.error("Missing Dates", {
+                    description: "Please enter discount start and end dates.",
+                });
+                return;
+            }
+        }
+
+        setIsSubmitting(true);
+
+        // Show loading toast
+        const loadingId = toast.loading("Adding Book", {
+            description: "Please wait while we add the book to your store...",
+        });
+
+        try {
+            const response = await addBooks(book, image);
 
             if (response.success) {
-                alert("Book added successfully!");
+                // Dismiss loading toast and show success
+                toast.dismiss(loadingId);
+                toast.success("Success!", {
+                    description: `"${book.title}" has been added to your store.`,
+                });
+
                 // Reset form
                 setBook({
                     id: 0,
@@ -82,6 +250,8 @@ export default function AdminAddBooks() {
                     format: "",
                     publisher: "",
                     publicationDate: new Date().toISOString(),
+                    category: "",
+                    arrivalDate: new Date().toISOString(),
                     price: 0,
                     isOnSale: false,
                     discountPercentage: 0,
@@ -90,150 +260,319 @@ export default function AdminAddBooks() {
                     description: "",
                     isbn: "",
                     stockQuantity: 0,
-                    averageRating: 0,
-                    reviewCount: 0,
                 });
+                setImage(null);
+                setIsbnError("");
+
+                // Reset file input
+                const fileInput = document.getElementById('image') as HTMLInputElement;
+                if (fileInput) fileInput.value = '';
             } else {
-                alert(`Failed to add book: ${response.error}`);
+                // Dismiss loading toast and show error
+                toast.dismiss(loadingId);
+                toast.error("Failed to Add Book", {
+                    description: response.error || "An unexpected error occurred.",
+                });
             }
         } catch (error) {
-            console.error("Error submitting form:", error);
-            alert("An unexpected error occurred.");
+            // Dismiss loading toast and show error
+            toast.dismiss(loadingId);
+            toast.error("Error", {
+                description: "An unexpected error occurred. Please try again.",
+            });
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
-    // Function to format ISO date string to YYYY-MM-DD for date inputs
-    const formatDateForInput = (dateString: string) => {
-        try {
-            const date = new Date(dateString);
-            return date.toISOString().split('T')[0];
-        } catch (error) {
-            return "";
-        }
+    // Check if arrival date is in the future
+    const isFutureArrival = () => {
+        const arrivalDate = new Date(book.arrivalDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        arrivalDate.setHours(0, 0, 0, 0);
+        return arrivalDate > today;
     };
 
     return (
-        <div className="flex flex-col p-6">
-            <h1 className="text-2xl font-bold mb-4">Add New Book</h1>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Title</label>
-                        <Input name="title" placeholder="Title" value={book.title} onChange={handleChange} required />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Author</label>
-                        <Input name="author" placeholder="Author" value={book.author} onChange={handleChange} required />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Genre</label>
-                        <Input name="genre" placeholder="Genre" value={book.genre} onChange={handleChange} required />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Language</label>
-                        <Input name="language" placeholder="Language" value={book.language} onChange={handleChange} required />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Format</label>
-                        <Input name="format" placeholder="Format" value={book.format} onChange={handleChange} required />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Publisher</label>
-                        <Input name="publisher" placeholder="Publisher" value={book.publisher} onChange={handleChange} required />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Publication Date</label>
-                        <Input
-                            name="publicationDate"
-                            type="date"
-                            value={formatDateForInput(book.publicationDate)}
-                            onChange={handleDateChange}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Price</label>
-                        <Input name="price" type="number" placeholder="Price" value={book.price} onChange={handleChange} required step="0.01" />
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <label className="text-sm font-medium">On Sale</label>
-                        <input
-                            name="isOnSale"
-                            type="checkbox"
-                            checked={book.isOnSale}
-                            onChange={(e) => setBook(prev => ({ ...prev, isOnSale: e.target.checked }))}
-                            className="h-4 w-4"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Discount Percentage</label>
-                        <Input
-                            name="discountPercentage"
-                            type="number"
-                            placeholder="Discount Percentage"
-                            value={book.discountPercentage}
-                            onChange={handleChange}
-                            min="0"
-                            max="100"
-                            step="0.01"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Discount Start Date</label>
-                        <Input
-                            name="discountStartDate"
-                            type="date"
-                            value={formatDateForInput(book.discountStartDate)}
-                            onChange={handleDateChange}
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Discount End Date</label>
-                        <Input
-                            name="discountEndDate"
-                            type="date"
-                            value={formatDateForInput(book.discountEndDate)}
-                            onChange={handleDateChange}
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">ISBN</label>
-                        <Input name="isbn" placeholder="ISBN" value={book.isbn} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Stock Quantity</label>
-                        <Input name="stockQuantity" type="number" placeholder="Stock Quantity" value={book.stockQuantity} onChange={handleChange} min="0" />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Average Rating</label>
-                        <Input
-                            name="averageRating"
-                            type="number"
-                            placeholder="Average Rating"
-                            value={book.averageRating}
-                            onChange={handleChange}
-                            min="0"
-                            max="5"
-                            step="0.1"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Review Count</label>
-                        <Input name="reviewCount" type="number" placeholder="Review Count" value={book.reviewCount} onChange={handleChange} min="0" />
-                    </div>
-                </div>
-                <div>
-                    <label className="block text-sm font-medium mb-1">Description</label>
-                    <textarea
-                        name="description"
-                        placeholder="Description"
-                        value={book.description}
-                        onChange={handleChange}
-                        className="p-2 border rounded w-full h-32"
-                    />
-                </div>
-                <Button type="submit" className="w-full">Add Book</Button>
-            </form>
+        <div className="flex min-h-screen bg-gray-50">
+            <Sidebar />
+            <main className="flex-1 p-6">
+                <Card className="max-w-4xl mx-auto">
+                    <CardHeader>
+                        <CardTitle>Add New Book</CardTitle>
+                        <CardDescription>
+                            Fill out the form below to add a new book to your store.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            {/* Basic Info Section */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="title">Title</Label>
+                                    <Input
+                                        id="title"
+                                        name="title"
+                                        value={book.title}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="author">Author</Label>
+                                    <Input
+                                        id="author"
+                                        name="author"
+                                        value={book.author}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="genre">Genre</Label>
+                                    <Input
+                                        id="genre"
+                                        name="genre"
+                                        value={book.genre}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="language">Language</Label>
+                                    <Input
+                                        id="language"
+                                        name="language"
+                                        value={book.language}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="format">Format</Label>
+                                    <Input
+                                        id="format"
+                                        name="format"
+                                        value={book.format}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="publisher">Publisher</Label>
+                                    <Input
+                                        id="publisher"
+                                        name="publisher"
+                                        value={book.publisher}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Category and Dates Section */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="category">Category</Label>
+                                    <Select value={book.category} onValueChange={handleSelectChange}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select Category" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {categories.map((cat) => (
+                                                <SelectItem key={cat} value={cat}>
+                                                    {cat}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    {book.category && (
+                                        <p className="text-sm text-muted-foreground">
+                                            Auto-selected: {book.category}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="publicationDate">Publication Date</Label>
+                                    <Input
+                                        id="publicationDate"
+                                        name="publicationDate"
+                                        type="date"
+                                        value={formatDateForInput(book.publicationDate)}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="arrivalDate">Arrival Date</Label>
+                                    <Input
+                                        id="arrivalDate"
+                                        name="arrivalDate"
+                                        type="date"
+                                        value={formatDateForInput(book.arrivalDate)}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Pricing Section */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="price">Price (NPR)</Label>
+                                    <Input
+                                        id="price"
+                                        name="price"
+                                        type="number"
+                                        min="0"
+                                        step="0.01"
+                                        placeholder="Enter price in NPR"
+                                        value={book.price || ""}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-base font-medium">Sale Status</Label>
+                                    <div className="flex items-center space-x-2">
+                                        <Checkbox
+                                            id="isOnSale"
+                                            checked={book.isOnSale}
+                                            onCheckedChange={handleCheckboxChange}
+                                        />
+                                        <Label
+                                            htmlFor="isOnSale"
+                                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                        >
+                                            On Sale
+                                        </Label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Discount Details (conditional) */}
+                            {book.isOnSale && (
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="discountPercentage">Discount %</Label>
+                                        <Input
+                                            id="discountPercentage"
+                                            name="discountPercentage"
+                                            type="number"
+                                            min="0"
+                                            max="100"
+                                            placeholder="0"
+                                            value={book.discountPercentage || ""}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="discountStartDate">Discount Start</Label>
+                                        <Input
+                                            id="discountStartDate"
+                                            name="discountStartDate"
+                                            type="date"
+                                            value={formatDateForInput(book.discountStartDate)}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="discountEndDate">Discount End</Label>
+                                        <Input
+                                            id="discountEndDate"
+                                            name="discountEndDate"
+                                            type="date"
+                                            value={formatDateForInput(book.discountEndDate)}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Stock and ISBN Section */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="stockQuantity">Stock Quantity</Label>
+                                    <Input
+                                        id="stockQuantity"
+                                        name="stockQuantity"
+                                        type="number"
+                                        min="0"
+                                        placeholder="0"
+                                        value={book.stockQuantity || ""}
+                                        onChange={handleChange}
+                                        disabled={isFutureArrival()}
+                                        required
+                                    />
+                                    {isFutureArrival() && (
+                                        <p className="text-sm text-muted-foreground">
+                                            Stock set to 0 for future arrivals
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="isbn">ISBN (10 digits)</Label>
+                                    <Input
+                                        id="isbn"
+                                        name="isbn"
+                                        value={book.isbn}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                    {isbnError && (
+                                        <Alert variant="destructive">
+                                            <AlertDescription>{isbnError}</AlertDescription>
+                                        </Alert>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Image Upload Section */}
+                            <div className="space-y-2">
+                                <Label htmlFor="image">Book Cover Image</Label>
+                                <Input
+                                    id="image"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                    required
+                                />
+                                {image && (
+                                    <p className="text-sm text-muted-foreground">
+                                        Selected: {image.name}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Description Section */}
+                            <div className="space-y-2">
+                                <Label htmlFor="description">Description</Label>
+                                <Textarea
+                                    id="description"
+                                    name="description"
+                                    rows={5}
+                                    value={book.description}
+                                    onChange={handleChange}
+                                    className="resize-none"
+                                />
+                            </div>
+
+                            {/* Submit Button */}
+                            <Button
+                                type="submit"
+                                className="w-full"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? "Adding Book..." : "Add Book"}
+                            </Button>
+                        </form>
+                    </CardContent>
+                </Card>
+            </main>
         </div>
     );
 }

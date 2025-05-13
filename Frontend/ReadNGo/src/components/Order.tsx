@@ -1,77 +1,136 @@
-// @/components/Order.tsx
-'use client';
-
-import { Button } from '@/components/ui/button';
+// @/pages/Orders.tsx
+import { Navbar } from '@/components/NavBar';
 import { useCart } from '@/context/CartContext';
-import { CalendarDays, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Package, Star } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-export const Order = () => {
-  const { orders, cancelOrder } = useCart();
+export default function Orders() {
+  const { orders, hasUserReviewedBook } = useCart();
+  const navigate = useNavigate();
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed': return 'bg-green-500';
+      case 'processing': return 'bg-blue-500';
+      case 'pending': return 'bg-yellow-500';
+      case 'cancelled': return 'bg-red-500';
+      default: return 'bg-gray-500';
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Your Orders</h1>
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
       
-      {orders.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-lg text-gray-600">You haven't placed any orders yet</p>
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center gap-3 mb-8">
+          <Package className="h-6 w-6" />
+          <h1 className="text-2xl font-bold">My Orders</h1>
         </div>
-      ) : (
-        <div className="space-y-4">
-          {orders.map(order => (
-            <div key={order.id} className="border rounded-lg p-4">
-              <div className="flex justify-between items-start">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-semibold">Order #{order.id}</h3>
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      order.status === 'pending' 
-                        ? 'bg-yellow-100 text-yellow-800' 
-                        : order.status === 'completed' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
-                    }`}>
-                      {order.status}
-                    </span>
+
+        {orders.length > 0 ? (
+          <div className="space-y-6">
+            {orders.map(order => (
+              <Card key={order.id}>
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-lg">Order #{order.id}</CardTitle>
+                      <p className="text-sm text-gray-500 mt-1">
+                        Placed on {formatDate(order.date)}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <Badge className={getStatusColor(order.status)}>
+                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                      </Badge>
+                      <p className="text-lg font-bold mt-2">${order.total.toFixed(2)}</p>
+                      {order.discount > 0 && (
+                        <p className="text-sm text-green-600">
+                          {(order.discount * 100).toFixed(0)}% discount applied
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center text-sm text-gray-600 mt-1">
-                    <CalendarDays size={14} className="mr-1" />
-                    {new Date(order.date).toLocaleDateString()}
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {order.items.map(item => (
+                      <div key={item.id} className="flex justify-between items-start border-b pb-4 last:border-0">
+                        <div className="flex gap-4">
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            className="w-16 h-24 object-cover rounded"
+                          />
+                          <div>
+                            <h3 className="font-semibold">{item.title}</h3>
+                            <p className="text-sm text-gray-600">by {item.author}</p>
+                            <p className="text-sm mt-1">
+                              Quantity: {item.quantity} × ${item.price.toFixed(2)}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
+                          {order.status === 'completed' && !hasUserReviewedBook(item.id) && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="mt-2"
+                              onClick={() => navigate(`/books/${item.id}`)}
+                            >
+                              <Star className="h-4 w-4 mr-1" />
+                              Write Review
+                            </Button>
+                          )}
+                          {hasUserReviewedBook(item.id) && (
+                            <Badge variant="secondary" className="mt-2">
+                              Reviewed
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold">${order.total.toFixed(2)}</p>
-                  {order.discount > 0 && (
-                    <p className="text-xs text-green-600">
-                      Saved ${(order.items.reduce((sum, item) => sum + item.price * item.quantity, 0) * order.discount).toFixed(2)}
-                    </p>
+                  {order.claimCode && (
+                    <div className="mt-4 pt-4 border-t">
+                      <p className="text-sm font-medium">Claim Code: {order.claimCode}</p>
+                    </div>
                   )}
-                </div>
-              </div>
-              
-              <div className="mt-4 border-t pt-4">
-                <p className="text-sm font-medium mb-2">Claim Code: <span className="font-mono bg-gray-100 px-2 py-1 rounded">{order.claimCode}</span></p>
-                <p className="text-sm mb-4">Please present this code at the store to claim your order.</p>
-                
-                <div className="flex justify-between items-center">
-                  <p className="text-sm text-gray-600">
-                    {order.items.reduce((sum, item) => sum + item.quantity, 0)} items
-                  </p>
-                  {order.status === 'pending' && (
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => cancelOrder(order.id)}
-                    >
-                      <X size={16} className="mr-1" /> Cancel Order
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16">
+            <Package className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-gray-700 mb-2">
+              No orders yet
+            </h2>
+            <p className="text-gray-500 mb-8">
+              Start shopping to see your orders here!
+            </p>
+            <Button
+              onClick={() => navigate('/')}
+              variant="default"
+            >
+              Start Shopping
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
-};
+}

@@ -19,7 +19,7 @@ namespace ReadNGo.Services.Implementations
     {
         private readonly ReadNGoContext _context;
         private readonly IConfiguration _configuration;
-        public UserService(ReadNGoContext context,IConfiguration configuration)
+        public UserService(ReadNGoContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
@@ -31,7 +31,9 @@ namespace ReadNGo.Services.Implementations
             {
                 FullName = userDTO.FullName,
                 Email = userDTO.Email,
-                Password = hashedPassword
+                Password = hashedPassword,
+                Role = userDTO.Role ?? "Member",
+                MembershipId = Guid.NewGuid()
             };
             _context.Users.Add(user);
             _context.SaveChanges();
@@ -39,47 +41,105 @@ namespace ReadNGo.Services.Implementations
             return true;
         }
 
-        //public bool Login(UserLoginDTO credentials) => true;
-        //public bool Login(UserLoginDTO identity)
-        //{
-        //    var user = _context.Users.FirstOrDefault(a => a.Email == identity.Email);
-        //    if (user == null)
-        //        return false;
-        //    bool isPasswordValid = BCrypt.Net.BCrypt.Verify(identity.Password, user.Password);
-        //    return isPasswordValid;
-
-        //}
-
-        public string Login(UserLoginDTO credentials)
+        public class LoginResponse
         {
-            var user = _context.Users.FirstOrDefault(u => u.Email == credentials.Email);
-
-            if (user == null || !BCrypt.Net.BCrypt.Verify(credentials.Password, user.Password))
-                return null;
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(_configuration["JwtSettings:Secret"]);
-
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.FullName)
-            }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                Issuer = _configuration["Jwt:Issuer"],
-                Audience = _configuration["Jwt:Audience"],
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            public string Token { get; set; }
+            public int UserId { get; set; }
+            public string Email { get; set; }
+            public string Role { get; set; }
+            public string FullName { get; set; }
         }
-        public UserRegisterDTO GetProfile(int id) => new();
 
-        public string GetClaimCode(int orderId) => "CLAIM123";
+        public LoginResponse Login(UserLoginDTO credentials)
+        {
+            Console.WriteLine($"🔍 Login attempt: {credentials.Email} / {credentials.Password}");
+
+            // ✅ 1. Hardcoded Admin Check FIRST
+            if (credentials.Email == "admins@gmail.com" && credentials.Password == "Admin@1234")
+            {
+                Console.WriteLine("✅ Admin login matched!");
+                var adminToken = GenerateJwtToken("Admin", credentials.Email);
+                return new LoginResponse
+                {
+                    Token = adminToken,
+                    UserId = 0, // Or a specific admin ID if you have one
+                    Email = credentials.Email,
+                    Role = "Admin",
+                    FullName = "Admin User"
+                };
+            }
+
+            Console.WriteLine("❌ Admin check failed. Proceeding to DB...");
+
+            // ✅ 2. THEN check normal users from database
+            var user = _context.Users.FirstOrDefault(u => u.Email == credentials.Email);
+            if (user == null)
+            {
+                Console.WriteLine("❌ No user found in DB");
+                return null;
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(credentials.Password, user.Password))
+            {
+                Console.WriteLine("❌ Password mismatch");
+                return null;
+            }
+
+            Console.WriteLine("✅ DB user login matched!");
+            var token = GenerateJwtToken(user.Role, user.Email);
+
+            return new LoginResponse
+            {
+                Token = token,
+                UserId = user.Id,
+                Email = user.Email,
+                Role = user.Role,
+                FullName = user.FullName
+            };
+        }
+
+        private string GenerateJwtToken(string role, string email)
+        {
+            var jwtSettings = _configuration.GetSection("JwtSettings");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Secret"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+        new Claim("email", email),
+        new Claim("role", role) // ✅ Use "role" as literal string
+    };
+
+            var token = new JwtSecurityToken(
+                issuer: jwtSettings["Issuer"],
+                audience: jwtSettings["Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(2),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+
+        public UserRegisterDTO GetProfile(int id)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            if (user == null) return null;
+
+            return new UserRegisterDTO
+            {
+                FullName = user.FullName,
+                Email = user.Email,
+                Password = user.Password,
+                Role = user.Role
+            };
+        }
+
+        public string GetClaimCode(int orderId)
+        {
+            // Return a dummy value for now or implement actual logic
+            return $"CLAIM-CODE-{orderId}";
+        }
     }
 }

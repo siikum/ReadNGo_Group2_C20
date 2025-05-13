@@ -38,13 +38,27 @@ namespace ReadNGo.Services.Implementations
             return book != null ? MapToDTO(book) : null;
         }
 
-        // Filter books by various criteria
-        public List<BookDTO> FilterBooks(string genre = null, string author = null, string format = null,
-            string language = null, string publisher = null)
+        // Filter books by various criteria - Updated to include category
+        public List<BookDTO> FilterBooks(
+            string category = null,  // Added category parameter
+            string genre = null,
+            string author = null,
+            string format = null,
+            string language = null,
+            string publisher = null,
+            bool? availableInLibrary = null,
+            decimal? minPrice = null,
+            decimal? maxPrice = null,
+            double? minRating = null)
         {
-            var query = _context.Books.AsQueryable();
+            var query = _context.Books
+                .Include(b => b.Reviews)
+                .AsQueryable();
 
-            // Apply filters if they are provided
+            // Filter by category if provided
+            if (!string.IsNullOrEmpty(category))
+                query = query.Where(b => b.Category == category);
+
             if (!string.IsNullOrEmpty(genre))
                 query = query.Where(b => b.Genre.Contains(genre));
 
@@ -60,9 +74,21 @@ namespace ReadNGo.Services.Implementations
             if (!string.IsNullOrEmpty(publisher))
                 query = query.Where(b => b.Publisher.Contains(publisher));
 
+            if (availableInLibrary.HasValue && availableInLibrary.Value)
+                query = query.Where(b => b.StockQuantity > 0);
+
+            if (minPrice.HasValue)
+                query = query.Where(b => b.Price >= minPrice.Value);
+
+            if (maxPrice.HasValue)
+                query = query.Where(b => b.Price <= maxPrice.Value);
+
+            if (minRating.HasValue)
+                query = query.Where(b => b.Reviews.Any() &&
+                    b.Reviews.Average(r => r.Rating) >= minRating.Value);
+
             return query
                 .AsNoTracking()
-                .Include(b => b.Reviews)
                 .Select(MapToDTO)
                 .ToList();
         }
@@ -73,10 +99,14 @@ namespace ReadNGo.Services.Implementations
             if (string.IsNullOrEmpty(query))
                 return GetAllBooks();
 
+            string lowerQuery = query.ToLower();
+
             return _context.Books
                 .Where(b =>
-                    b.Title.Contains(query) ||
-                    b.Author.Contains(query))
+                    b.Title.ToLower().Contains(lowerQuery) ||
+                    b.Author.ToLower().Contains(lowerQuery) ||
+                    b.ISBN.ToLower().Contains(lowerQuery) ||
+                    b.Description.ToLower().Contains(lowerQuery))
                 .AsNoTracking()
                 .Include(b => b.Reviews)
                 .Select(MapToDTO)
@@ -101,11 +131,13 @@ namespace ReadNGo.Services.Implementations
                 "price_desc" => query.OrderByDescending(b => b.Price).AsNoTracking().Include(b => b.Reviews).Select(MapToDTO).ToList(),
                 "date" => query.OrderBy(b => b.PublicationDate).AsNoTracking().Include(b => b.Reviews).Select(MapToDTO).ToList(),
                 "date_desc" => query.OrderByDescending(b => b.PublicationDate).AsNoTracking().Include(b => b.Reviews).Select(MapToDTO).ToList(),
+                "arrival" => query.OrderBy(b => b.ArrivalDate).AsNoTracking().Include(b => b.Reviews).Select(MapToDTO).ToList(),
+                "arrival_desc" => query.OrderByDescending(b => b.ArrivalDate).AsNoTracking().Include(b => b.Reviews).Select(MapToDTO).ToList(),
                 _ => query.AsNoTracking().Include(b => b.Reviews).Select(MapToDTO).ToList()
             };
         }
 
-        // Get books by category (Bestsellers, New Releases, etc.)
+        // Get books by category - Updated to use actual category field
         public List<BookDTO> GetBooksByCategory(string type)
         {
             if (string.IsNullOrEmpty(type))
@@ -114,9 +146,33 @@ namespace ReadNGo.Services.Implementations
             var now = DateTime.Now;
             var query = _context.Books.AsQueryable();
 
+            // If type matches one of the predefined categories, use category field
+            var predefinedCategories = new[] {
+                "Bestsellers",
+                "Award Winners",
+                "New Releases",
+                "New Arrivals",
+                "Coming Soon",
+                "Deals",
+                "All Books"
+            };
+
+            // First check if it's a direct category match
+            if (predefinedCategories.Contains(type, StringComparer.OrdinalIgnoreCase))
+            {
+                return query
+                    .Where(b => b.Category.ToLower() == type.ToLower())
+                    .Include(b => b.Reviews)
+                    .AsNoTracking()
+                    .Select(MapToDTO)
+                    .ToList();
+            }
+
+            // Otherwise use the original logic based on type
             return type.ToLower() switch
             {
                 "bestsellers" => query
+                    .Where(b => b.Category == "Bestsellers")
                     .Include(b => b.OrderItems)
                     .Include(b => b.Reviews)
                     .OrderByDescending(b => b.OrderItems.Count)
@@ -126,36 +182,39 @@ namespace ReadNGo.Services.Implementations
                     .ToList(),
 
                 "new_releases" => query
-                    .Where(b => b.PublicationDate >= now.AddMonths(-3))
+                    .Where(b => b.Category == "New Releases" ||
+                               b.PublicationDate >= now.AddMonths(-3))
                     .Include(b => b.Reviews)
                     .AsNoTracking()
                     .Select(MapToDTO)
                     .ToList(),
 
                 "new_arrivals" => query
-                    .Where(b => b.PublicationDate >= now.AddMonths(-1))
+                    .Where(b => b.Category == "New Arrivals" ||
+                               b.ArrivalDate >= now.AddMonths(-1))
                     .Include(b => b.Reviews)
                     .AsNoTracking()
                     .Select(MapToDTO)
                     .ToList(),
 
                 "coming_soon" => query
-                    .Where(b => b.PublicationDate > now)
+                    .Where(b => b.Category == "Coming Soon" ||
+                               b.ArrivalDate > now)
                     .Include(b => b.Reviews)
                     .AsNoTracking()
                     .Select(MapToDTO)
                     .ToList(),
 
                 "deals" => query
-                    .Where(b => b.IsOnSale)
+                    .Where(b => b.Category == "Deals" || b.IsOnSale)
                     .Include(b => b.Reviews)
                     .AsNoTracking()
                     .Select(MapToDTO)
                     .ToList(),
 
                 "award_winners" => query
+                    .Where(b => b.Category == "Award Winners")
                     .Include(b => b.Reviews)
-                    .Take(10) // Replace with actual logic for award winners if you have a field for it
                     .AsNoTracking()
                     .Select(MapToDTO)
                     .ToList(),
@@ -164,9 +223,17 @@ namespace ReadNGo.Services.Implementations
             };
         }
 
-        // Helper method to map Book entity to BookDTO
+        // Helper method to map Book entity to BookDTO - Updated to include new fields
         private static BookDTO MapToDTO(Book book)
         {
+            var now = DateTime.UtcNow;
+
+            bool isCurrentlyOnSale = book.IsOnSale &&
+                                      book.DiscountStartDate.HasValue &&
+                                      book.DiscountEndDate.HasValue &&
+                                      book.DiscountStartDate <= now &&
+                                      book.DiscountEndDate >= now;
+
             return new BookDTO
             {
                 Id = book.Id,
@@ -177,21 +244,60 @@ namespace ReadNGo.Services.Implementations
                 Format = book.Format,
                 Publisher = book.Publisher,
                 PublicationDate = book.PublicationDate,
+                Category = book.Category,  // Added mapping for category
+                ArrivalDate = book.ArrivalDate,  // Added mapping for arrival date
                 Price = book.Price,
-                IsOnSale = book.IsOnSale,
+                IsOnSale = isCurrentlyOnSale,
                 DiscountPercentage = book.DiscountPercentage,
                 DiscountStartDate = book.DiscountStartDate,
                 DiscountEndDate = book.DiscountEndDate,
-
-                // Calculate these values from related entities or set them to default values
                 Description = book.Description ?? $"Description for {book.Title}",
                 ISBN = book.ISBN ?? "N/A",
                 StockQuantity = book.StockQuantity,
                 AverageRating = book.Reviews != null && book.Reviews.Any()
                     ? Math.Round(book.Reviews.Average(r => r.Rating), 1)
                     : 0,
-                ReviewCount = book.Reviews?.Count ?? 0
+                ReviewCount = book.Reviews?.Count ?? 0,
+                ImagePath = book.ImagePath
             };
+        }
+        public List<string> GetDistinctAuthors()
+        {
+            return _context.Books
+                .Where(b => !string.IsNullOrWhiteSpace(b.Author))  // Exclude null or empty
+                .Select(b => b.Author)
+                .Distinct()
+                .OrderBy(a => a)
+                .ToList();
+        }
+
+        public List<string> GetDistinctGenres()
+        {
+            return _context.Books
+                .Where(b => !string.IsNullOrWhiteSpace(b.Genre))  // Exclude null or empty
+                .Select(b => b.Genre)
+                .Distinct()
+                .OrderBy(g => g)
+                .ToList();
+        }
+        public List<string> GetDistinctLanguages()
+        {
+            return _context.Books
+                .Where(b => !string.IsNullOrWhiteSpace(b.Language))
+                .Select(b => b.Language)
+                .Distinct()
+                .OrderBy(l => l)
+                .ToList();
+        }
+
+        public List<string> GetDistinctFormats()
+        {
+            return _context.Books
+                .Where(b => !string.IsNullOrWhiteSpace(b.Format))
+                .Select(b => b.Format)
+                .Distinct()
+                .OrderBy(f => f)
+                .ToList();
         }
     }
 }
