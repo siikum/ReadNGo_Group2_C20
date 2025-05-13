@@ -34,8 +34,6 @@ export interface AddBook {
     discountPercentage: number;
     discountStartDate: string;
     discountEndDate: string;
-    discountStartDate: string;
-    discountEndDate: string;
     description: string;
     isbn: string;
     stockQuantity: number;

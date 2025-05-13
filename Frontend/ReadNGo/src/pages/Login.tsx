@@ -3,13 +3,6 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser, loginStaff } from "@/api/apiConfig";
-import { jwtDecode } from "jwt-decode";
-
-interface JwtPayload {
-    email: string;
-    role: string;
-    exp: number;
-}
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -27,19 +20,23 @@ export default function Login() {
             const result = await loginUser({ email, password });
 
             if (result.success && result.data?.token) {
-                const token = result.data.token;
-                localStorage.setItem("token", token);
+                // The loginUser function already sets token in localStorage
+                
+                // Get the role directly from the response
+                const userRole = result.data.role;
+                
+                console.log("Login successful as:", userRole); // Debug log
+                setMessage(`Login successful as ${userRole}!`);
 
-                // Decode the token to get the role
-                const decoded = jwtDecode<JwtPayload>(token);
-                const userRole = decoded.role;
-                setMessage("Login successful!");
+                // Clear any staff-related tokens to prevent conflicts
+                localStorage.removeItem("staffToken");
+                localStorage.removeItem("staffRole");
+                localStorage.removeItem("staffEmail");
+                localStorage.removeItem("staffName");
 
                 // Navigate based on role
                 if (userRole === "Admin") {
                     navigate("/dashboard");
-                } else if (userRole === "Staff") {
-                    navigate("/staff-dashboard");
                 } else if (userRole === "Member") {
                     navigate("/homepage");
                 } else {
@@ -54,13 +51,20 @@ export default function Login() {
                 const staffResult = await loginStaff({ email, password });
 
                 if (staffResult.success && staffResult.data?.token) {
-                    // Store staff token
+                    // Clear any regular user tokens to prevent conflicts
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("userRole");
+                    localStorage.removeItem("userEmail");
+                    localStorage.removeItem("userName");
+                    
+                    // Then set staff token
                     localStorage.setItem("staffToken", staffResult.data.token);
-                    localStorage.setItem("token", staffResult.data.token); // Also store as regular token
                     localStorage.setItem("staffRole", staffResult.data.role);
                     localStorage.setItem("staffEmail", staffResult.data.email);
                     localStorage.setItem("staffName", staffResult.data.fullName);
 
+                    console.log("Staff login successful"); // Debug log
                     setMessage("Staff login successful!");
                     navigate("/staff-dashboard");
 
@@ -74,7 +78,7 @@ export default function Login() {
             }
         } catch (error) {
             setMessage("An unexpected error occurred");
-            console.error(error);
+            console.error("Login error:", error);
         } finally {
             setLoading(false);
         }
