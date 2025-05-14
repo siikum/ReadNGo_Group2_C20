@@ -16,7 +16,7 @@ export default function StaffDashboard() {
         try {
             const response = await dashboard();
             if (response.success && response.data) {
-                setDashboardData(response.data);  // Removed the type casting
+                setDashboardData(response.data);  
             } else {
                 setError(response.error || 'Failed to fetch dashboard data');
             }

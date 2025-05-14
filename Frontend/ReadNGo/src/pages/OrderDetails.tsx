@@ -1,11 +1,25 @@
-﻿import { useState, useEffect } from 'react';
+﻿// Updated OrderDetails.tsx with fixed imports
+import { useState, useEffect } from 'react';
 import { Navbar } from '@/components/NavBar';
-import { getOrder } from '@/api/apiConfig';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getOrder, cancelOrder } from '@/api/apiConfig';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Package, Calendar, DollarSign, Book, X, Check, ArrowLeft, Clock } from 'lucide-react';
+import {
+    Package,
+    Calendar,
+    DollarSign,
+    Book,
+    X,
+    Check,
+    ArrowLeft,
+    Clock,
+    AlertTriangle
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
+// Remove the AlertDialog imports that are causing the error 
+// or use a simple confirmation approach without those components
 
 interface OrderItem {
     id: number;
@@ -15,13 +29,14 @@ interface OrderItem {
     totalAmount: number;
     orderDate: string;
     isCancelled: boolean;
-    isProcessed: boolean; // Changed from isConfirmed to isProcessed
+    isProcessed: boolean;
 }
 
 export default function OrderDetails() {
     const [orders, setOrders] = useState<OrderItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [cancelingOrderId, setCancelingOrderId] = useState<number | null>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -40,7 +55,9 @@ export default function OrderDetails() {
                 const result = await getOrder(parseInt(userId));
 
                 if (result.success && result.data) {
-                    setOrders(result.data);
+                    // Handle both array and single object responses
+                    const ordersArray = Array.isArray(result.data) ? result.data : [result.data];
+                    setOrders(ordersArray);
                 } else {
                     setError(result.error || 'Failed to fetch orders');
                 }
@@ -55,6 +72,37 @@ export default function OrderDetails() {
         fetchOrders();
     }, [navigate]);
 
+    // Function to handle order cancellation with simple confirmation
+    const handleCancelOrder = async (orderId: number) => {
+        // Use browser's built-in confirm instead of AlertDialog
+        const confirmed = window.confirm('Are you sure you want to cancel this order? This action cannot be undone.');
+
+        if (!confirmed) return;
+
+        try {
+            setCancelingOrderId(orderId);
+            const result = await cancelOrder(orderId);
+
+            if (result.success) {
+                // Update the order in local state
+                setOrders(prevOrders =>
+                    prevOrders.map(order =>
+                        order.id === orderId ? { ...order, isCancelled: true } : order
+                    )
+                );
+            } else {
+                setError(`Failed to cancel order: ${result.error}`);
+                setTimeout(() => setError(null), 5000); // Clear error after 5 seconds
+            }
+        } catch (err) {
+            console.error('Error cancelling order:', err);
+            setError('An error occurred while cancelling the order');
+            setTimeout(() => setError(null), 5000); // Clear error after 5 seconds
+        } finally {
+            setCancelingOrderId(null);
+        }
+    };
+
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('en-US', {
@@ -66,7 +114,7 @@ export default function OrderDetails() {
         });
     };
 
-    // Function to determine order status and return appropriate badge
+    // Function to determine order status
     const getOrderStatus = (order: OrderItem) => {
         if (order.isCancelled) {
             return {
@@ -74,7 +122,7 @@ export default function OrderDetails() {
                 variant: "destructive" as const,
                 icon: <X className="h-3 w-3 mr-1" />
             };
-        } else if (order.isProcessed) { // Changed from isConfirmed to isProcessed
+        } else if (order.isProcessed) {
             return {
                 label: "Completed",
                 variant: "success" as const,
@@ -135,6 +183,16 @@ export default function OrderDetails() {
                     <h1 className="text-2xl font-bold">My Orders</h1>
                 </div>
 
+                {/* Error message (if any) */}
+                {error && (
+                    <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+                        <div className="flex items-start">
+                            <AlertTriangle className="h-5 w-5 text-red-500 mr-2 mt-0.5" />
+                            <p className="text-red-700">{error}</p>
+                        </div>
+                    </div>
+                )}
+
                 {orders.length === 0 ? (
                     <div className="text-center py-12 bg-white rounded-lg shadow-sm">
                         <Package className="h-12 w-12 mx-auto text-gray-400 mb-4" />
@@ -146,6 +204,8 @@ export default function OrderDetails() {
                     <div className="space-y-6">
                         {orders.map((order) => {
                             const status = getOrderStatus(order);
+                            const canCancel = !order.isProcessed && !order.isCancelled;
+                            const isCanceling = cancelingOrderId === order.id;
 
                             return (
                                 <Card key={order.id} className="overflow-hidden">
@@ -242,6 +302,21 @@ export default function OrderDetails() {
                                             </div>
                                         )}
                                     </CardContent>
+
+                                    {/* Cancel Button for Processing Orders */}
+                                    {canCancel && (
+                                        <CardFooter className="bg-gray-50 border-t p-4">
+                                            <Button
+                                                variant="outline"
+                                                className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                                                onClick={() => handleCancelOrder(order.id)}
+                                                disabled={isCanceling}
+                                            >
+                                                <X className="h-4 w-4 mr-2" />
+                                                {isCanceling ? 'Cancelling...' : 'Cancel Order'}
+                                            </Button>
+                                        </CardFooter>
+                                    )}
                                 </Card>
                             );
                         })}

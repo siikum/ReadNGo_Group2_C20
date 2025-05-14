@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Start from "./pages/start";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Books from "./pages/Books";
@@ -12,7 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminCreateStaff from "./pages/AdminCreateStaff";
 import AdminCreateAnnouncement from "./pages/AdminCreateAnnouncement";
 
-import HomePage from "./pages/HomePage";
+import HomePage from "./pages/Homepage";
 import Cart from "./pages/CartPage";
 import { CartProvider } from '@/context/CartContext';
 import BookDetail from "./pages/BookDetail";
@@ -30,9 +29,9 @@ export default function App() {
         <Router>
             
             <Routes>
-                    <Route path="/" element={<HomePage />} />
+                    {/*<Route path="/" element={<HomePage />} />*/}
                     <Route path="/homepage" element={<HomePage />} />
-                <Route path="/login" element={<Login />} />
+                
                 <Route path="/register" element={<Register />} />
                 <Route path="/books" element={<Books />} />
                 <Route path="/create-order" element={<CreateOrderPage />} />
@@ -43,12 +42,12 @@ export default function App() {
 
 
                  <Route path="/cart" element={<Cart />} />
-                    <Route path="/login" element={<Login />} />
+                    <Route path="/" element={<Login />} />
                     <Route path="/wishlist" element={<Wishlist />} />
                     <Route path="/orders" element={<Orders />} />
                 {/*<Route path="admin-create-staff" element={<AdminCreateStaff />} />*/}
 
-                <Route path="/homepage" element={<HomePage />} />
+                
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/books/:id" element={<BookDetail />} />
 

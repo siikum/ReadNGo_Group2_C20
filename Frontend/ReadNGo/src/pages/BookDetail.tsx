@@ -1,14 +1,24 @@
-// @/pages/BookDetail.tsx
+// @/pages/BookDetail.tsx - Updated with appropriate endpoint handling
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Navbar } from '@/components/NavBar';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
-import { ArrowLeft, ShoppingCart, Heart, Award, TrendingUp, Sparkle, AlertTriangle, Star, CheckCircle } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Heart, AlertTriangle, Star, CheckCircle, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getBooks } from '@/api/apiConfig';
+import {
+    getBooks,
+    addBookReview,
+    getBookReviews,
+    canUserReviewBook,
+    hasUserReviewedBook,
+    isAuthenticated,
+    getOrder
+} from '@/api/apiConfig';
+import { toast } from 'sonner';
+import type { ReviewResponse } from '@/api/apiConfig';
 
 interface Book {
     id: number;
@@ -33,24 +43,10 @@ interface Book {
     imagePath: string;
 }
 
-//interface BookCardProps {
-//    book: Book;
-//    onAddToCart?: () => void;
-//}
-
 export default function BookDetail() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const {
-        addToCart,
-        addToWishlist,
-        removeFromWishlist,
-        isInWishlist,
-        getBookReviews,
-        addReview,
-        hasUserReviewedBook,
-        canUserReviewBook
-    } = useCart();
+    const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useCart();
 
     const [book, setBook] = useState<Book | null>(null);
     const [loading, setLoading] = useState(true);
@@ -58,32 +54,32 @@ export default function BookDetail() {
     const [showReviewForm, setShowReviewForm] = useState(false);
     const [rating, setRating] = useState(5);
     const [comment, setComment] = useState('');
+    const [reviews, setReviews] = useState<ReviewResponse[]>([]);
+    const [userCanReview, setUserCanReview] = useState(false);
+    const [userHasReviewed, setUserHasReviewed] = useState(false);
+    const [reviewsLoading, setReviewsLoading] = useState(false);
+    const [submittingReview, setSubmittingReview] = useState(false);
 
-    //const handleAddToCart = async (e: React.MouseEvent) => {
-    //    e.stopPropagation();
-
-    //    // If onAddToCart prop is provided, use it. Otherwise use context
-    //    if (onAddToCart) {
-    //        onAddToCart();
-    //    } else {
-    //        try {
-    //            await addToCart(book);
-    //        } catch (error) {
-    //            console.error('Error adding to cart:', error);
-    //        }
-    //    }
-    //};
-
-    // Fetch book details
+    // Fetch book details and review status
     useEffect(() => {
         const fetchBookDetails = async () => {
+            if (!id) return;
+
             try {
                 setLoading(true);
                 const result = await getBooks();
                 if (result.success && result.data) {
-                    const foundBook = result.data.find(b => b.id === parseInt(id || '0'));
+                    const foundBook = result.data.find(b => b.id === parseInt(id));
                     if (foundBook) {
                         setBook(foundBook);
+
+                        // Fetch review data
+                        await fetchReviews();
+
+                        // Check if user can review (only if authenticated)
+                        if (isAuthenticated()) {
+                            await checkReviewStatus(foundBook.id);
+                        }
                     } else {
                         setError('Book not found');
                     }
@@ -92,21 +88,190 @@ export default function BookDetail() {
                 }
             } catch (err) {
                 setError('Failed to fetch book details');
+                console.error(err);
             } finally {
                 setLoading(false);
             }
         };
 
-        if (id) {
-            fetchBookDetails();
-        }
+        fetchBookDetails();
     }, [id]);
+
+    // Fetch reviews for this book
+    const fetchReviews = async () => {
+        if (!id) return;
+
+        try {
+            setReviewsLoading(true);
+            const result = await getBookReviews(parseInt(id));
+            if (result.success && result.data) {
+                setReviews(result.data);
+
+                // Check if user has reviewed using the reviews data
+                const userId = localStorage.getItem('userId');
+                if (userId && result.data.length > 0) {
+                    const hasReviewed = result.data.some(
+                        review => review.userId === parseInt(userId)
+                    );
+                    setUserHasReviewed(hasReviewed);
+                }
+            } else {
+                console.error('Failed to fetch reviews:', result.error);
+            }
+        } catch (err) {
+            console.error('Error fetching reviews:', err);
+        } finally {
+            setReviewsLoading(false);
+        }
+    };
+
+    // Alternative method to check if user has purchased the book through order history
+    const checkIfUserPurchasedBook = async (bookId: number): Promise<boolean> => {
+        try {
+            const userId = localStorage.getItem('userId');
+            if (!userId) return false;
+
+            // Get user's orders
+            const orderResult = await getOrder(parseInt(userId));
+            if (!orderResult.success || !orderResult.data) return false;
+
+            // Check if the book is in any of the user's orders
+            
+            const orders = orderResult.data;
+
+            // Check if the book exists in any order items
+            
+            if (Array.isArray(orders.cartItems)) {
+                return orders.cartItems.some(item => item.bookId === bookId);
+            }
+
+            return false;
+        } catch (error) {
+            console.error('Error checking purchase history:', error);
+            return false;
+        }
+    };
+
+    // Check if user can review and has already reviewed
+    const checkReviewStatus = async (bookId: number) => {
+        try {
+            // Try to use the dedicated API endpoints
+            const canReviewResult = await canUserReviewBook(bookId);
+            const hasReviewedResult = await hasUserReviewedBook(bookId);
+
+            // If the canReview endpoint is available and returns valid data
+            if (canReviewResult.success && typeof canReviewResult.data === 'boolean') {
+                setUserCanReview(canReviewResult.data);
+            } else {
+                // Fallback: check purchase history
+                const hasPurchased = await checkIfUserPurchasedBook(bookId);
+                setUserCanReview(hasPurchased);
+            }
+
+            // If the hasReviewed endpoint is available and returns valid data
+            if (hasReviewedResult.success && typeof hasReviewedResult.data === 'boolean') {
+                setUserHasReviewed(hasReviewedResult.data);
+            }
+            // Otherwise, we rely on the check done in fetchReviews
+
+        } catch (err) {
+            console.error('Error checking review status:', err);
+            // Default to not allowing reviews if we can't determine status
+            setUserCanReview(false);
+        }
+    };
+
+    const handleAddToCart = async () => {
+        if (!book) return;
+
+        try {
+            // Create a properly formatted book object for the cart
+            const cartBook = {
+                id: book.id,
+                title: book.title,
+                author: book.author,
+                price: book.price,
+                discount: book.isOnSale ? book.discountPercentage : 0,
+                stock: book.stockQuantity,
+                rating: book.averageRating,
+                isBestseller: false, // Add default value
+                image: book.imagePath ? `https://localhost:7149${book.imagePath}` : '/images/book-placeholder.jpg',
+            };
+
+            // Call the addToCart function from the context
+            await addToCart(cartBook);
+            toast.success(`${book.title} added to your cart`);
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            toast.error('Failed to add book to cart');
+        }
+    };
+
+    const handleWishlistToggle = () => {
+        if (!book) return;
+
+        if (isInWishlist(book.id)) {
+            removeFromWishlist(book.id);
+            toast.success('Removed from wishlist');
+        } else {
+            addToWishlist(book.id);
+            toast.success('Added to wishlist');
+        }
+    };
+
+    const handleSubmitReview = async () => {
+        if (!book || !comment.trim()) return;
+
+        if (!isAuthenticated()) {
+            toast.error('Please login to submit a review');
+            navigate('/login');
+            return;
+        }
+
+        try {
+            setSubmittingReview(true);
+
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                toast.error('Authentication required');
+                return;
+            }
+
+            const reviewData = {
+                bookId: book.id,
+                userId: parseInt(userId),
+                comment: comment.trim(),
+                rating
+            };
+
+            const response = await addBookReview(reviewData);
+
+            if (response.success) {
+                toast.success('Review submitted successfully');
+                setShowReviewForm(false);
+                setComment('');
+                setRating(5);
+
+                // Refresh reviews and status
+                await fetchReviews();
+                setUserHasReviewed(true); // Update locally to prevent multiple reviews
+            } else {
+                toast.error(response.error || 'Failed to submit review');
+            }
+        } catch (error) {
+            console.error('Error submitting review:', error);
+            toast.error('An error occurred while submitting your review');
+        } finally {
+            setSubmittingReview(false);
+        }
+    };
 
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-50">
                 <Navbar />
-                <div className="container mx-auto px-4 py-16 text-center">
+                <div className="container mx-auto px-4 py-16 flex flex-col items-center justify-center">
+                    <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
                     <p>Loading book details...</p>
                 </div>
             </div>
@@ -131,116 +296,10 @@ export default function BookDetail() {
         );
     }
 
-    const reviews = getBookReviews(book.id);
-    const canReview = canUserReviewBook(book.id) && !hasUserReviewedBook(book.id);
-
     const calculateDiscountedPrice = () => {
         return book.isOnSale && book.discountPercentage > 0
             ? (book.price * (1 - book.discountPercentage / 100)).toFixed(2)
             : book.price.toFixed(2);
-    };
-
-    //const handleAddToCart = async () => {
-    //    if (!book) return;
-
-    //    try {
-    //        setIsAddingToCart(true);
-
-    //        // Get the userId from localStorage
-    //        const userId = localStorage.getItem('userId');
-    //        if (!userId) {
-    //            navigate('/login');
-    //            return;
-    //        }
-
-    //        // Directly call the API function to ensure correct userId is used
-    //        const cartData = {
-    //            userId: parseInt(userId),
-    //            bookId: book.id,
-    //            quantity: 1
-    //        };
-
-    //        // Option 1: Call API directly (most reliable)
-    //        const response = await addToCartAPI(cartData);
-
-    //        if (response.success) {
-    //            // You can still call the context method for local state update
-    //            // but with correct book structure
-    //            const cartBook = {
-    //                id: book.id, // This should match what your CartItem expects
-    //                title: book.title,
-    //                author: book.author,
-    //                price: book.price,
-    //                genre: book.genre,
-    //                format: book.format,
-    //                stock: book.stockQuantity,
-    //                rating: book.averageRating,
-    //                image: book.imagePath ? `https://localhost:7149${book.imagePath}` : '/images/book-placeholder.jpg',
-    //                // Add other fields as needed
-    //            };
-
-    //            // Call context method for local state
-    //            await addToCart(cartBook);
-
-    //            alert('Book added to cart successfully!');
-
-    //            // Navigate to cart with state to trigger refresh
-    //            navigate('/cart', { state: { bookAdded: Date.now() } });
-    //        } else {
-    //            throw new Error(response.error || 'Failed to add to cart');
-    //        }
-    //    } catch (error) {
-    //        console.error('Error adding to cart:', error);
-    //        alert('Failed to add book to cart. Please try again.');
-    //    } finally {
-    //        setIsAddingToCart(false);
-    //    }
-    //};
-    const handleAddToCart = async () => {
-        if (!book) return;
-
-        try {
-            // Create a properly formatted book object for the cart
-            const cartBook = {
-                id: book.id,
-                title: book.title,
-                author: book.author,
-                price: book.price,
-                discount: book.isOnSale ? book.discountPercentage : 0,
-                stock: book.stockQuantity,
-                rating: book.averageRating,
-                isBestseller: false, // Add default value
-                image: book.imagePath ? `https://localhost:7149${book.imagePath}` : '/images/book-placeholder.jpg',
-            };
-
-            // Call the addToCart function from the context
-            await addToCart(cartBook);
-        } catch (error) {
-            console.error('Error adding to cart:', error);
-        }
-    };
-
-    const handleWishlistToggle = () => {
-        if (isInWishlist(book.id)) {
-            removeFromWishlist(book.id);
-        } else {
-            addToWishlist(book.id);
-        }
-    };
-
-    const handleSubmitReview = () => {
-        if (comment.trim()) {
-            addReview({
-                bookId: book.id,
-                userId: 1, // Mock user ID
-                rating,
-                comment: comment.trim(),
-                verified: true
-            });
-            setShowReviewForm(false);
-            setComment('');
-            setRating(5);
-        }
     };
 
     return (
@@ -360,7 +419,7 @@ export default function BookDetail() {
                                 <p className="text-sm text-gray-500 mb-1">Stock Availability</p>
                                 <div className="flex items-center justify-between">
                                     <p className={`font-bold text-lg ${book.stockQuantity === 0 ? 'text-red-500' :
-                                            book.stockQuantity < 5 ? 'text-orange-500' : 'text-green-500'
+                                        book.stockQuantity < 5 ? 'text-orange-500' : 'text-green-500'
                                         }`}>
                                         {book.stockQuantity === 0 ? 'Out of Stock' :
                                             book.stockQuantity < 5 ? `Only ${book.stockQuantity} left` : `${book.stockQuantity} in Stock`}
@@ -404,7 +463,7 @@ export default function BookDetail() {
                 <div className="bg-white rounded-lg shadow-sm p-8">
                     <div className="flex justify-between items-center mb-6">
                         <h2 className="text-2xl font-bold">Customer Reviews</h2>
-                        {canReview && !showReviewForm && (
+                        {isAuthenticated() && userCanReview && !userHasReviewed && !showReviewForm && (
                             <Button
                                 onClick={() => setShowReviewForm(true)}
                                 variant="outline"
@@ -412,10 +471,18 @@ export default function BookDetail() {
                                 Write a Review
                             </Button>
                         )}
+                        {!isAuthenticated() && (
+                            <Button
+                                onClick={() => navigate('/login')}
+                                variant="outline"
+                            >
+                                Login to Review
+                            </Button>
+                        )}
                     </div>
 
                     {/* Review Form */}
-                    {showReviewForm && canReview && (
+                    {showReviewForm && userCanReview && !userHasReviewed && (
                         <Card className="mb-6">
                             <CardHeader>
                                 <CardTitle>Write Your Review</CardTitle>
@@ -429,6 +496,7 @@ export default function BookDetail() {
                                                 key={star}
                                                 onClick={() => setRating(star)}
                                                 className="focus:outline-none"
+                                                type="button"
                                             >
                                                 <Star
                                                     className={`h-6 w-6 ${star <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
@@ -448,7 +516,17 @@ export default function BookDetail() {
                                     />
                                 </div>
                                 <div className="flex gap-2">
-                                    <Button onClick={handleSubmitReview}>Submit Review</Button>
+                                    <Button
+                                        onClick={handleSubmitReview}
+                                        disabled={submittingReview || !comment.trim()}
+                                    >
+                                        {submittingReview ? (
+                                            <>
+                                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                                Submitting...
+                                            </>
+                                        ) : 'Submit Review'}
+                                    </Button>
                                     <Button
                                         variant="outline"
                                         onClick={() => {
@@ -456,6 +534,7 @@ export default function BookDetail() {
                                             setComment('');
                                             setRating(5);
                                         }}
+                                        disabled={submittingReview}
                                     >
                                         Cancel
                                     </Button>
@@ -465,7 +544,11 @@ export default function BookDetail() {
                     )}
 
                     {/* Reviews List */}
-                    {reviews.length > 0 ? (
+                    {reviewsLoading ? (
+                        <div className="flex justify-center py-8">
+                            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                        </div>
+                    ) : reviews.length > 0 ? (
                         <div className="space-y-4">
                             {reviews.map((review) => (
                                 <Card key={review.id}>
@@ -481,7 +564,7 @@ export default function BookDetail() {
                                                         </Badge>
                                                     )}
                                                 </div>
-                                                <p className="text-sm text-gray-500">{review.date}</p>
+                                                <p className="text-sm text-gray-500">{new Date(review.date).toLocaleDateString()}</p>
                                             </div>
                                             <div className="flex">
                                                 {Array.from({ length: 5 }).map((_, i) => (
@@ -499,9 +582,16 @@ export default function BookDetail() {
                             ))}
                         </div>
                     ) : (
-                        <p className="text-gray-500 text-center py-8">
-                            No reviews yet. Be the first to review this book!
-                        </p>
+                        <div className="text-center py-8">
+                            <p className="text-gray-500">
+                                No reviews yet. {userCanReview && !userHasReviewed ? "Be the first to review this book!" : ""}
+                            </p>
+                            {isAuthenticated() && !userCanReview && (
+                                <p className="mt-2 text-gray-500">
+                                    Purchase this book to leave a review.
+                                </p>
+                            )}
+                        </div>
                     )}
                 </div>
             </div>

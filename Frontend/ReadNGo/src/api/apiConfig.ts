@@ -8,6 +8,24 @@ export interface RegisterData {
     password: string;
 }
 
+export interface ReviewData {
+    userId: number;
+    bookId: number;
+    comment: string;
+    rating: number;
+}
+
+export interface ReviewResponse {
+    id: number;
+    bookId: number;
+    userId: number;
+    userName: string;
+    rating: number;
+    comment: string;
+    date: string;
+    verified: boolean;
+}
+
 export interface LoginData {
     email: string;
     password: string;
@@ -545,6 +563,28 @@ export const getBooks = async (): Promise<ApiResponse<any[]>> => {
     }
 };
 
+export const cancelOrder = async (orderId: number): Promise<ApiResponse<string>> => {
+    try {
+        console.log(`Cancelling order ${orderId}...`);
+
+        const response = await api.post(`/api/Order/cancel/${orderId}`);
+
+        console.log('Cancel order response:', response.data);
+
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        console.error('Error cancelling order:', error);
+
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to cancel order'
+        };
+    }
+};
+
 
 export const booksFilter = async (queryParams: any = {}): Promise<ApiResponse<any[]>> => {
     try {
@@ -584,7 +624,7 @@ export const booksFilter = async (queryParams: any = {}): Promise<ApiResponse<an
 
 export const booksSearchByTitle = async (query: string): Promise<ApiResponse<any[]>> => {
     try {
-        // Use the correct endpoint for search with query parameter
+       
         const url = `/api/Book/search?query=${encodeURIComponent(query)}`;
         console.log('Search URL:', url);
         console.log('Search query:', query);
@@ -659,7 +699,7 @@ export const adminCreateAnnouncement = async (
 
 export const addToCart = async (cartData: AddToCartData): Promise<ApiResponse<any>> => {
     try {
-        console.log('Adding to cart with data:', cartData); // Add logging to check the data
+        console.log('Adding to cart with data:', cartData); 
         const response = await api.post('/api/Cart/add', cartData);
         return {
             success: true,
@@ -674,12 +714,9 @@ export const addToCart = async (cartData: AddToCartData): Promise<ApiResponse<an
 };
 
 
-// @/api/apiConfig.ts
-
-// In apiConfig.ts, replace the existing deleteFromCart function:
 export const deleteFromCart = async (userId: number, bookId: number): Promise<ApiResponse<any>> => {
     try {
-        // Use the correct endpoint according to Swagger: /api/Cart/remove
+        
         const response = await api.delete('/api/Cart/remove', {
             params: {
                 userId: userId,
@@ -700,31 +737,8 @@ export const deleteFromCart = async (userId: number, bookId: number): Promise<Ap
     }
 };
 
-export const getAnnouncements = async () => {
-    try {
-        const response = await fetch(
-            "https://localhost:7149/api/User/announcements",
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            }
-        );
 
-        if (!response.ok) {
-            throw new Error("Failed to fetch announcements");
-        }
 
-        const data = await response.json();
-        return { success: true, data };
-    } catch (error) {
-        console.error("Error fetching announcements:", error);
-        return { success: false, error: "Failed to fetch announcements" };
-    }
-};
-
-// Fixed getCart function with correct endpoint
 export const getCart = async (userId: number): Promise<ApiResponse<CartResponse>> => {
     try {
         const response = await api.get(`/api/Cart/${userId}`);
@@ -817,48 +831,7 @@ export const dashboard = async (): Promise<ApiResponse<StaffDashboardResponse>> 
     }
 };
 
-//export const loginStaff = async (credentials: StaffLoginData): Promise<ApiResponse<StaffLoginResponse>> => {
-//    try {
-//        const response = await api.post('/api/StaffAuth/login', credentials);
-
-//        // Store the token and user details in localStorage
-//        if (response.data && response.data.token) {
-//            localStorage.setItem('staffToken', response.data.token);
-//            localStorage.setItem('staffRole', response.data.role);
-//            localStorage.setItem('staffEmail', response.data.email);
-//            localStorage.setItem('staffName', response.data.fullName);
-//        }
-
-//        return {
-//            success: true,
-//            data: response.data
-//        };
-//    } catch (error: any) {
-//        return {
-//            success: false,
-//            error: error.response?.data?.message || 'Staff login failed'
-//        };
-//    }
-//};
-
-// Add a helper function to check if staff is authenticated
-//export const isStaffAuthenticated = (): boolean => {
-//    const token = localStorage.getItem('staffToken');
-//    const role = localStorage.getItem('staffRole');
-//    return !!(token && role === 'Staff');
-//};
-
-// Add a helper function to get staff details
-//export const getStaffDetails = () => {
-//    return {
-//        token: localStorage.getItem('staffToken'),
-//        role: localStorage.getItem('staffRole'),
-//        email: localStorage.getItem('staffEmail'),
-//        fullName: localStorage.getItem('staffName')
-//    };
-//};
-
-// Add a logout function
+// logout function
 export const logoutStaff = () => {
     localStorage.removeItem('staffToken');
     localStorage.removeItem('staffRole');
@@ -924,3 +897,211 @@ export const getDistinctFormats = async (): Promise<ApiResponse<string[]>> => {
         };
     }
 };
+
+export interface AddToWishlistData {
+    userId: number;
+    bookId: number;
+}
+
+// Add to wishlist function
+export const addToWishlist = async (wishlistData: AddToWishlistData): Promise<ApiResponse<any>> => {
+    try {
+        console.log('Adding to wishlist with data:', wishlistData);
+
+        const response = await api.post('/api/Wishlist/add', wishlistData);
+
+        console.log('Add to wishlist response:', response.data);
+
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        console.error('Error adding to wishlist:', error);
+
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to add to wishlist'
+        };
+    }
+};
+
+// Remove from wishlist function
+export const removeFromWishlist = async (userId: number, bookId: number): Promise<ApiResponse<any>> => {
+    try {
+        console.log(`Removing book ${bookId} from wishlist for user ${userId}`);
+
+        // Use the correct path format: /api/Wishlist/remove/{userId}/{bookId}
+        const response = await api.delete(`/api/Wishlist/remove/${userId}/${bookId}`);
+
+        console.log('Remove from wishlist response:', response.data);
+
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        console.error('Error removing from wishlist:', error);
+
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to remove from wishlist'
+        };
+    }
+};
+
+// Get user's wishlist
+export const getWishlist = async (userId: number): Promise<ApiResponse<any[]>> => {
+    try {
+        console.log(`Getting wishlist for user ${userId}`);
+
+        const response = await api.get(`/api/Wishlist/${userId}`);
+
+        console.log('Get wishlist response:', response.data);
+
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        console.error('Error getting wishlist:', error);
+
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to get wishlist'
+        };
+    }
+};
+
+export const addBookReview = async (reviewData: ReviewData): Promise<ApiResponse<ReviewResponse>> => {
+    try {
+        const token = localStorage.getItem('token');
+
+        // Use the correct endpoint: /api/Review/add
+        const response = await api.post('/api/Review/add', reviewData, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token ? `Bearer ${token}` : ''
+            }
+        });
+
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        console.error('Error adding review:', error);
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to add review'
+        };
+    }
+};
+
+// Function to get reviews for a book
+export const getBookReviews = async (bookId: number): Promise<ApiResponse<ReviewResponse[]>> => {
+    try {
+        // Use the correct endpoint: /api/Review/book/{bookId}
+        const response = await api.get(`/api/Review/book/${bookId}`);
+
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        console.error('Error fetching reviews:', error);
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to fetch reviews'
+        };
+    }
+};
+
+// Function to check if user can review a book (has purchased it)
+export const canUserReviewBook = async (bookId: number): Promise<ApiResponse<boolean>> => {
+    try {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+            return {
+                success: false,
+                error: 'User not authenticated'
+            };
+        }
+
+        // Assuming there is an endpoint that checks if a user can review (has purchased)
+        // If you don't have this specific endpoint, you can check using order history
+        const response = await api.get(`/api/Review/can-review/${bookId}/${userId}`);
+
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        console.error('Error checking review eligibility:', error);
+
+        return {
+            success: true,
+            data: true // Default to allowing reviews, and check purchase status elsewhere
+        };
+    }
+};
+
+export const getAnnouncements = async (): Promise<ApiResponse<any[]>> => {
+    try {
+        const response = await api.get('/api/User/announcements');
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        console.error('Error fetching announcements:', error);
+        return {
+            success: false,
+            error: error.response?.data || 'Failed to fetch announcements'
+        };
+    }
+};
+
+export const hasUserReviewedBook = async (bookId: number): Promise<ApiResponse<boolean>> => {
+    try {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+            return {
+                success: false,
+                error: 'User not authenticated'
+            };
+        }
+
+        const response = await api.get(`/api/Review/has-reviewed/${bookId}/${userId}`);
+
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error: any) {
+        console.error('Error checking if user reviewed book:', error);
+
+        // Fallback approach: fetch all reviews for the book and check if user has reviewed
+        try {
+            const reviewsResponse = await getBookReviews(bookId);
+            if (reviewsResponse.success && reviewsResponse.data) {
+                const userReviewed = reviewsResponse.data.some(
+                    review => review.userId === parseInt(userId as string)
+                );
+                return {
+                    success: true,
+                    data: userReviewed
+                };
+            }
+        } catch (err) {
+            console.error('Fallback check failed:', err);
+        }
+
+        return {
+            success: false,
+            error: 'Failed to check user review status'
+        };
+    }
+};
+
+

@@ -31,12 +31,6 @@ export default function Sidebar() {
             Create Announcement
           </Button>
         </Link>
-        {/*<Link to="/">*/}
-        {/*  <Button variant="ghost" className="justify-start w-full">*/}
-        {/*    <List className="mr-2 h-5 w-5" />*/}
-        {/*    Start Page*/}
-        {/*  </Button>*/}
-        {/*</Link>*/}
       </nav>
     </div>
   );

@@ -3,23 +3,43 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser, loginStaff } from "@/api/apiConfig";
-import { jwtDecode } from "jwt-decode";
 import { getUserRole } from "@/lib/auth";
-
-interface JwtPayload {
-    email: string;
-    role: string;
-    exp: number;
-}
-
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
+    const [emailError, setEmailError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
     const navigate = useNavigate();
 
+    // Password and email validation
+    const validate = () => {
+        let isValid = true;
+        setEmailError("");
+        setPasswordError("");
+
+        // Validate email
+        if (!email.includes("@")) {
+            setEmailError("Please enter a valid email address with '@'.");
+            isValid = false;
+        }
+
+        // Validate password
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
+        if (!passwordRegex.test(password)) {
+            setPasswordError("Password must be at least 8 characters long, contain one uppercase letter, and one symbol.");
+            isValid = false;
+        }
+
+        return isValid;
+    };
+
     const handleLogin = async () => {
+        if (!validate()) {
+            return; // Stop the function if validation fails
+        }
+
         if (!email || !password) {
             setMessage("Please enter both email and password");
             return;
@@ -38,19 +58,6 @@ export default function Login() {
 
                 // Get user role
                 const role = getUserRole();
-                // The loginUser function already sets token in localStorage
-                
-                // Get the role directly from the response
-                const userRole = result.data.role;
-                
-                console.log("Login successful as:", userRole); // Debug log
-                setMessage(`Login successful as ${userRole}!`);
-
-                // Clear any staff-related tokens to prevent conflicts
-                localStorage.removeItem("staffToken");
-                localStorage.removeItem("staffRole");
-                localStorage.removeItem("staffEmail");
-                localStorage.removeItem("staffName");
 
                 // Navigate based on role
                 if (role === "Admin") {
@@ -83,14 +90,13 @@ export default function Login() {
                     localStorage.removeItem("userRole");
                     localStorage.removeItem("userEmail");
                     localStorage.removeItem("userName");
-                    
+
                     // Then set staff token
                     localStorage.setItem("staffToken", staffResult.data.token);
                     localStorage.setItem("staffRole", staffResult.data.role);
                     localStorage.setItem("staffEmail", staffResult.data.email);
                     localStorage.setItem("staffName", staffResult.data.fullName);
 
-                    console.log("Staff login successful"); // Debug log
                     setMessage("Staff login successful!");
                     navigate("/staff-dashboard");
 
@@ -98,7 +104,6 @@ export default function Login() {
                     setEmail("");
                     setPassword("");
                 } else {
-                    // Both logins failed
                     setMessage(result.error || staffResult.error || "Invalid email or password");
                 }
             }
@@ -123,11 +128,7 @@ export default function Login() {
                 <h1 className="text-xl font-semibold text-center">Login</h1>
 
                 {message && (
-                    <div className={
-                        message.includes("successful")
-                            ? "text-green-600 text-center"
-                            : "text-red-600 text-center"
-                    }>
+                    <div className={message.includes("successful") ? "text-green-600 text-center" : "text-red-600 text-center"}>
                         {message}
                     </div>
                 )}
@@ -138,6 +139,7 @@ export default function Login() {
                     onChange={(e) => setEmail(e.target.value)}
                     onKeyDown={handleKeyDown}
                 />
+                {emailError && <div className="text-red-600 text-xs">{emailError}</div>}
 
                 <Input
                     placeholder="Password"
@@ -146,17 +148,14 @@ export default function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                     onKeyDown={handleKeyDown}
                 />
+                {passwordError && <div className="text-red-600 text-xs">{passwordError}</div>}
 
-                <Button
-                    className="w-full"
-                    onClick={handleLogin}
-                    disabled={loading}
-                >
+                <Button className="w-full" onClick={handleLogin} disabled={loading}>
                     {loading ? "Logging in..." : "Login"}
                 </Button>
 
-                <Link to="/">
-                    <Button className="w-full">Return Home</Button>
+                <Link to="/register">
+                    <Button className="w-full">Register</Button>
                 </Link>
             </div>
         </div>

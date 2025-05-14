@@ -1,4 +1,4 @@
-﻿// src/lib/auth.ts
+﻿
 import { jwtDecode } from "jwt-decode";
 
 interface JwtPayload {

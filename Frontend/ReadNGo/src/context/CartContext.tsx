@@ -1,4 +1,4 @@
-// @/context/CartContext.tsx
+
 // @/context/CartContext.tsx
 'use client';
 
@@ -142,7 +142,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     };
 
     // In CartContext.tsx, update the removeFromCart function:
-    // In CartContext.tsx, update the removeFromCart function:
     const removeFromCart = async (bookId: number) => {
         const userId = localStorage.getItem('userId');
 
@@ -154,17 +153,17 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         // Optimistically update UI first for better user experience
         setCart(prev => prev.filter(item => item.id !== bookId));
 
-        // Then sync with backend
+        
         try {
             const response = await deleteFromCart(parseInt(userId), bookId);
             if (!response.success) {
                 console.error('Failed to delete item from cart:', response.error);
                 // Optionally fetch the cart again to sync with backend state
-                fetchCart(); // You'd need to implement this function
+                fetchCart();
             }
         } catch (err) {
             console.error('Error calling deleteFromCart API:', err);
-            // Consider fetching the cart again to restore state from backend
+           
         }
     };
 
@@ -184,7 +183,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         if (cart.reduce((sum, item) => sum + item.quantity, 0) >= 5) {
             discount += 0.05;
         }
-        // Additional 10% discount logic would go here (would need to track order count)
+    
         return discount;
     };
 

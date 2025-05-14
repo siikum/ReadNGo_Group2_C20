@@ -2,14 +2,11 @@
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
 import { Navbar } from '@/components/NavBar';
-import { Trash2 } from 'lucide-react';
-import { useState, useEffect,useCallback } from 'react';
-import { useLocation,useNavigate } from 'react-router-dom';
-//import { getCart, placeOrder } from '@/api/apiConfig';
-import { getCart } from '@/api/apiConfig'; // Remove placeOrder here
-
+import { Trash2, Mail, ShoppingBag, CheckCircle } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { getCart } from '@/api/apiConfig';
 import { getUserRole } from '@/lib/auth';
-import { deleteCart } from '@/api/apiConfig';
 
 export const CartPage = () => {
     const {
@@ -26,10 +23,8 @@ export const CartPage = () => {
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
     const location = useLocation();
-    const { placeOrder } = useCart(); 
+    const { placeOrder } = useCart();
     const userRole = getUserRole();
-
-
 
     // Check authentication first
     useEffect(() => {
@@ -86,19 +81,33 @@ export const CartPage = () => {
     const discountAmount = subtotal * discount;
     const total = subtotal - discountAmount;
 
+    // Function to get the correct image URL
+    const getImageUrl = (image: string) => {
+        if (!image) return 'https://placehold.co/200x300/e2e8f0/1e293b?text=Book+Cover';
 
+        // If the image is a path that starts with a slash
+        if (image.startsWith('/')) {
+            return `https://localhost:7149${image}`;
+        }
 
+        // If it's just a filename
+        if (!image.includes('/') && !image.startsWith('http')) {
+            return `https://localhost:7149/images/${image}`;
+        }
 
+        // If it already has https:// or http://, return as is
+        return image;
+    };
 
     const handlePlaceOrder = async () => {
         try {
             setLoading(true);
-            const order = await placeOrder(); // ✅ this calls the context function
+            const order = await placeOrder(); // This calls the context function
 
             if (order) {
                 setConfirmationCode(order.claimCode);
                 setOrderPlaced(true);
-                clearCart(); // already included in context logic, so this may not be needed
+                clearCart(); // This may not be needed if already included in context logic
             } else {
                 alert('Failed to place order. Please try again.');
             }
@@ -144,39 +153,43 @@ export const CartPage = () => {
             <div className="min-h-screen bg-gray-50">
                 <Navbar />
                 <div className="container mx-auto px-4 py-12">
+                    
                     <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-sm text-center">
                         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-8 w-8 text-green-500"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M5 13l4 4L19 7"
-                                />
-                            </svg>
+                            <CheckCircle className="h-8 w-8 text-green-500" />
                         </div>
+
                         <h2 className="text-2xl font-bold mb-2">Order Placed Successfully!</h2>
-                        <p className="text-gray-600 mb-6">
+
+                        <p className="text-gray-600 mb-4">
                             Thank you for your purchase. Your order will be ready for pickup soon.
                         </p>
 
+                        <div className="mb-6 p-4 bg-blue-50 rounded-lg text-left">
+                            <div className="flex items-start">
+                                <Mail className="h-5 w-5 text-blue-800 mr-2 mt-0.5" />
+                                <div>
+                                    <p className="text-blue-800 font-medium">Email Confirmation</p>
+                                    <p className="text-blue-700 text-sm">
+                                        An email has been sent to your personal email address with all the order details and confirmation code.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="bg-gray-50 p-4 rounded-lg mb-6">
                             <p className="font-medium">Payment Method:</p>
-                            <p className="text-gray-600 mb-4">Cash on Delivery</p>
-                            <p className="font-medium">Confirmation Code:</p>
-                            <p className="text-2xl font-bold text-primary">{confirmationCode}</p>
+                            <p className="text-gray-600 mb-4">Come to physical store for payment</p>
+
+
+                          
                         </div>
 
                         <Button
                             className="w-full"
                             onClick={() => navigate('/homepage')}
                         >
+                            <ShoppingBag className="h-4 w-4 mr-2" />
                             Continue Shopping
                         </Button>
                     </div>
@@ -204,11 +217,11 @@ export const CartPage = () => {
                                     <div key={item.id} className="flex flex-col sm:flex-row gap-4 py-4 border-b last:border-b-0">
                                         <div className="flex-shrink-0">
                                             <img
-                                                src={item.image}
+                                                src={getImageUrl(item.image)}
                                                 alt={item.title}
                                                 className="w-20 h-24 object-cover rounded"
                                                 onError={(e) => {
-                                                    // Prevent infinite loops by checking if we've already tried to set a placeholder
+                                                    
                                                     const img = e.target as HTMLImageElement;
                                                     if (!img.dataset.usedFallback) {
                                                         img.dataset.usedFallback = 'true';
@@ -231,14 +244,9 @@ export const CartPage = () => {
                                                 onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)}
                                                 className="w-16 p-2 border rounded text-center"
                                             />
-                                            {/*<Button*/}
-                                            {/*    variant="ghost"*/}
-                                            {/*    size="icon"*/}
-                                            {/*    onClick={() => removeFromCart(item.id)}*/}
-                                            {/*    className="text-red-500 hover:text-red-600"*/}
-                                            {/*>*/}
-                                            <Button onClick={() => removeFromCart(item.id)}>Remove
-                                                <Trash2 size={16} />
+                                            <Button onClick={() => removeFromCart(item.id)}>
+                                                <Trash2 size={16} className="mr-2" />
+                                                Remove
                                             </Button>
                                         </div>
                                     </div>
@@ -267,8 +275,8 @@ export const CartPage = () => {
 
                             <div className="space-y-4">
                                 <div className="p-4 bg-blue-50 rounded-lg">
-                                    <p className="font-medium text-blue-800">Payment Method</p>
-                                    <p className="text-sm text-blue-600">Cash on Delivery Only</p>
+                                    <p className="font-medium text-blue-800">Payment</p>
+                                    <p className="text-sm text-blue-600">Payment accepted in physical store</p>
                                 </div>
 
                                 <Button

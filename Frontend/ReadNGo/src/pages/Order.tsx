@@ -10,10 +10,10 @@ export default function CreateOrderPage() {
         setLoading(true);
         setMessage("");
 
-        // Example hardcoded data — replace with real data later
+        
         const orderData = {
-            userId: 1, // replace with actual userId
-            bookIds: [1] // replace with selected bookIds
+            userId: 1, 
+            bookIds: [1] 
         };
 
         const response = await createOrder(orderData);

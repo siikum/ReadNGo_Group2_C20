@@ -18,28 +18,34 @@ export default function Register() {
         confirmPassword: "",
     });
 
+    // Validate email format
     const validateEmail = (email: string) => {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Standard email regex
         return regex.test(email);
     };
 
+    // Validate password (at least 8 characters, 1 uppercase letter, 1 symbol)
     const validatePassword = (password: string) => {
-        return password.length >= 6 && /[A-Z]/.test(password) && /[a-z]/.test(password);
+        const regex = /^(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
+        return regex.test(password);
     };
 
     const handleRegister = async () => {
         const newErrors = { email: "", password: "", confirmPassword: "" };
 
+        // Email validation
         if (!validateEmail(email)) {
-            newErrors.email = "Invalid email format";
+            newErrors.email = "Please enter a valid email address.";
         }
 
+        // Password validation (at least 8 characters, 1 uppercase letter, 1 symbol)
         if (!validatePassword(password)) {
-            newErrors.password = "Password must be at least 6 characters with upper and lower case letters";
+            newErrors.password = "Password must be at least 8 characters, contain 1 uppercase letter, and 1 symbol.";
         }
 
+        // Confirm password validation
         if (password !== confirmPassword) {
-            newErrors.confirmPassword = "Passwords do not match";
+            newErrors.confirmPassword = "Passwords do not match.";
         }
 
         setErrors(newErrors);
@@ -82,8 +88,7 @@ export default function Register() {
 
                 {message && (
                     <div
-                        className={`text-sm text-center ${message.includes("successful") ? "text-green-500" : "text-red-500"
-                            }`}
+                        className={`text-sm text-center ${message.includes("successful") ? "text-green-500" : "text-red-500"}`}
                     >
                         {message}
                     </div>

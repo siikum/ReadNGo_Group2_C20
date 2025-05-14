@@ -6,7 +6,8 @@ import {
     getDistinctAuthors,
     getDistinctGenres,
     getDistinctLanguages,
-    getDistinctFormats
+    getDistinctFormats,
+    getAnnouncements
 } from "@/api/apiConfig";
 import { BookCard } from "@/components/BookCard";
 import { Navbar } from "@/components/NavBar";
@@ -22,7 +23,15 @@ import {
 } from "@/components/ui/select";
 import Pagination from "@/components/Pagination";
 import { toast } from "sonner";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Bell, X, ChevronRight, ChevronLeft } from "lucide-react";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+
+interface Announcement {
+    title: string;
+    message: string;
+    startTime: string;
+    endTime: string;
+}
 
 interface FilterState {
     author: string;
@@ -64,16 +73,52 @@ export default function HomePage() {
     const [formats, setFormats] = useState<string[]>([]);
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [isFilterExpanded, setIsFilterExpanded] = useState(false);
+    const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+    const [currentAnnouncementIndex, setCurrentAnnouncementIndex] = useState(0);
+    const [showAnnouncements, setShowAnnouncements] = useState(true);
     const itemsPerPage = 12;
 
     useEffect(() => {
         fetchDropdownData();
         fetchBooks();
+        fetchAnnouncements();
     }, []);
 
     useEffect(() => {
         applyFilters();
     }, [filters, searchResults, allBooks, isSearchActive]);
+
+    // Set up automatic announcement rotation
+    useEffect(() => {
+        if (announcements.length <= 1) return;
+
+        const rotationInterval = setInterval(() => {
+            setCurrentAnnouncementIndex(prevIndex =>
+                prevIndex === announcements.length - 1 ? 0 : prevIndex + 1
+            );
+        }, 5000); // Rotate every 5 seconds
+
+        return () => clearInterval(rotationInterval);
+    }, [announcements.length]);
+
+    const fetchAnnouncements = async () => {
+        try {
+            const response = await getAnnouncements();
+            if (response.success && response.data) {
+                // Filter announcements that are currently active
+                const now = new Date();
+                const activeAnnouncements = response.data.filter(announcement => {
+                    const startTime = new Date(announcement.startTime);
+                    const endTime = new Date(announcement.endTime);
+                    return startTime <= now && endTime >= now;
+                });
+
+                setAnnouncements(activeAnnouncements);
+            }
+        } catch (error) {
+            console.error("Error fetching announcements:", error);
+        }
+    };
 
     const fetchDropdownData = async () => {
         try {
@@ -120,8 +165,7 @@ export default function HomePage() {
                     image: book.imagePath ? `https://localhost:7149${book.imagePath}` : "/placeholder-book.jpg",
                     rating: book.averageRating || 0,
                     stock: book.stockQuantity,
-                    isBestseller: false, // Assuming this data isn't available from API
-                    // Add these properties to enable filtering
+                    isBestseller: false, 
                     genre: book.genre,
                     language: book.language,
                     format: book.format
@@ -221,7 +265,6 @@ export default function HomePage() {
                     rating: book.averageRating || 0,
                     stock: book.stockQuantity,
                     isBestseller: false,
-                    // Add these properties to enable filtering
                     genre: book.genre,
                     language: book.language,
                     format: book.format
@@ -273,9 +316,92 @@ export default function HomePage() {
         setIsFilterExpanded(!isFilterExpanded);
     };
 
+    const nextAnnouncement = () => {
+        setCurrentAnnouncementIndex(prevIndex =>
+            prevIndex === announcements.length - 1 ? 0 : prevIndex + 1
+        );
+    };
+
+    const prevAnnouncement = () => {
+        setCurrentAnnouncementIndex(prevIndex =>
+            prevIndex === 0 ? announcements.length - 1 : prevIndex - 1
+        );
+    };
+
+    const dismissAnnouncements = () => {
+        setShowAnnouncements(false);
+    };
+
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    };
+
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />
+
+            {/* Announcements Banner */}
+            {showAnnouncements && announcements.length > 0 && (
+                <div className="bg-blue-600 text-white py-2 px-4 mb-4">
+                    <div className="container mx-auto relative">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center flex-grow overflow-hidden">
+                                <Bell className="flex-shrink-0 mr-2 h-5 w-5" />
+                                <div className="flex items-center">
+                                    {announcements.length > 1 && (
+                                        <button
+                                            onClick={prevAnnouncement}
+                                            className="mr-2 p-1 rounded-full hover:bg-blue-700"
+                                            aria-label="Previous announcement"
+                                        >
+                                            <ChevronLeft className="h-4 w-4" />
+                                        </button>
+                                    )}
+
+                                    <div className="flex-grow overflow-hidden">
+                                        <div className="font-semibold">
+                                            {announcements[currentAnnouncementIndex]?.title}
+                                        </div>
+                                        <div className="text-sm text-blue-100 truncate">
+                                            {announcements[currentAnnouncementIndex]?.message}
+                                        </div>
+                                    </div>
+
+                                    {announcements.length > 1 && (
+                                        <button
+                                            onClick={nextAnnouncement}
+                                            className="ml-2 p-1 rounded-full hover:bg-blue-700"
+                                            aria-label="Next announcement"
+                                        >
+                                            <ChevronRight className="h-4 w-4" />
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-2 ml-4">
+                                {announcements.length > 1 && (
+                                    <div className="text-xs text-blue-200">
+                                        {currentAnnouncementIndex + 1}/{announcements.length}
+                                    </div>
+                                )}
+                                <button
+                                    onClick={dismissAnnouncements}
+                                    className="ml-2 p-1 rounded-full hover:bg-blue-700"
+                                    aria-label="Close announcements"
+                                >
+                                    <X className="h-4 w-4" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="container mx-auto px-4 py-6">
                 <div className="bg-white rounded-lg shadow-sm p-6 mb-6">

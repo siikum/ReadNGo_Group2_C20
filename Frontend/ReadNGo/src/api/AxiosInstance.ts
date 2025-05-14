@@ -24,7 +24,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        // Handle common errors here (like 401 unauthorized)
+        // Handle error
         if (error.response && error.response.status === 401) {
             // Redirect to login or handle token expiration
             localStorage.removeItem('token');

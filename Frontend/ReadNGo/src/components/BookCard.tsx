@@ -4,8 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useCart } from '@/context/CartContext';
-import { ShoppingCart, Heart } from 'lucide-react';
+import { ShoppingCart, Heart, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { addToWishlist as addToWishlistAPI, removeFromWishlist as removeFromWishlistAPI } from '@/api/apiConfig';
+import { useState } from 'react';
 
 interface BookCardProps {
     book: Book;
@@ -13,13 +15,40 @@ interface BookCardProps {
 }
 
 export const BookCard = ({ book, onAddToCart }: BookCardProps) => {
-    const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useCart();
+    const { addToCart, isInWishlist, addToWishlist: addToWishlistContext, removeFromWishlist: removeFromWishlistContext } = useCart();
     const navigate = useNavigate();
+    const [isWishlistLoading, setIsWishlistLoading] = useState(false);
 
     const calculateDiscountedPrice = () => {
         return book.discount > 0
             ? (book.price * (1 - book.discount / 100)).toFixed(2)
             : book.price.toFixed(2);
+    };
+
+    const getImageUrl = () => {
+        // Check for typical imagePath pattern from API
+        if ('imagePath' in book && book.imagePath) {
+            return `https://localhost:7149${book.imagePath}`;
+        }
+
+        // Check for image property which might be a full path or filename
+        if (book.image) {
+            // If it's a path that starts with a slash
+            if (book.image.startsWith('/')) {
+                return `https://localhost:7149${book.image}`;
+            }
+
+            // If it's just a filename (like the one you provided)
+            if (!book.image.includes('/') && !book.image.startsWith('http')) {
+                return `https://localhost:7149/images/${book.image}`;
+            }
+
+            // If it already has https:// or http://, return as is
+            return book.image;
+        }
+
+        // Fallback to placeholder
+        return '/placeholder-book.png';
     };
 
     const handleCardClick = () => {
@@ -41,14 +70,64 @@ export const BookCard = ({ book, onAddToCart }: BookCardProps) => {
         }
     };
 
-    const handleWishlistToggle = (e: React.MouseEvent) => {
+    const handleWishlistToggle = async (e: React.MouseEvent) => {
         e.stopPropagation();
-        if (isInWishlist(book.id)) {
-            removeFromWishlist(book.id);
-        } else {
-            addToWishlist(book.id);
+
+        if (isWishlistLoading) return; // Prevent multiple clicks
+
+        setIsWishlistLoading(true);
+
+        try {
+            const userId = localStorage.getItem('userId');
+
+            if (!userId) {
+                console.error('User not authenticated');
+                alert("Please log in to add items to your wishlist");
+                navigate('/login');
+                return;
+            }
+
+            const isInWishlistAlready = isInWishlist(book.id);
+
+            if (isInWishlistAlready) {
+                // Remove from wishlist
+                console.log(`Removing book ${book.id} from wishlist`);
+                const result = await removeFromWishlistAPI(parseInt(userId), book.id);
+
+                if (result.success) {
+                    // Update local state in context
+                    removeFromWishlistContext(book.id);
+                    console.log(`${book.title} has been removed from your wishlist`);
+                } else {
+                    throw new Error(result.error || 'Failed to remove from wishlist');
+                }
+            } else {
+                // Add to wishlist
+                console.log(`Adding book ${book.id} to wishlist`);
+                const result = await addToWishlistAPI({
+                    userId: parseInt(userId),
+                    bookId: book.id
+                });
+
+                if (result.success) {
+                    // Update local state in context
+                    addToWishlistContext(book.id);
+                    console.log(`${book.title} has been added to your wishlist`);
+                } else {
+                    throw new Error(result.error || 'Failed to add to wishlist');
+                }
+            }
+        } catch (error) {
+            console.error('Error toggling wishlist status:', error);
+            alert(error instanceof Error ? error.message : 'An error occurred with your wishlist');
+        } finally {
+            setIsWishlistLoading(false);
         }
     };
+
+    const inWishlist = isInWishlist(book.id);
+
+    const imageUrl = getImageUrl();
 
     return (
         <Card
@@ -57,9 +136,18 @@ export const BookCard = ({ book, onAddToCart }: BookCardProps) => {
         >
             <div className="relative aspect-[3/4] overflow-hidden">
                 <img
-                    src={book.image}
+                    src={imageUrl}
                     alt={book.title}
                     className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
+                    onError={(e) => {
+                        // Use a placeholder image if the original fails to load
+                        const img = e.target as HTMLImageElement;
+                        if (!img.dataset.usedFallback) {
+                            img.dataset.usedFallback = 'true';
+                            console.error(`Failed to load image: ${img.src}`);
+                            img.src = '/placeholder-book.png';
+                        }
+                    }}
                 />
 
                 {/* Wishlist Button */}
@@ -68,11 +156,15 @@ export const BookCard = ({ book, onAddToCart }: BookCardProps) => {
                     size="icon"
                     className="absolute top-2 right-2 bg-white/80 hover:bg-white"
                     onClick={handleWishlistToggle}
+                    disabled={isWishlistLoading}
                 >
-                    <Heart
-                        className={`h-4 w-4 ${isInWishlist(book.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'
-                            }`}
-                    />
+                    {isWishlistLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                        <Heart
+                            className={`h-4 w-4 ${inWishlist ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
+                        />
+                    )}
                 </Button>
 
                 {book.discount > 0 && (
@@ -94,27 +186,14 @@ export const BookCard = ({ book, onAddToCart }: BookCardProps) => {
 
                 <div className="flex items-baseline gap-2 mb-2">
                     <span className="text-lg font-bold text-primary">
-                        ${calculateDiscountedPrice()}
+                        Rs. {calculateDiscountedPrice()}
                     </span>
                     {book.discount > 0 && (
                         <span className="text-sm text-gray-500 line-through">
-                            ${book.price.toFixed(2)}
+                            Rs. {book.price.toFixed(2)}
                         </span>
                     )}
                 </div>
-
-                {/*<div className="flex items-center gap-1 mb-2">*/}
-                {/*    {Array.from({ length: 5 }).map((_, i) => (*/}
-                {/*        <span*/}
-                {/*            key={i}*/}
-                {/*            className={`text-sm ${i < Math.floor(book.rating) ? 'text-yellow-400' : 'text-gray-300'*/}
-                {/*                }`}*/}
-                {/*        >*/}
-                {/*            ★*/}
-                {/*        </span>*/}
-                {/*    ))}*/}
-                {/*    <span className="text-sm text-gray-600">({book.rating})</span>*/}
-                {/*</div>*/}
 
                 {book.isBestseller && (
                     <Badge variant="secondary" className="text-xs">

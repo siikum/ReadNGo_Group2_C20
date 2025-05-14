@@ -54,7 +54,7 @@ export const Cart = () => {
                   <div className="flex-1">
                     <h3 className="font-semibold">{item.title}</h3>
                     <p className="text-sm text-gray-600">by {item.author}</p>
-                    <p className="font-bold mt-2">${item.price.toFixed(2)}</p>
+                    <p className="font-bold mt-2">Rs. {item.price.toFixed(2)}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Input
@@ -82,17 +82,17 @@ export const Cart = () => {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span>Rs. {subtotal.toFixed(2)}</span>
               </div>
               {discount > 0 && (
                 <div className="flex justify-between text-green-600">
                   <span>Discount ({discount * 100}%)</span>
-                  <span>-${discountAmount.toFixed(2)}</span>
+                  <span>-Rs. {discountAmount.toFixed(2)}</span>
                 </div>
               )}
               <div className="border-t pt-3 mt-3 flex justify-between font-bold">
                 <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+                <span>Rs. {total.toFixed(2)}</span>
               </div>
             </div>
             

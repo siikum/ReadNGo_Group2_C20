@@ -142,7 +142,6 @@ export default function AdminAddBooks() {
         // Handle numeric fields differently
         if (type === "number" || ["price", "discountPercentage", "stockQuantity"].includes(name)) {
             // If the field is empty, set it to empty string instead of 0
-            // This allows users to clear the field and type a new number
             if (value === "") {
                 setBook(prev => ({
                     ...prev,
