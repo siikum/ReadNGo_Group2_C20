@@ -13,7 +13,7 @@ namespace ReadNGo.DTO
         public string Publisher { get; set; }
         public DateTime PublicationDate { get; set; }
 
-        public string Category { get; set; }  // Added
+        public string Category { get; set; }  
         public DateTime ArrivalDate { get; set; }
         public decimal Price { get; set; }
         public bool IsOnSale { get; set; }
@@ -21,7 +21,7 @@ namespace ReadNGo.DTO
         public DateTime? DiscountStartDate { get; set; }
         public DateTime? DiscountEndDate { get; set; }
 
-        // Additional properties that might be useful for the front end
+        
         public decimal ActualPrice => IsOnSale && DiscountPercentage.HasValue
             ? Price * (1 - DiscountPercentage.Value / 100)
             : Price;

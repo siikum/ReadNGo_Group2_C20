@@ -10,7 +10,7 @@ namespace ReadNGo.DTO
         public int UserId { get; set; }
         public int BookId { get; set; }
         public string Comment { get; set; }
-        public int Rating { get; set; } // 1 to 5
+        public int Rating { get; set; } 
     }
 
 }

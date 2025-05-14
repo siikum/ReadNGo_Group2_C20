@@ -15,8 +15,8 @@ namespace ReadNGo_Group2_C20.Models
 
         public bool IsCancelled { get; set; } = false;
 
-        // NEW FIELDS
-        public string ClaimCode { get; set; }  // UUID string
+        
+        public string ClaimCode { get; set; }  
         public bool IsConfirmed { get; set; } = false;
         public DateTime? ConfirmedAt { get; set; }
     }
@@ -25,6 +25,8 @@ namespace ReadNGo_Group2_C20.Models
     public class OrderItem
     {
         public int Id { get; set; }
+        public bool IsConfirmed { get; set; } = false;  
+        public DateTime? ConfirmedAt { get; set; }
 
         public int BookId { get; set; }
         public Book Book { get; set; }

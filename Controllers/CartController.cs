@@ -17,7 +17,7 @@ namespace ReadNGo.Controllers
         public CartController(ICartService cartService, ReadNGoContext context)
         {
             _cartService = cartService;
-            _context = context; // <-- initialize here
+            _context = context; 
         }
 
         //POST 

@@ -9,7 +9,7 @@ namespace ReadNGo.Services.Interfaces
         List<BookDTO> GetAllBooks();
         BookDTO GetBookById(int id);
         List<BookDTO> FilterBooks(
-            string category = null,  // Added category parameter
+            string category = null,  
             string genre = null,
             string author = null,
             string format = null,

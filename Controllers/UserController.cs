@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReadNGo.DBContext;
 using ReadNGo.DTO;
@@ -52,6 +53,23 @@ namespace ReadNGo.Controllers
         public IActionResult GetClaimCode(int orderId)
         {
             return Ok("Get claim code...");
+        }
+
+        [HttpGet("announcements")]
+        [AllowAnonymous] 
+        public IActionResult GetAnnouncements()
+        {
+            try
+            {
+                var announcements = _userService.GetAllAnnouncements();
+                return Ok(announcements);
+            }
+            catch (System.Exception ex)
+            {
+                
+                System.Console.WriteLine($"Error getting announcements: {ex.Message}");
+                return StatusCode(500, "An error occurred while fetching announcements");
+            }
         }
     }
 

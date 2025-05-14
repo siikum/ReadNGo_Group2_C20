@@ -71,8 +71,6 @@ namespace ReadNGo.Services.Implementations
                 }
 
                 log.OrderId = order.Id;
-
-                // Existing validation checks...
                 if (order.IsConfirmed)
                 {
                     log.Success = false;
@@ -90,7 +88,7 @@ namespace ReadNGo.Services.Implementations
                 }
                 else
                 {
-                    // Process the order
+                    
                     order.IsConfirmed = true;
                     order.ConfirmedAt = DateTime.UtcNow;
                     log.Success = true;
@@ -100,7 +98,7 @@ namespace ReadNGo.Services.Implementations
                 _context.OrderProcessingLogs.Add(log);
                 await _context.SaveChangesAsync();
 
-                // Return result with order details...
+              
                 return new ProcessClaimResultDTO
                 {
                     Success = log.Success,
@@ -135,7 +133,7 @@ namespace ReadNGo.Services.Implementations
                     UserName = o.User.FullName,
                     ClaimCode = o.ClaimCode,
                     BookCount = o.OrderItems.Count,
-                    FinalAmount = o.TotalAmount, // You might want to calculate discount here
+                    FinalAmount = o.TotalAmount,
                     OrderDate = o.OrderDate,
                     IsConfirmed = o.IsConfirmed,
                     IsCancelled = o.IsCancelled

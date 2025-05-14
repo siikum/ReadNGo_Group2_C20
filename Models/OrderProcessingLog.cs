@@ -7,7 +7,7 @@ namespace ReadNGo_Group2_C20.Models
         public int Id { get; set; }
         public int OrderId { get; set; }
         public Order Order { get; set; }
-        public string Action { get; set; } // "Verified", "Processed", "ProcessFailed"
+        public string Action { get; set; } 
         public bool Success { get; set; }
         public string ResultMessage { get; set; }
         public string ClaimCodeUsed { get; set; }

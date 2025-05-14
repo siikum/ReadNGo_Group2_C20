@@ -32,14 +32,14 @@ namespace ReadNGo_Group2_C20.Services.Implementations
                 new Claim(ClaimTypes.Email, email),
                 new Claim(ClaimTypes.Name, fullName),
                 new Claim(ClaimTypes.Role, role),
-                new Claim("role", role) // Add both formats for compatibility
+                new Claim("role", role) 
             };
 
             var token = new JwtSecurityToken(
                 issuer: issuer,
                 audience: audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(24), // Token valid for 24 hours
+                expires: DateTime.UtcNow.AddHours(24), 
                 signingCredentials: creds
             );
 

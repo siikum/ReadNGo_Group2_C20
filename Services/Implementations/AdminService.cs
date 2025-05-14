@@ -21,7 +21,7 @@ namespace ReadNGo.Services.Implementations
             _context = context;
         }
 
-        // Add a new book to the catalog - Updated to include Category and ArrivalDate
+        
         public bool AddBook(BookDTO bookDto)
         {
             try
@@ -36,8 +36,8 @@ namespace ReadNGo.Services.Implementations
                     Format = bookDto.Format,
                     Publisher = bookDto.Publisher,
                     PublicationDate = DateTime.SpecifyKind(bookDto.PublicationDate, DateTimeKind.Utc),
-                    Category = bookDto.Category,  // Added Category
-                    ArrivalDate = DateTime.SpecifyKind(bookDto.ArrivalDate, DateTimeKind.Utc),  // Added ArrivalDate
+                    Category = bookDto.Category,  
+                    ArrivalDate = DateTime.SpecifyKind(bookDto.ArrivalDate, DateTimeKind.Utc),  
                     IsOnSale = bookDto.IsOnSale,
                     DiscountPercentage = bookDto.DiscountPercentage,
                     DiscountStartDate = bookDto.DiscountStartDate.HasValue ? DateTime.SpecifyKind(bookDto.DiscountStartDate.Value, DateTimeKind.Utc) : null,
@@ -75,8 +75,8 @@ namespace ReadNGo.Services.Implementations
                 book.Format = updated.Format;
                 book.Publisher = updated.Publisher;
                 book.PublicationDate = DateTime.SpecifyKind(updated.PublicationDate, DateTimeKind.Utc);
-                book.Category = updated.Category;  // Added Category
-                book.ArrivalDate = DateTime.SpecifyKind(updated.ArrivalDate, DateTimeKind.Utc);  // Added ArrivalDate
+                book.Category = updated.Category;  
+                book.ArrivalDate = DateTime.SpecifyKind(updated.ArrivalDate, DateTimeKind.Utc);  
                 book.Price = updated.Price;
                 book.IsOnSale = updated.IsOnSale;
                 book.DiscountPercentage = updated.DiscountPercentage;
@@ -101,7 +101,7 @@ namespace ReadNGo.Services.Implementations
             }
         }
 
-        // Delete a book (unchanged)
+        // Delete a book 
         public bool DeleteBook(int bookId)
         {
             try
@@ -127,7 +127,7 @@ namespace ReadNGo.Services.Implementations
             }
         }
 
-        // ... rest of the methods remain unchanged ...
+        
 
         public bool SetDiscount(int bookId, AdminSetDiscountDTO discountDto)
         {
@@ -198,13 +198,13 @@ namespace ReadNGo.Services.Implementations
             return expiredBooks.Count;
         }
 
-        // Combines cleanup and discount setting in one call
+        
         public bool SetDiscountWithAutoCleanup(int bookId, AdminSetDiscountDTO discountDto)
         {
-            // Step 1: Clear expired discounts globally
+           
             ClearExpiredDiscounts();
 
-            // Step 2: Apply new discount to the specified book
+            
             return SetDiscount(bookId, discountDto);
         }
 

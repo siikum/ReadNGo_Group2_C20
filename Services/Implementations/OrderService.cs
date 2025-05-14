@@ -35,7 +35,7 @@ namespace ReadNGo.Services.Implementations
         {
             try
             {
-                // Build order items
+              
                 var orderItems = new List<OrderItem>();
                 foreach (var bookId in orderDto.BookIds)
                 {
@@ -51,22 +51,25 @@ namespace ReadNGo.Services.Implementations
                     }
                 }
 
-                // Reject empty orders
+               
                 if (orderItems.Count == 0)
                 {
                     Console.WriteLine("No valid books found for this order.");
                     return false;
                 }
 
-                // Calculate discount BEFORE saving the order
+              
                 var discountCheck = CalculateOrderDiscount(orderDto.UserId, orderItems.Count);
 
                 //  Create order
+                var baseTotal = orderItems.Sum(item => item.Price * item.Quantity);
+                var finalTotal = Math.Round(baseTotal * (1 - discountCheck.Discount / 100m), 2);
+
                 var order = new Order
                 {
                     UserId = orderDto.UserId,
                     OrderItems = orderItems,
-                    TotalAmount = orderItems.Sum(item => item.Price * item.Quantity),
+                    TotalAmount = finalTotal, 
                     OrderDate = DateTime.UtcNow,
                     IsCancelled = false,
                     ClaimCode = Guid.NewGuid().ToString().ToUpper(),
@@ -76,7 +79,7 @@ namespace ReadNGo.Services.Implementations
                 _context.Orders.Add(order);
                 _context.SaveChanges();
 
-                // Email + Notification
+              
                 var user = _context.Users.FirstOrDefault(u => u.Id == orderDto.UserId);
                 if (user != null)
                 {
@@ -156,19 +159,20 @@ namespace ReadNGo.Services.Implementations
         public List<OrderDTO> GetOrdersByUser(int userId)
         {
             var orders = _context.Orders
-                 .AsSplitQuery()
-                 .Include(o => o.OrderItems)
-                 .ThenInclude(oi => oi.Book)
-                 .Where(o => o.UserId == userId)
-                .Select(o => new OrderDTO
+                .AsSplitQuery()
+                .Include(order => order.OrderItems)    
+                .ThenInclude(oi => oi.Book)
+                .Where(order => order.UserId == userId) 
+                .Select(order => new OrderDTO           
                 {
-                    Id = o.Id,
-                    UserId = o.UserId,
-                    TotalAmount = o.TotalAmount,
-                    OrderDate = o.OrderDate,
-                    IsCancelled = o.IsCancelled,
-                    BookIds = o.OrderItems.Select(oi => oi.BookId).ToList(),
-                    BookTitles = o.OrderItems.Select(oi => oi.Book.Title).ToList()
+                    Id = order.Id,
+                    UserId = order.UserId,
+                    TotalAmount = order.TotalAmount,
+                    OrderDate = order.OrderDate,
+                    IsCancelled = order.IsCancelled,
+                    IsProcessed = order.IsConfirmed,   
+                    BookIds = order.OrderItems.Select(oi => oi.BookId).ToList(),
+                    BookTitles = order.OrderItems.Select(oi => oi.Book.Title).ToList()
                 })
                 .ToList();
 
@@ -177,7 +181,7 @@ namespace ReadNGo.Services.Implementations
 
         public ApplyDiscountResultDTO ApplyDiscount(ApplyDiscountDTO discount)
         {
-            // Initialize result object to store the outcome of discount calculation
+            
             var result = new ApplyDiscountResultDTO
             {
                 Eligible = false,
@@ -188,8 +192,7 @@ namespace ReadNGo.Services.Implementations
 
             try
             {
-                // Step 1: Fetch the specific order based on OrderId and UserId
-                // Also include related OrderItems to count number of books
+                
                 var order = _context.Orders
                     .Include(o => o.OrderItems)
                     .FirstOrDefault(o => o.Id == discount.OrderId && o.UserId == discount.UserId);
@@ -200,7 +203,7 @@ namespace ReadNGo.Services.Implementations
                     return result;
                 }
 
-                // Rule 1: Bulk Discount → if the order has 5 or more books
+                
                 if (order.OrderItems.Count >= 5)
                 {
                     result.TotalDiscount += 5;
@@ -208,7 +211,7 @@ namespace ReadNGo.Services.Implementations
                     result.AppliedRules.Add("bulk_order_5+");
                 }
 
-                // Rule 2: Loyalty Discount → if user has placed 10 completed orders before this one
+                
                 int completedOrders = _context.Orders
                     .Count(o => o.UserId == discount.UserId && !o.IsCancelled && o.Id != discount.OrderId);
 
@@ -219,19 +222,19 @@ namespace ReadNGo.Services.Implementations
                     result.AppliedRules.Add("loyalty_10_orders");
                 }
 
-                // Final Price = Original price - stacked discount
+             
                 result.FinalAmount = Math.Round(order.TotalAmount * (1 - (result.TotalDiscount / 100m)), 2);
 
-                // Log result to server console (for dev purposes)
+                
                 Console.WriteLine($"User {discount.UserId} eligible for {result.TotalDiscount}% discount. Final price: {result.FinalAmount}");
             }
             catch (Exception ex)
             {
-                // Catch and log any errors during discount calculation
+               
                 Console.WriteLine("APPLY DISCOUNT ERROR: " + ex.Message);
             }
 
-            // Return the final discount result
+           
             return result;
         }
 
@@ -243,18 +246,18 @@ namespace ReadNGo.Services.Implementations
                 decimal discount = 0;
                 bool eligible = false;
 
-                // RULE 1: Current order has 5+ books → +5%
+                
                 if (bookCount >= 5)
                 {
                     discount += 5;
                     eligible = true;
                 }
 
-                // RULE 2: Every 10th completed order → +10%
+              
                 int completedOrderCount = _context.Orders
                     .Count(o => o.UserId == userId && !o.IsCancelled);
 
-                // Check if this WILL BE their 10th, 20th, 30th, etc. order
+               
                 if ((completedOrderCount + 1) % 10 == 0)
                 {
                     discount += 10;
@@ -285,7 +288,7 @@ namespace ReadNGo.Services.Implementations
                 decimal discount = 0;
                 bool eligible = false;
 
-                // RULE 1: If any order contains 5 or more books → +5%
+              
                 var hasLargeOrder = _context.Orders
                     .Include(o => o.OrderItems)
                     .Any(o => o.UserId == userId && !o.IsCancelled &&
@@ -297,7 +300,7 @@ namespace ReadNGo.Services.Implementations
                     eligible = true;
                 }
 
-                // RULE 2: 10 successful orders → +10%
+            
                 int completedOrderCount = _context.Orders
                     .Count(o => o.UserId == userId && !o.IsCancelled);
 

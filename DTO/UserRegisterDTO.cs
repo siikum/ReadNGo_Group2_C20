@@ -15,7 +15,7 @@ namespace ReadNGo.DTO
         [Required, MinLength(8)]
         public string Password { get; set; }
 
-        public string Role { get; set; } = "Member"; // Optional during registration
+        public string Role { get; set; } = "Member"; 
     }
 
 

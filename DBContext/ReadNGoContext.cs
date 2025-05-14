@@ -11,8 +11,7 @@ namespace ReadNGo.DBContext
         {
         }
 
-        //  Add your DbSet models here
-        //public DbSet<Admin> Admin { get; set; }
+       
 
         public DbSet<User> Users { get; set; }
         public DbSet<Book> Books { get; set; }
@@ -26,12 +25,12 @@ namespace ReadNGo.DBContext
         public DbSet<OrderProcessingLog> OrderProcessingLogs { get; set; }
 
 
-        // optional: customize table names etc.
+       
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Example: Set unique email for User
+           
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique();

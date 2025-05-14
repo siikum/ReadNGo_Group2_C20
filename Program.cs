@@ -77,7 +77,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "ReadNGo_Group2_C20", Version = "v1" });
 
-    // ✅ Add JWT Bearer definition
+    //  Add JWT Bearer definition
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -88,7 +88,7 @@ builder.Services.AddSwaggerGen(c =>
         Description = "Enter your JWT token only (no 'Bearer ' prefix needed)"
     });
 
-    // ✅ Add global security requirement
+    //  Add global security requirement
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -112,25 +112,19 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Swagger & CORS setup based on environment
+
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
-    //app.UseCors("AllowAll"); // Swagger needs full access
+    
 }
-//else
-//{
-//    app.UseCors("AllowFrontend"); // React frontend only
-//}
+
 
 app.UseHttpsRedirection();
 
-// Enable CORS here
 
-
-//app.UseCors("AllowFrontend");
 app.UseCors("AllowReactApp");
 app.UseAuthentication();
 app.UseAuthorization();

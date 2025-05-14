@@ -38,9 +38,9 @@ namespace ReadNGo.Services.Implementations
             return book != null ? MapToDTO(book) : null;
         }
 
-        // Filter books by various criteria - Updated to include category
+        // Filter books by various criteria 
         public List<BookDTO> FilterBooks(
-            string category = null,  // Added category parameter
+            string category = null, 
             string genre = null,
             string author = null,
             string format = null,
@@ -137,7 +137,7 @@ namespace ReadNGo.Services.Implementations
             };
         }
 
-        // Get books by category - Updated to use actual category field
+        // Get books by category 
         public List<BookDTO> GetBooksByCategory(string type)
         {
             if (string.IsNullOrEmpty(type))
@@ -146,7 +146,7 @@ namespace ReadNGo.Services.Implementations
             var now = DateTime.Now;
             var query = _context.Books.AsQueryable();
 
-            // If type matches one of the predefined categories, use category field
+         
             var predefinedCategories = new[] {
                 "Bestsellers",
                 "Award Winners",
@@ -168,7 +168,7 @@ namespace ReadNGo.Services.Implementations
                     .ToList();
             }
 
-            // Otherwise use the original logic based on type
+           
             return type.ToLower() switch
             {
                 "bestsellers" => query
@@ -223,7 +223,7 @@ namespace ReadNGo.Services.Implementations
             };
         }
 
-        // Helper method to map Book entity to BookDTO - Updated to include new fields
+      
         private static BookDTO MapToDTO(Book book)
         {
             var now = DateTime.UtcNow;
@@ -244,8 +244,8 @@ namespace ReadNGo.Services.Implementations
                 Format = book.Format,
                 Publisher = book.Publisher,
                 PublicationDate = book.PublicationDate,
-                Category = book.Category,  // Added mapping for category
-                ArrivalDate = book.ArrivalDate,  // Added mapping for arrival date
+                Category = book.Category,  
+                ArrivalDate = book.ArrivalDate,  
                 Price = book.Price,
                 IsOnSale = isCurrentlyOnSale,
                 DiscountPercentage = book.DiscountPercentage,
@@ -264,7 +264,7 @@ namespace ReadNGo.Services.Implementations
         public List<string> GetDistinctAuthors()
         {
             return _context.Books
-                .Where(b => !string.IsNullOrWhiteSpace(b.Author))  // Exclude null or empty
+                .Where(b => !string.IsNullOrWhiteSpace(b.Author))  
                 .Select(b => b.Author)
                 .Distinct()
                 .OrderBy(a => a)
@@ -274,7 +274,7 @@ namespace ReadNGo.Services.Implementations
         public List<string> GetDistinctGenres()
         {
             return _context.Books
-                .Where(b => !string.IsNullOrWhiteSpace(b.Genre))  // Exclude null or empty
+                .Where(b => !string.IsNullOrWhiteSpace(b.Genre))  
                 .Select(b => b.Genre)
                 .Distinct()
                 .OrderBy(g => g)

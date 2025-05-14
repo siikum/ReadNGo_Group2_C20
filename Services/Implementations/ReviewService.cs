@@ -20,7 +20,7 @@ namespace ReadNGo.Services.Implementations
 
         public bool AddReview(ReviewDTO reviewDto)
         {
-            // Check if user has purchased this book
+            
             var hasPurchased = _context.OrderItems
                 .Include(oi => oi.Order)
                 .Any(oi => oi.BookId == reviewDto.BookId &&

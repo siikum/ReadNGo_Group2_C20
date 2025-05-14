@@ -54,7 +54,7 @@ namespace ReadNGo.Services.Implementations
         {
             Console.WriteLine($"🔍 Login attempt: {credentials.Email} / {credentials.Password}");
 
-            // ✅ 1. Hardcoded Admin Check FIRST
+           
             if (credentials.Email == "admins@gmail.com" && credentials.Password == "Admin@1234")
             {
                 Console.WriteLine("✅ Admin login matched!");
@@ -62,7 +62,7 @@ namespace ReadNGo.Services.Implementations
                 return new LoginResponse
                 {
                     Token = adminToken,
-                    UserId = 0, // Or a specific admin ID if you have one
+                    UserId = 0, 
                     Email = credentials.Email,
                     Role = "Admin",
                     FullName = "Admin User"
@@ -71,7 +71,7 @@ namespace ReadNGo.Services.Implementations
 
             Console.WriteLine("❌ Admin check failed. Proceeding to DB...");
 
-            // ✅ 2. THEN check normal users from database
+        
             var user = _context.Users.FirstOrDefault(u => u.Email == credentials.Email);
             if (user == null)
             {
@@ -107,16 +107,15 @@ namespace ReadNGo.Services.Implementations
             var claims = new[]
             {
         new Claim("email", email),
-        new Claim("role", role) // ✅ Use "role" as literal string
-    };
-
+        new Claim("role", role), // 
+            };
             var token = new JwtSecurityToken(
                 issuer: jwtSettings["Issuer"],
                 audience: jwtSettings["Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(2),
                 signingCredentials: creds
-            );
+            ) ;
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
@@ -138,8 +137,24 @@ namespace ReadNGo.Services.Implementations
 
         public string GetClaimCode(int orderId)
         {
-            // Return a dummy value for now or implement actual logic
+            
             return $"CLAIM-CODE-{orderId}";
         }
+
+        public List<AnnouncementDTO> GetAllAnnouncements()
+{
+    var now = DateTime.UtcNow;
+    return _context.Announcements
+        .Where(a => a.StartTime <= now && a.EndTime >= now && a.IsActive)
+        .OrderByDescending(a => a.StartTime)
+        .Select(a => new AnnouncementDTO
+        {
+            Title = a.Title,
+            Message = a.Message,
+            StartTime = a.StartTime,
+            EndTime = a.EndTime
+        })
+        .ToList();
+}
     }
 }

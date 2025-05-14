@@ -11,7 +11,7 @@ namespace ReadNGo_Group2_C20.DTO
         public bool Eligible { get; set; }
         public decimal TotalDiscount { get; set; }
         public List<string> AppliedRules { get; set; }
-        public decimal FinalAmount { get; set; } // ✅ newly added
+        public decimal FinalAmount { get; set; } 
     }
 
 }

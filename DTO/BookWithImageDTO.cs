@@ -13,8 +13,8 @@ namespace ReadNGo.DTO
         public string Format { get; set; }
         public string Publisher { get; set; }
         public DateTime PublicationDate { get; set; }
-        public string Category { get; set; }  // Added Category
-        public DateTime ArrivalDate { get; set; }  // Added ArrivalDate
+        public string Category { get; set; }
+        public DateTime ArrivalDate { get; set; }
         public decimal Price { get; set; }
         public bool IsOnSale { get; set; }
         public decimal? DiscountPercentage { get; set; }
@@ -25,6 +25,6 @@ namespace ReadNGo.DTO
         public int StockQuantity { get; set; }
 
         [Required]
-        public IFormFile Image { get; set; } // file upload
+        public IFormFile Image { get; set; }
     }
 }

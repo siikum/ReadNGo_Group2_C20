@@ -25,7 +25,7 @@ namespace ReadNGo_Group2_C20.Controllers
             return Ok(books);
         }
 
-        // GET: api/Book/5
+        
         [HttpGet("{id}")]
         public ActionResult<BookDTO> GetBookById(int id)
         {
@@ -37,19 +37,19 @@ namespace ReadNGo_Group2_C20.Controllers
             return Ok(book);
         }
 
-        // GET: api/Book/filter - UPDATED WITH ALL PARAMETERS
+        // GET: api/Book/filter 
         [HttpGet("filter")]
         public ActionResult<IEnumerable<BookDTO>> FilterBooks(
-            [FromQuery] string category = null,           // Added category
+            [FromQuery] string category = null,          
             [FromQuery] string genre = null,
             [FromQuery] string author = null,
             [FromQuery] string format = null,
             [FromQuery] string language = null,
             [FromQuery] string publisher = null,
-            [FromQuery] bool? availableInLibrary = null,  // Added availability filter
-            [FromQuery] decimal? minPrice = null,         // Added minimum price
-            [FromQuery] decimal? maxPrice = null,         // Added maximum price
-            [FromQuery] double? minRating = null)         // Added minimum rating
+            [FromQuery] bool? availableInLibrary = null,  
+            [FromQuery] decimal? minPrice = null,         
+            [FromQuery] decimal? maxPrice = null,         
+            [FromQuery] double? minRating = null)         
         {
             var books = _bookService.FilterBooks(
                 category,

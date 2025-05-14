@@ -18,7 +18,7 @@ namespace ReadNGo.Services.Implementations
 
         public bool AddToWishlist(WishlistDTO item)
         {
-            // Prevent duplicate entry
+           
             var exists = _context.WishlistItems
                 .Any(w => w.UserId == item.UserId && w.BookId == item.BookId);
 
@@ -59,5 +59,5 @@ namespace ReadNGo.Services.Implementations
             _context.SaveChanges();
             return true;
         }
-    } // Closing brace for class
-} // Closing brace for namespace
+    } 
+} 
